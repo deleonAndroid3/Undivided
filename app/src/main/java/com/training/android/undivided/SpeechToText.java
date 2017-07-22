@@ -31,9 +31,9 @@ public class SpeechToText extends AppCompatActivity {
             }
         });
 
-        Intent reply = new Intent(SpeechToText.this, TextToSpeech.class);
+      /*  Intent reply = new Intent(SpeechToText.this, TextToSpeech.class);
         reply.putExtra("reply", voiceInput.getText());
-        startActivity(reply);
+        startActivity(reply);*/
 
     }
 

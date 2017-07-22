@@ -99,12 +99,12 @@ public class TextToSpeech extends AppCompatActivity {
                         smsSender.setText("Message from " + sender);
                         smsText.setText(text);
 
-                        Intent replyIntent = new Intent(TextToSpeech.this, SpeechToText.class);
-                        startActivity(replyIntent);
+                        //Intent replyIntent = new Intent(TextToSpeech.this, SpeechToText.class);
+//                        startActivity(replyIntent);
 
-                        Intent reIntent = getIntent();
+                       // Intent reIntent = getIntent();
 
-                        if( reIntent.getStringExtra("reply").equals("yes") ){
+                      /*  if( reIntent.getStringExtra("reply").equals("yes") ){
                                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
                                         checkSMSPermission();
@@ -117,7 +117,7 @@ public class TextToSpeech extends AppCompatActivity {
                                         SmsManager smsManager = SmsManager.getDefault();
                                         smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
                                     }
-                        }
+                        }*/
 
                     }
                 }
@@ -146,7 +146,7 @@ public class TextToSpeech extends AppCompatActivity {
         speaker.destroy();
     }
 
-    public boolean checkSMSPermission() {
+   /* public boolean checkSMSPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -172,6 +172,6 @@ public class TextToSpeech extends AppCompatActivity {
         } else {
             return true;
         }
-    }
+    }*/
 }
 
