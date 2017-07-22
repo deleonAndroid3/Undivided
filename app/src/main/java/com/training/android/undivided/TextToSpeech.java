@@ -90,7 +90,6 @@ public class TextToSpeech extends AppCompatActivity {
                         SmsMessage message = SmsMessage.createFromPdu(pdu);
                         String text = message.getDisplayMessageBody();
                         String sender = getContactName(message.getOriginatingAddress());
-                        SpeechToText reply = new SpeechToText();
 
                         speaker.pause(LONG_DURATION);
                         speaker.speak("You have a new message from" + sender + "!");
