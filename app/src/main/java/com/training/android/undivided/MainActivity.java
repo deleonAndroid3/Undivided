@@ -58,51 +58,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                    checkSMSPermission();
-                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {
-                        SmsManager smsManager = SmsManager.getDefault();
-                        smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
-                    }
-                } else {
-                    SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
-                }
-
+               Intent textToSpeech = new Intent(MainActivity.this, TextToSpeech.class);
+                startActivity(textToSpeech);
 
             }
         });
     }
 
-    public boolean checkSMSPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.SEND_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            // Asking user if explanation is needed
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-                //Prompt the user once explanation has been shown
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS},
-                        51);
-
-
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS},
-                        51);
-            }
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     protected void onDestroy(){
 //        Intent intent = new Intent(this, BackgroundService.class);
