@@ -90,6 +90,8 @@ public class TextToSpeech extends AppCompatActivity {
                         SmsMessage message = SmsMessage.createFromPdu(pdu);
                         String text = message.getDisplayMessageBody();
                         String sender = getContactName(message.getOriginatingAddress());
+                        SpeechToText reply = new SpeechToText();
+
                         speaker.pause(LONG_DURATION);
                         speaker.speak("You have a new message from" + sender + "!");
                         speaker.pause(SHORT_DURATION);
@@ -97,7 +99,13 @@ public class TextToSpeech extends AppCompatActivity {
                         speaker.speak("Do you want to reply to?"+sender+"!");
                         smsSender.setText("Message from " + sender);
                         smsText.setText(text);
-                        if(smsText.getText() == "yes"){
+
+                        Intent replyIntent = new Intent(TextToSpeech.this, SpeechToText.class);
+                        startActivity(replyIntent);
+
+                        Intent reIntent = getIntent();
+
+                        if( reIntent.getStringExtra("reply").equals("yes") ){
                                     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
                                         checkSMSPermission();

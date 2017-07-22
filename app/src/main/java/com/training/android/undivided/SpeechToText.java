@@ -30,7 +30,13 @@ public class SpeechToText extends AppCompatActivity {
                 askSpeechInput();
             }
         });
+
+        Intent reply = new Intent(SpeechToText.this, TextToSpeech.class);
+        reply.putExtra("reply", voiceInput.getText());
+        startActivity(reply);
+
     }
+
 
     private void askSpeechInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -45,6 +51,8 @@ public class SpeechToText extends AppCompatActivity {
 
         }
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
