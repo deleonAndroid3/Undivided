@@ -77,7 +77,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         mMap = googleMap;
 
         //Initialize Google Play Services
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
             checkLocationPermission();
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -214,6 +214,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 // TODO: Handle the error.
                 Log.i("TAG", status.getStatusMessage());
 
+                Toast.makeText(this, "Error Retrieving shit", Toast.LENGTH_SHORT).show();
+
             } else if (resultCode == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
@@ -240,6 +242,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
 
+        Toast.makeText(this, "origin=" + origin.latitude + "," + origin.longitude, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "destination=" + dest.latitude + "," + dest.longitude, Toast.LENGTH_SHORT).show();
         return url;
     }
 
@@ -294,8 +298,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     }
 
     public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Asking user if explanation is needed
