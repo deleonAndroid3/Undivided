@@ -1,5 +1,6 @@
 package com.training.android.undivided;
 
+import android.app.job.JobScheduler;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,12 +13,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         Intent intent = new Intent(this, BackgroundService.class);
         startService(intent);
-
         mbtnMaps = (Button) findViewById(R.id.btnMaps);
 
         mbtnMaps.setOnClickListener(new View.OnClickListener() {
@@ -27,5 +28,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+    protected void onDestroy(){
+        Intent intent = new Intent(this, BackgroundService.class);
+        startService(intent);
+        super.onDestroy();
+
+
     }
 }

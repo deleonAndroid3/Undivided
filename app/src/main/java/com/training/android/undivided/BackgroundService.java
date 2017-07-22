@@ -1,13 +1,19 @@
 package com.training.android.undivided;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.os.SystemClock;
+import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -32,6 +38,8 @@ public class BackgroundService extends Service{
     }
 
     public void onDestroy(){
+//         DISABLED FOR NOW: ANNOYING AUTO START SINCE EVERYTIME THE SERVICE FINISHES IT DESTROYS AUTOMATICALLY
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -50,6 +58,22 @@ public class BackgroundService extends Service{
 
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent){
+        Intent reService = new Intent(getApplicationContext(), this.getClass());
+        reService.setPackage(getPackageName());
+        PendingIntent reServicePendingIntent = PendingIntent.getService(getApplicationContext(),
+                1,reService,PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmService = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000,
+                reServicePendingIntent);
+
+
+
+        super.onTaskRemoved(rootIntent);
+    }
+
     protected void showToast(final String msg){
         //gets the main thread
         Handler handler = new Handler(Looper.getMainLooper());
@@ -64,7 +88,7 @@ public class BackgroundService extends Service{
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+       return null;
     }
 
     // Object responsible for
@@ -82,6 +106,7 @@ public class BackgroundService extends Service{
             // Add your cpu-blocking activity here
 
             try {
+
                 Thread.sleep(5000);
                 showToast("Service is currently running (TEST#0001)");
                 Thread.sleep(5000);
