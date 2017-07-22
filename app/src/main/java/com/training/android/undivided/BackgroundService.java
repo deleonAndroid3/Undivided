@@ -1,6 +1,7 @@
 package com.training.android.undivided;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -45,6 +46,12 @@ public class BackgroundService extends Service{
         startActivity(intent);
     }
 
+    public void restartService(){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "Starting Service(onStartCommand)", Toast.LENGTH_SHORT).show();
@@ -53,14 +60,15 @@ public class BackgroundService extends Service{
         Message message = mServiceHandler.obtainMessage();
         message.arg1 = startId;
         mServiceHandler.sendMessage(message);
-
+        Notification notif = new Notification();
+        startForeground(1, notif);
         return START_STICKY;
 
     }
 
     @Override
     public void onTaskRemoved(Intent rootIntent){
-        Intent reService = new Intent(getApplicationContext(), this.getClass());
+        /*Intent reService = new Intent(getApplicationContext(), this.getClass());
         reService.setPackage(getPackageName());
         PendingIntent reServicePendingIntent = PendingIntent.getService(getApplicationContext(),
                 1,reService,PendingIntent.FLAG_ONE_SHOT);
@@ -69,7 +77,7 @@ public class BackgroundService extends Service{
         alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000,
                 reServicePendingIntent);
 
-
+*/
 
         super.onTaskRemoved(rootIntent);
     }
@@ -118,6 +126,7 @@ public class BackgroundService extends Service{
 
 
             showToast("Auto Starting UNDIVIDED, id: " + msg.arg1);
+            restartService();
 
             stopSelf(msg.arg1);
         }
