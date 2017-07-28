@@ -1,15 +1,10 @@
 package com.training.android.undivided;
 
-import android.Manifest;
-import android.app.job.JobScheduler;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.SmsManager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -44,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
          * BACKGROUND FUNCTION WITH AUTO START ( INCLUDING ON DESTROY )
          * (IMPLEMENTED WITH BUTTON RIGHT NOW)
          */
-        mbtnService.setOnClickListener(new View.OnClickListener(){
+        mbtnService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, BackgroundService.class);
@@ -60,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-               Intent textToSpeech = new Intent(MainActivity.this, TextToSpeech.class);
+                Intent textToSpeech = new Intent(MainActivity.this, TextToSpeech.class);
                 startActivity(textToSpeech);
 
             }
@@ -76,13 +71,31 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-    protected void onDestroy(){
+    protected void onDestroy() {
 //        Intent intent = new Intent(this, BackgroundService.class);
 //        startService(intent);
         super.onDestroy();
 
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_settings:
+                Intent settings = new Intent(MainActivity.this, Settings.class);
+                startActivity(settings);
+                break;
+
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 }

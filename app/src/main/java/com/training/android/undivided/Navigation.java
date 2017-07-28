@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -72,6 +73,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
         setContentView(R.layout.activity_navigation);
         showSearch();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -83,7 +85,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
 
         //Initialize Google Play Services
@@ -93,18 +95,20 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
-                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mMap.setMyLocationEnabled(true);
             }
         } else {
             buildGoogleApiClient();
-            mMap.setMyLocationEnabled(false);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.setMyLocationEnabled(true);
         }
 
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-
+        Toast.makeText(this, "3", Toast.LENGTH_SHORT).show();
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
@@ -130,7 +134,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
-
+        Toast.makeText(this, "4", Toast.LENGTH_SHORT).show();
         if (location != null) {
             mLastLocation = location;
 
@@ -174,6 +178,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        Toast.makeText(this, "5", Toast.LENGTH_SHORT).show();
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -188,6 +193,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         if (mGoogleApiClient == null) {
                             buildGoogleApiClient();
                         }
+                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
                         mMap.setMyLocationEnabled(true);
                     }
 
@@ -289,7 +295,13 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
     public void showSearch() {
         try {
+            AutocompleteFilter autocompleteFilter = new AutocompleteFilter.Builder()
+                    .setTypeFilter(Place.TYPE_COUNTRY)
+                    .setCountry("PH")
+                    .build();
+
             Intent intent = new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                    .setFilter(autocompleteFilter)
                     .build(this);
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
         } catch (GooglePlayServicesRepairableException e) {
@@ -490,6 +502,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 lineOptions.addAll(points);
                 lineOptions.width(5);
                 lineOptions.color(Color.GREEN);
+                lineOptions.geodesic(true);
             }
 
             // Drawing polyline in the Google Map for the i-th route
