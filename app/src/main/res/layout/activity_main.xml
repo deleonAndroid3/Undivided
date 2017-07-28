@@ -36,4 +36,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
+    <Button
+        android:id="@+id/btnSTT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="STT"
+        tools:layout_editor_absoluteX="192dp"
+        tools:layout_editor_absoluteY="455dp" />
+
 </android.support.constraint.ConstraintLayout>
