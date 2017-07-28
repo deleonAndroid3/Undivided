@@ -11,4 +11,5 @@
     <string name="none" />
     <string name="speech_toggle_on" />
     <string name="speech_toggle_off" />
+    <string name="menu_string_settings">Settings</string>
 </resources>
