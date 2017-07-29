@@ -12,4 +12,17 @@
     <string name="speech_toggle_on" />
     <string name="speech_toggle_off" />
     <string name="menu_string_settings">Settings</string>
+    <string name="reply_message_label">Edit your auto-reply message:</string>
+    <string name="toggle_activation_on">Auto-reply is On</string>
+    <string name="toggle_activation_off">Auto-reply is Off</string>
+    <string name="title_activity_edit_reply_message">Edit Auto-reply Message</string>
+    <string name="action_save_reply_message">Save</string>
+    <string name="toast_activated">Auto Reply is now on</string>
+    <string name="toast_deactivated">Auto Reply is now off</string>
+    <string name="notification_title">Text &amp; Drive Activated</string>
+    <string name="notification_text">Auto Reply is now on.</string>
+    <string name="message_label_inactive">What is your auto-reply message?</string>
+    <string name="message_label_active">Your auto-reply message:</string>
+    <string name="timer_label_inactive">How long will you be driving?</string>
+    <string name="timer_label_active">Your ETA:</string>
 </resources>

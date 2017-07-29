@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/reply_message_shadow"
+        android:orderInCategory="100"
+        android:title="@string/action_save_reply_message"
+        android:icon="@drawable/action_save"
+        app:showAsAction="always"/>
+</menu>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAndDriveTheme" parent="android:style/Theme.NoTitleBar">
+        <item name="android:buttonStyle">@style/clear_button</item>
+    </style>
+</resources>
