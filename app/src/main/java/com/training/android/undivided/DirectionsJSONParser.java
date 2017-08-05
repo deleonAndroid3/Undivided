@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by Dyste on 7/20/2017.
- */
 
 public class DirectionsJSONParser {
 
