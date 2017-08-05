@@ -14,7 +14,8 @@ public class MainActivity extends AppCompatActivity {
     Button mbtnService;
     Button mbtnSTT;
     Button mbtnMessage;
-   Button mbtnAR;
+    Button mbtnAR;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

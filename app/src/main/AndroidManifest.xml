@@ -14,10 +14,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-   <uses-permission android:name="android.permission.WRITE_SMS"/>
-
-
-
+    <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.BROADCAST_SMS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -55,7 +52,7 @@
         <service android:name=".BackgroundIntentService" />
         <service android:name=".BackgroundService" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".LandingScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -68,7 +65,7 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -82,7 +79,8 @@
         <activity android:name=".Settings" />
         <activity android:name=".AutoReplyActivity" />
         <activity android:name=".EditReplyMessage" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>
