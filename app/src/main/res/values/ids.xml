@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="reply_message_shadow" type="id" />
+
+    <item name="action_new" type="id" />
+    <item name="action_outbox" type="id" />
+    <item name="action_settings" type="id" />
+    <item name="action_about" type="id" />
+    <item name="action_instructions" type="id" />
+</resources>

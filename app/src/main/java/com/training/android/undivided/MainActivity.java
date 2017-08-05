@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     Button mbtnService;
     Button mbtnSTT;
     Button mbtnMessage;
-
+   Button mbtnAR;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         mbtnService = (Button) findViewById(R.id.btnService);
         mbtnMessage = (Button) findViewById(R.id.btnMessage);
         mbtnSTT = (Button) findViewById(R.id.btnSTT);
+        mbtnAR=(Button)findViewById(R.id.btnAR);
 
         mbtnMaps.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +69,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(speechToSpeech);
             }
         });
+        mbtnAR.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent autoReply=new Intent(MainActivity.this,AutoReplyActivity.class);
+                startActivity(autoReply);
+            }
+        });
 
     }
 
@@ -98,4 +106,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

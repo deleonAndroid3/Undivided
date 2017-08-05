@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+
+	<string name="pref_eta_title">Include ETA</string>
+	<string name="pref_eta_description">Include the estimated time of arrival in your auto-reply messages.  For example, "ETA: 1 hour 15 minutes"</string>
+	<string name="pref_signature_title">Include App Signature</string>
+	<string name="pref_signature_description">Include "Auto Sent via Text &amp; Drive" at the end of your auto-reply messages.</string>
+
+</resources>
