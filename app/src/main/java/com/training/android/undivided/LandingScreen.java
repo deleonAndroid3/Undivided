@@ -20,7 +20,7 @@ public class LandingScreen extends AppCompatActivity {
         mImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(LandingScreen.this, MainActivity.class);
+                Intent intent = new Intent(LandingScreen.this, MainScreen.class);
                 startActivity(intent);
             }
         });

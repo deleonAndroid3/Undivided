@@ -80,7 +80,8 @@
         <activity android:name=".AutoReplyActivity" />
         <activity android:name=".EditReplyMessage" />
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".MainScreen"></activity>
     </application>
 
 </manifest>

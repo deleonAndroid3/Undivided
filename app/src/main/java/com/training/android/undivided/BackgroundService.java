@@ -34,16 +34,12 @@ public class BackgroundService extends Service{
         thread.start();
 
         mServiceLooper = thread.getLooper();
-
         mServiceHandler = new ServiceHandler(mServiceLooper);
     }
 
     public void onDestroy(){
-//         DISABLED FOR NOW: ANNOYING AUTO START SINCE EVERYTIME THE SERVICE FINISHES IT DESTROYS AUTOMATICALLY
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        super.onDestroy();
+        Toast.makeText(this, "Destroyed Service", Toast.LENGTH_SHORT).show();
     }
 
     public void restartService(){
