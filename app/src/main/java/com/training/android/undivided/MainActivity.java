@@ -1,52 +1,36 @@
 package com.training.android.undivided;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.training.android.undivided.NavigationMode.Navigation;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button mbtnMaps;
-    Button mbtnService;
     Button mbtnSTT;
     Button mbtnMessage;
-   Button mbtnAR;
+    Button mbtnAR;
+    AlertDialog ModeDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        chooseMode();
 
-        mbtnMaps = (Button) findViewById(R.id.btnMaps);
-        mbtnService = (Button) findViewById(R.id.btnService);
         mbtnMessage = (Button) findViewById(R.id.btnMessage);
         mbtnSTT = (Button) findViewById(R.id.btnSTT);
-        mbtnAR=(Button)findViewById(R.id.btnAR);
-
-        mbtnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this, Navigation.class);
-                startActivity(i);
-            }
-        });
-
-        /**
-         * BACKGROUND FUNCTION WITH AUTO START ( INCLUDING ON DESTROY )
-         * (IMPLEMENTED WITH BUTTON RIGHT NOW)
-         */
-        mbtnService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, BackgroundService.class);
-                startService(intent);
-            }
-        });
+        mbtnAR = (Button) findViewById(R.id.btnAR);
 
         /**
          *  SEND SMS FUNCTION FOR SPEECH TO TEXT REPLY.
@@ -72,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         mbtnAR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent autoReply=new Intent(MainActivity.this,AutoReplyActivity.class);
+                Intent autoReply = new Intent(MainActivity.this, AutoReplyActivity.class);
                 startActivity(autoReply);
             }
         });
@@ -107,5 +91,39 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void chooseMode() {
+
+        final CharSequence[] modes = {"Safe Mode", "Navigation Mode", "Passenger Mode"};
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Driving Mode");
+        builder.setSingleChoiceItems(modes, -1, null);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                int position = ModeDialog.getListView().getCheckedItemPosition();
+
+                switch (position) {
+                    case 0:
+                        Toast.makeText(MainActivity.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Intent navi = new Intent(MainActivity.this, Navigation.class);
+                        startActivity(navi);
+                        Toast.makeText(MainActivity.this, "Navigation Mode Selected", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(MainActivity.this, "Passenger Mode Selected", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+
+            }
+        });
+
+        ModeDialog = builder.create();
+        ModeDialog.show();
+
+    }
 
 }

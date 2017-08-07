@@ -1,4 +1,4 @@
-package com.training.android.undivided;
+package com.training.android.undivided.NavigationMode;
 
 import android.Manifest;
 import android.app.Activity;
@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.training.android.undivided.R;
 
 import org.json.JSONObject;
 
@@ -163,7 +164,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         if (location != null) {
 
             mLastLocation = location;
-
+            Toast.makeText(this, String.valueOf(location.getSpeed()), Toast.LENGTH_SHORT).show();
             if (mCurrLocationMarker != null) {
                 mCurrLocationMarker.remove();
             }
@@ -174,8 +175,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
                     zoom(17).
-                    bearing(90).
-                    tilt(40).
+                    bearing(location.getBearing()).
+                    tilt(90).
                     build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));

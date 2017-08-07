@@ -1,4 +1,4 @@
-package com.training.android.undivided;
+package com.training.android.undivided.NavigationMode;
 
 import com.google.android.gms.maps.model.LatLng;
 

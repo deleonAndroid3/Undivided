@@ -77,7 +77,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".Navigation"
+            android:name=".NavigationMode.Navigation"
             android:label="@string/title_activity_navigation" />
         <activity
             android:name=".ContactPicker"
