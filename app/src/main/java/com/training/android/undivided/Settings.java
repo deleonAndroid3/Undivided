@@ -25,11 +25,12 @@ public class Settings extends AppCompatActivity {
         mAutoStartSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Intent i = new Intent(Settings.this, BackgroundService.class);
                 if (b) {
-                    Intent i = new Intent(Settings.this, BackgroundService.class);
                     startService(i);
                     Toast.makeText(Settings.this, "Auto Start enabled", Toast.LENGTH_SHORT).show();
                 } else {
+                    stopService(i);
                     Toast.makeText(Settings.this, "Auto Start disabled", Toast.LENGTH_SHORT).show();
                 }
             }

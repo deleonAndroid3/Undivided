@@ -19,13 +19,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-<<<<<<< HEAD
     <uses-permission android:name="android.permission.WRITE_SMS" />
-=======
    <uses-permission android:name="android.permission.WRITE_SMS"/>
-
-
->>>>>>> 8b80cedd32d835bcf2f9019006fb9b33a4ed354e
     <uses-permission android:name="android.permission.BROADCAST_SMS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -52,7 +47,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/undivided_logo"
         android:label="@string/app_name"
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -133,16 +128,15 @@
 
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
-<<<<<<< HEAD
         <activity android:name=".Settings" />
         <activity android:name=".AutoReplyActivity" />
         <activity android:name=".EditReplyMessage" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".MainActivity"></activity>
-=======
-
         <activity android:name=".SettingsActivity"></activity>
->>>>>>> 8b80cedd32d835bcf2f9019006fb9b33a4ed354e
+        <activity android:name=".MainActivity" />
+        <activity android:name=".MainScreen"></activity>
+
     </application>
 
 </manifest>

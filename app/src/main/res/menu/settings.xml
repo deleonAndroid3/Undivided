@@ -5,5 +5,8 @@
     <item
         android:id="@+id/menu_settings"
         android:title="@string/menu_string_settings" />
+    <item
+        android:id="@+id/menu_functions"
+        android:title="Functions" />
 
 </menu>
