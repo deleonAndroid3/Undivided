@@ -18,6 +18,10 @@ public class Settings extends AppCompatActivity {
 
         mAutoStartSwitch = (Switch) findViewById(R.id.swAutoStart);
 
+        /**
+         * BACKGROUND FUNCTION WITH AUTO START ( INCLUDING ON DESTROY )
+         * (IMPLEMENTED WITH SWITCH RIGHT NOW)
+         */
         mAutoStartSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

@@ -1,4 +1,4 @@
-package com.training.android.undivided;
+package com.training.android.undivided.NavigationMode;
 
 import android.Manifest;
 import android.app.Activity;
@@ -29,7 +29,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
@@ -43,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.training.android.undivided.R;
 
 import org.json.JSONObject;
 
@@ -64,6 +64,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     protected static final int REQUEST_CHECK_SETTINGS = 2;
+
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
@@ -71,9 +72,20 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private GoogleMap mMap;
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mGoogleApiClient.disconnect();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this, "1", Toast.LENGTH_SHORT).show();
+
         setContentView(R.layout.activity_navigation);
         showSearch();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -85,38 +97,52 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+
         mMap = googleMap;
+        mMap.setTrafficEnabled(true);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             checkLocationPermission();
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mMap.setMyLocationEnabled(true);
             }
         } else {
             buildGoogleApiClient();
-            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+//            mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.setMyLocationEnabled(true);
         }
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                mMap.addMarker(new MarkerOptions().position(latLng));
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                return true;
+            }
+        });
 
     }
 
     @Override
     public void onConnected(Bundle bundle) {
-        Toast.makeText(this, "3", Toast.LENGTH_SHORT).show();
+
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(8000);
+        mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setSmallestDisplacement(10);
         settingsRequest();
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
 
@@ -124,61 +150,43 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(this, "Connection Suspended", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Toast.makeText(this, "Connection Failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(this, "4", Toast.LENGTH_SHORT).show();
-        if (location != null) {
-            mLastLocation = location;
 
+        if (location != null) {
+
+            mLastLocation = location;
+            Toast.makeText(this, String.valueOf(location.getSpeed()), Toast.LENGTH_SHORT).show();
             if (mCurrLocationMarker != null) {
                 mCurrLocationMarker.remove();
             }
 
-            //Place current location marker
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+//            mMap.addMarker(new MarkerOptions().position(latLng));
 
-            mMap.addMarker(new MarkerOptions().position(latLng));
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
-                    tilt(60).
-                    zoom(20).
-                    bearing(0).
+                    zoom(17).
+                    bearing(location.getBearing()).
+                    tilt(90).
                     build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-            mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                @Override
-                public void onMapLongClick(LatLng latLng) {
-                    mMap.addMarker(new MarkerOptions().position(latLng));
-                }
-            });
-
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    return true;
-                }
-            });
         }
-        //stop location updates
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
-
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        Toast.makeText(this, "5", Toast.LENGTH_SHORT).show();
+
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -217,10 +225,10 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                         mMap.addMarker(new MarkerOptions().position(place.getLatLng()));
                         if (mLastLocation != null) {
+
                             LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
                             String url = getDirectionsUrl(latLng, place.getLatLng());
-
                             DownloadTask downloadTask = new DownloadTask();
                             downloadTask.execute(url);
                         } else
@@ -267,8 +275,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     }
 
     public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             // Asking user if explanation is needed
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -500,8 +507,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(5);
-                lineOptions.color(Color.GREEN);
+                lineOptions.width(8);
+                lineOptions.color(Color.BLUE);
                 lineOptions.geodesic(true);
             }
 
