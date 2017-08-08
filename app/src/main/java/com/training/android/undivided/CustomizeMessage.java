@@ -239,7 +239,7 @@ public class CustomizeMessage extends AppCompatActivity {
                 }
                 catch(SQLiteConstraintException ex){ //catch constraint exceptions, and give error feedback to user
                     Toast.makeText(getApplicationContext(), "Rule NOT added, name must be unique!", Toast.LENGTH_SHORT).show();
-                    Log.i(logTag, "Rule not added, cought " + ex);
+                    Log.i(logTag, "Rule not added, caught " + ex);
                 }
             }
         }
@@ -253,11 +253,7 @@ public class CustomizeMessage extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Rule edited, its widget will update automatically.", Toast.LENGTH_SHORT).show();
     }
 
-    /**
-     * AsyncTask to populate the fields if the activity was launched by an edit intent
-     *
-     * @author Mehmet Kologlu
-     */
+
     private class PopulateFieldsTask extends AsyncTask<String,Void,Rule> {
         @Override
         protected void onPreExecute(){

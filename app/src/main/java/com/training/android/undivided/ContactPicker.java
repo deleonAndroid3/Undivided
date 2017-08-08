@@ -19,6 +19,9 @@ import android.widget.RadioGroup;
 
 import java.util.ArrayList;
 
+/***\
+ *  Created by Hillary Briones
+ *  */
 public class ContactPicker extends AppCompatActivity {
     static ContentResolver cr;
     ArrayList<String> phoneNos; //array holding phone nos, from which the selected ones go into selectedContacts

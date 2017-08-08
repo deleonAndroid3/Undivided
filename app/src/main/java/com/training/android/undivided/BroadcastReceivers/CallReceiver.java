@@ -115,7 +115,7 @@ public class CallReceiver extends BroadcastReceiver {
         /**
          * Applies the rule for the given phoneNo.
          *
-         * That is sends and SMS, and mutes the ringer.
+         * That sends and SMS, and mutes the ringer.
          *
          * @param r The rule to be applied
          * @param phoneNo phone number to send SMS to
@@ -149,7 +149,7 @@ public class CallReceiver extends BroadcastReceiver {
          * Checks if the given no is in the contacts
          *
          * @param c Context
-         * @param no The phone no to check for
+         * @param no The phone know what  to check for
          * @return True if the passed no is saved in the contacts, false otherwise
          */
         private boolean inContacts(Context c, String no) {
