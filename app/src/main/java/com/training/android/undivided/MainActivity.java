@@ -18,10 +18,7 @@ public class MainActivity extends AppCompatActivity {
     Button mbtnSTT;
     Button mbtnMessage;
     Button mbtnAR;
-<<<<<<< HEAD
-=======
     AlertDialog ModeDialog;
->>>>>>> 8b80cedd32d835bcf2f9019006fb9b33a4ed354e
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
