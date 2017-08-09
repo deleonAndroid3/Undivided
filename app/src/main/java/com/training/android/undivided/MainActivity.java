@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.training.android.undivided.AutoReply.AutoReplyActivity;
 import com.training.android.undivided.NavigationMode.Navigation;
 
 public class MainActivity extends AppCompatActivity {

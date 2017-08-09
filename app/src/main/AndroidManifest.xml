@@ -87,30 +87,30 @@
                 android:value="com.training.android.undivided.CustomizeMessage" />
         </activity>
         <activity
-            android:name=".Outbox"
+            android:name=".AutoReply.Outbox"
             android:label="@string/outbox_title"
-            android:parentActivityName=".AutoReplyActivity"
+            android:parentActivityName=".AutoReply.AutoReplyActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
         <activity android:name=".CustomizeMessage" />
         <activity
-            android:name=".Widget.ConfigureWidget"
+            android:name=".AutoReply.Widget.ConfigureWidget"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
 
-        <receiver android:name=".BroadcastReceivers.SMSReceiver">
+        <receiver android:name=".AutoReply.BroadcastReceivers.SMSReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".BroadcastReceivers.CallReceiver">
+        <receiver android:name=".AutoReply.BroadcastReceivers.CallReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Widget.RuleWidgetProvider">
+        <receiver android:name=".AutoReply.Widget.RuleWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -128,7 +128,7 @@
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".Settings" />
-        <activity android:name=".AutoReplyActivity" />
+        <activity android:name=".AutoReply.AutoReplyActivity" />
         <activity android:name=".EditReplyMessage" />
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".MainActivity" />
