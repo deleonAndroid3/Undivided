@@ -30,7 +30,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -56,7 +55,7 @@
         <service android:name=".BackgroundIntentService" />
         <service android:name=".BackgroundService" />
 
-        <activity android:name=".LandingScreen">
+        <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -131,11 +130,8 @@
         <activity android:name=".Settings" />
         <activity android:name=".AutoReplyActivity" />
         <activity android:name=".EditReplyMessage" />
-        <activity android:name=".SettingsActivity" />
         <activity android:name=".MainActivity"></activity>
-        <activity android:name=".SettingsActivity"></activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".MainScreen"></activity>
 
     </application>
 

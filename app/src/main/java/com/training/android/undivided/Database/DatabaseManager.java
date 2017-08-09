@@ -27,10 +27,6 @@ public class DatabaseManager {
     private String logTag = "DatabaseManager";
     private ArrayList<SMS> smsArray;
 
-    /**
-     * Constructor
-     * @param context Context
-     */
     public DatabaseManager(Context context){
         this.dbHelper = new RuleDatabaseSQLHelper(context, "", null, 0);
     }

@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context="com.training.android.undivided.MainActivity">
 
+    <ImageView
+        android:id="@+id/ivDriveStart"
+        android:layout_width="305dp"
+        android:layout_height="402dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/undivided_drivemode" />
 
     <Button
         android:id="@+id/btnMessage"
@@ -29,7 +42,6 @@
         app:layout_constraintRight_toLeftOf="@+id/btnMessage"
         android:layout_marginRight="8dp"
         app:layout_constraintHorizontal_bias="1.0" />
-        app:layout_constraintHorizontal_bias="0.953" />
 
     <Button
         android:id="@+id/btnAR"

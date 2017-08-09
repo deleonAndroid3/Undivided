@@ -136,8 +136,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public void onConnected(Bundle bundle) {
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(8000);
-        mLocationRequest.setFastestInterval(2000);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setSmallestDisplacement(10);
         settingsRequest();
@@ -164,19 +164,21 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         if (location != null) {
 
             mLastLocation = location;
-            Toast.makeText(this, String.valueOf(location.getSpeed()), Toast.LENGTH_SHORT).show();
+
+            double currentSpeed = location.getSpeed() * 3.6;
+
+            Toast.makeText(this, currentSpeed + "Km/h", Toast.LENGTH_SHORT).show();
             if (mCurrLocationMarker != null) {
                 mCurrLocationMarker.remove();
             }
 
             LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-//            mMap.addMarker(new MarkerOptions().position(latLng));
 
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
-                    zoom(17).
+                    zoom(20).
                     bearing(location.getBearing()).
-                    tilt(90).
+                    tilt(0).
                     build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -245,7 +247,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                     case RESULT_CANCELED:
                         // The user canceled the operation.
-                        Toast.makeText(this, "Canceled", Toast.LENGTH_SHORT).show();
+                        showSearch();
                         break;
 
                 }

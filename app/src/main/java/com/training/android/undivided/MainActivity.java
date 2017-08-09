@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.training.android.undivided.NavigationMode.Navigation;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     Button mbtnMessage;
     Button mbtnAR;
     AlertDialog ModeDialog;
+    private ImageView mIvStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +28,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        chooseMode();
 
         mbtnMessage = (Button) findViewById(R.id.btnMessage);
         mbtnSTT = (Button) findViewById(R.id.btnSTT);
         mbtnAR = (Button) findViewById(R.id.btnAR);
+        mIvStart = (ImageView) findViewById(R.id.ivDriveStart);
+
 
         /**
          *  SEND SMS FUNCTION FOR SPEECH TO TEXT REPLY.
@@ -39,10 +42,8 @@ public class MainActivity extends AppCompatActivity {
         mbtnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent textToSpeech = new Intent(MainActivity.this, TextToSpeech.class);
                 startActivity(textToSpeech);
-
             }
         });
 
@@ -58,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent autoReply = new Intent(MainActivity.this, AutoReplyActivity.class);
                 startActivity(autoReply);
+            }
+        });
+
+        mIvStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                chooseMode();
             }
         });
 
@@ -120,7 +128,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ModeDialog.dismiss();
+            }
+        });
+        builder.setCancelable(false);
         ModeDialog = builder.create();
         ModeDialog.show();
 
