@@ -1,4 +1,4 @@
-package com.training.android.undivided;
+package com.training.android.undivided.AutoReply;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -16,6 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioGroup;
+
+import com.training.android.undivided.R;
 
 import java.util.ArrayList;
 

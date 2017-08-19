@@ -1,4 +1,4 @@
-package com.training.android.undivided;
+package com.training.android.undivided.AutoReply;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
@@ -20,8 +20,10 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.training.android.undivided.AutoReply.ContactPicker;
 import  com.training.android.undivided.AutoReply.Database.DatabaseManager;
 import  com.training.android.undivided.AutoReply.Objects.Rule;
+import com.training.android.undivided.R;
 
 public class CustomizeMessage extends AppCompatActivity {
 

@@ -78,20 +78,20 @@
             android:name=".NavigationMode.Navigation"
             android:label="@string/title_activity_navigation" />
         <activity
-            android:name=".ContactPicker"
+            android:name=".AutoReply.ContactPicker"
             android:label="@string/contactpicker_title"
-            android:parentActivityName=".CustomizeMessage"
+            android:parentActivityName=".AutoReply.CustomizeMessage"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.training.android.undivided.CustomizeMessage" />
+                android:value="com.training.android.undivided.AutoReply.CustomizeMessage" />
         </activity>
         <activity
             android:name=".AutoReply.Outbox"
             android:label="@string/outbox_title"
             android:parentActivityName=".AutoReply.AutoReplyActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
-        <activity android:name=".CustomizeMessage" />
+        <activity android:name=".AutoReply.CustomizeMessage" />
         <activity
             android:name=".AutoReply.Widget.ConfigureWidget"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">

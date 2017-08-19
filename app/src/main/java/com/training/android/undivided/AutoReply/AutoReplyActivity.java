@@ -19,7 +19,6 @@ import com.training.android.undivided.AutoReply.ArrayAdapters.RuleListViewAdapte
 import com.training.android.undivided.AutoReply.Database.DatabaseManager;
 import  com.training.android.undivided.AutoReply.Objects.Rule;
 import com.training.android.undivided.AutoReply.Widget.RuleWidgetProvider;
-import com.training.android.undivided.CustomizeMessage;
 import com.training.android.undivided.R;
 
 import java.util.ArrayList;
