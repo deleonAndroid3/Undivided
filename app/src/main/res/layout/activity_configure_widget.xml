@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:paddingLeft="8sp"
     android:paddingRight="8sp"
-    tools:context="com.training.android.undivided.Widget.ConfigureWidget">
+    tools:context=".AutoReply.Widget.ConfigureWidget">
 
     <TextView
         android:id="@+id/configure_text_info"
