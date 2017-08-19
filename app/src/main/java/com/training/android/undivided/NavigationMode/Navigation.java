@@ -7,6 +7,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,11 +38,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
 
 import org.json.JSONObject;
@@ -64,17 +70,15 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     protected static final int REQUEST_CHECK_SETTINGS = 2;
+    private static BitmapDescriptor markerIconBitmapDescriptor;
 
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    Marker mCurrLocationMarker;
-    LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private Location mDestination = new Location(LocationManager.GPS_PROVIDER);
+    private Marker mCurrLocationMarker;
+    private LocationRequest mLocationRequest;
     private GoogleMap mMap;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     @Override
     protected void onStop() {
@@ -93,13 +97,18 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+
+//        markerIconBitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.user_location);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+        MapStyleOptions mapStyleOptions = MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style);
+
         mMap = googleMap;
-        mMap.setTrafficEnabled(true);
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setMapStyle(mapStyleOptions);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -113,20 +122,14 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         } else {
             buildGoogleApiClient();
 //            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-            mMap.setMyLocationEnabled(true);
+            mMap.setMyLocationEnabled(false);
         }
-
-        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(LatLng latLng) {
-                mMap.addMarker(new MarkerOptions().position(latLng));
-            }
-        });
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                return true;
+                marker.showInfoWindow();
+                return false;
             }
         });
 
@@ -137,7 +140,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setSmallestDisplacement(10);
         settingsRequest();
@@ -164,25 +167,33 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         if (location != null) {
 
             mLastLocation = location;
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+            // KM/S
             double currentSpeed = location.getSpeed() * 3.6;
 
-            Toast.makeText(this, currentSpeed + "Km/h", Toast.LENGTH_SHORT).show();
             if (mCurrLocationMarker != null) {
+                //Remove previous marker
                 mCurrLocationMarker.remove();
-            }
+            } else {
 
-            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title("Your Location"));
+            }
 
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
-                    zoom(20).
+                    zoom(19).
                     bearing(location.getBearing()).
-                    tilt(0).
+                    tilt(90).
                     build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+            float CurrentDistance = mDestination.distanceTo(location) / 1000;
+            Toast.makeText(this, "Current Distance: " + String.valueOf(CurrentDistance) + " km", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, String.format("%.0f km/s", currentSpeed), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -223,14 +234,28 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             case PLACE_AUTOCOMPLETE_REQUEST_CODE:
                 switch (resultCode) {
                     case RESULT_OK:
-                        Place place = PlaceAutocomplete.getPlace(this, data);
 
-                        mMap.addMarker(new MarkerOptions().position(place.getLatLng()));
                         if (mLastLocation != null) {
+                            Place place = PlaceAutocomplete.getPlace(this, data);
+                            LatLng curlatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
-                            LatLng latLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                            //Adds Marker to the users destination
+                            mMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                                    .title(place.getAddress().toString()));
 
-                            String url = getDirectionsUrl(latLng, place.getLatLng());
+                            //Adds Marker to the users first Location
+                            mCurrLocationMarker = mMap.addMarker(new MarkerOptions().position(curlatLng)
+                                    .title("Starting Location")
+                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+                            //Get The Distance from starting position to Destination
+                            mDestination.setLatitude(place.getLatLng().latitude);
+                            mDestination.setLongitude(place.getLatLng().longitude);
+                            float TotalDistance = mLastLocation.distanceTo(mDestination) / 1000;
+                            Toast.makeText(this, "Total Distance: " + String.valueOf(TotalDistance) + " km", Toast.LENGTH_SHORT).show();
+
+
+                            String url = getDirectionsUrl(curlatLng, place.getLatLng());
                             DownloadTask downloadTask = new DownloadTask();
                             downloadTask.execute(url);
                         } else
@@ -239,7 +264,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                     case PlaceAutocomplete.RESULT_ERROR:
                         Status status = PlaceAutocomplete.getStatus(this, data);
-                        // TODO: Handle the error.
                         Log.i("TAG", status.getStatusMessage());
 
                         Toast.makeText(this, "Error Retrieving Location", Toast.LENGTH_SHORT).show();
@@ -247,7 +271,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                     case RESULT_CANCELED:
                         // The user canceled the operation.
-                        showSearch();
+                        startActivity(new Intent(Navigation.this, MainActivity.class));
                         break;
 
                 }
@@ -313,10 +337,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     .setFilter(autocompleteFilter)
                     .build(this);
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
-        } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
-        } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+            Log.e("Error", e.getMessage());
         }
     }
 
@@ -377,9 +399,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
-
-        Toast.makeText(this, "origin=" + origin.latitude + "," + origin.longitude, Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "destination=" + dest.latitude + "," + dest.longitude, Toast.LENGTH_SHORT).show();
         return url;
     }
 
@@ -509,9 +528,18 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(8);
-                lineOptions.color(Color.BLUE);
+                lineOptions.width(5);
+                lineOptions.color(Color.BLACK);
                 lineOptions.geodesic(true);
+                lineOptions.clickable(true);
+
+                mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
+                    @Override
+                    public void onPolylineClick(Polyline polyline) {
+                        Toast.makeText(Navigation.this, "Gwapo", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
 
             // Drawing polyline in the Google Map for the i-th route

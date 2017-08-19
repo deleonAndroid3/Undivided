@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         Toast.makeText(MainActivity.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
+
                         break;
                     case 1:
                         Intent navi = new Intent(MainActivity.this, Navigation.class);
@@ -123,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         Toast.makeText(MainActivity.this, "Passenger Mode Selected", Toast.LENGTH_SHORT).show();
+
                         break;
                 }
 

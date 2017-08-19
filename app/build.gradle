@@ -30,8 +30,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-places:11.0.4'
     compile 'com.google.android.gms:play-services-maps:11.0.4'
     compile 'com.google.android.gms:play-services-location:11.0.4'
-    //pa install gud ko ani palihug haha di ko ka install atal mo lag
     compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    compile 'com.android.support:design:26.+'
 
     //bottom bar lib
     compile 'com.roughike:bottom-bar:2.0.2'

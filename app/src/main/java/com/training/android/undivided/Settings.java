@@ -1,15 +1,16 @@
 package com.training.android.undivided;
 
-import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class Settings extends AppCompatActivity {
@@ -51,11 +52,18 @@ public class Settings extends AppCompatActivity {
         mAutoDeclineCalls.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
+                if (b) {
 
                 }
             }
         });
+
+    }
+
+    public void disconnectCall() {
+
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+
 
     }
 }

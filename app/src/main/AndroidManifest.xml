@@ -20,7 +20,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
-   <uses-permission android:name="android.permission.WRITE_SMS"/>
+    <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.BROADCAST_SMS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -31,7 +31,6 @@
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -90,7 +89,7 @@
             android:name=".Outbox"
             android:label="@string/outbox_title"
             android:parentActivityName=".AutoReplyActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity android:name=".CustomizeMessage" />
         <activity
             android:name=".Widget.ConfigureWidget"
@@ -123,14 +122,13 @@
                 android:resource="@xml/atm_widget" />
         </receiver>
 
-        <activity android:name=".Settings"></activity>
-
+        <activity android:name=".Settings" />
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".Settings" />
         <activity android:name=".AutoReplyActivity" />
         <activity android:name=".EditReplyMessage" />
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".MainActivity" />
 
     </application>
