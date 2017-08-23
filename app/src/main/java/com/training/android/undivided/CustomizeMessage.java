@@ -20,8 +20,8 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import  com.training.android.undivided.Database.DatabaseManager;
-import  com.training.android.undivided.Objects.Rule;
+import com.training.android.undivided.Database.DatabaseManager;
+import com.training.android.undivided.Objects.Rule;
 
 public class CustomizeMessage extends AppCompatActivity {
 
@@ -53,6 +53,7 @@ public class CustomizeMessage extends AppCompatActivity {
 
     private static String outgoingExtraTag = "selected_contacts";
     private static String incomingExtraTag = "selected_contacts_string";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +79,12 @@ public class CustomizeMessage extends AppCompatActivity {
 
 
 		/*	Set onCheckedChangeListener to the ContactFilter switch
-		/	when turned on, launches contact picker
+        /	when turned on, launches contact picker
 		*/
         switchContactsFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
                     Intent intent = new Intent(getApplicationContext(), ContactPicker.class);
                     if (edit) {
                         intent.putExtra(filterString, outgoingExtraTag);
@@ -101,10 +102,11 @@ public class CustomizeMessage extends AppCompatActivity {
             setTitle("Edit Rule");
             edit = true;
             oldRuleName = intent.getStringExtra("ruleName");
-            new PopulateFieldsTask().execute(new String[] {oldRuleName});
+            new PopulateFieldsTask().execute(new String[]{oldRuleName});
         }
 
     }
+
     public void launchIncludeContactPicker(View view) {
         // Pass nos that are already selected to the contact picker
         Intent intent = new Intent(this, ContactPicker.class);
@@ -126,12 +128,10 @@ public class CustomizeMessage extends AppCompatActivity {
             if (requestCode == CONTACT_FILTER_REQUEST) {
                 Log.i(logTag, "Returned with contact filter request as requestCode");
                 filterString = data.getStringExtra(incomingExtraTag);
-            }
-            else if (requestCode == PICK_INCLUDE_CONTACT_REQUEST) {
+            } else if (requestCode == PICK_INCLUDE_CONTACT_REQUEST) {
                 Log.i(logTag, "Returned with include requestCode");
                 includeString = data.getStringExtra(incomingExtraTag);
-            }
-            else if(requestCode == PICK_EXCLUDE_CONTACT_REQUEST){
+            } else if (requestCode == PICK_EXCLUDE_CONTACT_REQUEST) {
                 Log.i(logTag, "Returned with exlude requestcode");
                 excludeString = data.getStringExtra(incomingExtraTag);
             } else
@@ -163,7 +163,6 @@ public class CustomizeMessage extends AppCompatActivity {
 
     /**
      * Called when the save button on the AddEditRule Activity is clicked
-     *
      */
     public void saveButtonClicked() {
         Log.i(logTag, "Save button clicked with edit as " + edit);
@@ -172,19 +171,17 @@ public class CustomizeMessage extends AppCompatActivity {
         String ruleText = editTextText.getText().toString(); //get the text
 
         // Validate input
-        if (newRuleName.length() == 0){
+        if (newRuleName.length() == 0) {
             Toast.makeText(getApplicationContext(), "Name field cannot be empty", Toast.LENGTH_SHORT).show();
-        }
-        else if(ruleText.length() == 0){
+        } else if (ruleText.length() == 0) {
             Toast.makeText(getApplicationContext(), "Text field cannot be empty", Toast.LENGTH_SHORT).show();
-        }
-        else { //Input is valid
+        } else { //Input is valid
             dbManager = new DatabaseManager(getApplicationContext()); //get a DB
             if (edit) { //Edit functionality
                 try {
                     // If the name of the rule is changed request the wID from the DB.
                     // Then call for the widgets update if there's one
-                    if (! oldRuleName.equals(newRuleName)) { //changed
+                    if (!oldRuleName.equals(newRuleName)) { //changed
                         int wID = dbManager.editRule(true, oldRuleName, new Rule(newRuleName,
                                 editTextDescription.getText().toString().trim(),
                                 ruleText,
@@ -196,8 +193,7 @@ public class CustomizeMessage extends AppCompatActivity {
                         if (wID != AppWidgetManager.INVALID_APPWIDGET_ID) {
                             callForWidgetUpdate(wID);
                         }
-                    }
-                    else { //if the name hasn't changed, don't request a wID
+                    } else { //if the name hasn't changed, don't request a wID
                         dbManager.editRule(false, oldRuleName, new Rule(newRuleName,
                                 editTextDescription.getText().toString().trim(),
                                 ruleText,
@@ -210,13 +206,11 @@ public class CustomizeMessage extends AppCompatActivity {
                     Log.i(logTag, "Rule edited");
                     //return to homepage
                     super.onBackPressed();
-                }
-                catch(SQLiteConstraintException ex){ //catch constraint exceptions, and give error feedback to user
+                } catch (SQLiteConstraintException ex) { //catch constraint exceptions, and give error feedback to user
                     Toast.makeText(getApplicationContext(), "Rule NOT saved: name must be unique!", Toast.LENGTH_SHORT).show();
                     Log.i(logTag, "Rule not added, cought " + ex);
                 }
-            }
-            else { //Add functionality
+            } else { //Add functionality
                 //add Rule to DB
                 try {
                     if (dbManager.addRule(new Rule(editTextName.getText().toString().trim(),
@@ -236,8 +230,7 @@ public class CustomizeMessage extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "A problem has occured. Try restarting the app.", Toast.LENGTH_SHORT).show();
                     }
 
-                }
-                catch(SQLiteConstraintException ex){ //catch constraint exceptions, and give error feedback to user
+                } catch (SQLiteConstraintException ex) { //catch constraint exceptions, and give error feedback to user
                     Toast.makeText(getApplicationContext(), "Rule NOT added, name must be unique!", Toast.LENGTH_SHORT).show();
                     Log.i(logTag, "Rule not added, caught " + ex);
                 }
@@ -247,16 +240,16 @@ public class CustomizeMessage extends AppCompatActivity {
 
     private void callForWidgetUpdate(int widgetID) {
         Intent updateWidgetIntent = new Intent();
-        updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetID} ).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{widgetID}).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         this.sendBroadcast(updateWidgetIntent);
         Log.i(logTag, "Broadcasted " + updateWidgetIntent.toString());
         Toast.makeText(getApplicationContext(), "Rule edited, its widget will update automatically.", Toast.LENGTH_SHORT).show();
     }
 
 
-    private class PopulateFieldsTask extends AsyncTask<String,Void,Rule> {
+    private class PopulateFieldsTask extends AsyncTask<String, Void, Rule> {
         @Override
-        protected void onPreExecute(){
+        protected void onPreExecute() {
             fields.setVisibility(View.INVISIBLE);
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -287,8 +280,6 @@ public class CustomizeMessage extends AppCompatActivity {
             fields.setVisibility(View.VISIBLE);
         }
     }
-
-
 
 
 }

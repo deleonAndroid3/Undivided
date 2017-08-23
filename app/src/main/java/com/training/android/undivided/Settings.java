@@ -1,16 +1,13 @@
 package com.training.android.undivided;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import com.training.android.undivided.BackgroundService.BackgroundService;
 
 public class Settings extends AppCompatActivity {
 

@@ -52,8 +52,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".BackgroundIntentService" />
-        <service android:name=".BackgroundService" />
+        <service android:name=".BackgroundService.BackgroundIntentService" />
+        <service android:name=".BackgroundService.BackgroundService" />
 
         <activity android:name=".SplashScreenActivity">
             <intent-filter>

@@ -5,4 +5,5 @@ package com.training.android.undivided;
  */
 
 public abstract class BaseActivity {
+    // TODO
 }

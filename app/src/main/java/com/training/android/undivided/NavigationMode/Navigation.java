@@ -249,7 +249,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         // The user canceled the operation.
                         showSearch();
                         break;
-
                 }
                 break;
             case REQUEST_CHECK_SETTINGS:
