@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.training.android.undivided.Authentication.AuthActivity;
+
 public class SplashScreenActivity extends AppCompatActivity {
 
     @Override
@@ -22,7 +24,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                startActivity(new Intent(SplashScreenActivity.this, AuthActivity.class));
                 finish();
             }
         }, 3000);

@@ -20,12 +20,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
-    <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.BROADCAST_SMS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.READ_LOGS" />
@@ -55,12 +51,15 @@
         <service android:name=".BackgroundService" />
 
         <activity android:name=".SplashScreenActivity">
+
             <intent-filter>
+
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -87,12 +86,13 @@
         </activity>
         <activity
             android:name=".AutoReply.Outbox"
-            android:label="@string/outbox_title" android:parentActivityName=".AutoReply.AutoReplyActivity"
+            android:label="@string/outbox_title"
+            android:parentActivityName=".AutoReply.AutoReplyActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity android:name=".AutoReply.CustomizeMessage">
             android:parentActivityName=".AutoReply.AutoReplyActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"></activity>
-        <activity android:name=".AutoReply.CustomizeMessage" />
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+        </activity>
         <activity
             android:name=".AutoReply.Widget.ConfigureWidget"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -123,13 +123,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/atm_widget" />
         </receiver>
-
+        <activity android:name=".Authentication.AuthActivity"/>
         <activity android:name=".Settings" />
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
-        <activity android:name=".Settings" />
         <activity android:name=".AutoReply.AutoReplyActivity" />
-        <activity android:name=".MainActivity" />
         <activity android:name=".MainActivity" />
 
     </application>
