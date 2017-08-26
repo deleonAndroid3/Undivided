@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.training.android.undivided.Intro.WelcomeActivity;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
 import com.training.android.undivided.SplashScreenActivity;
@@ -362,7 +363,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(new Intent(AuthActivity.this, MainActivity.class));
+                    startActivity(new Intent(AuthActivity.this, WelcomeActivity.class));
                     finish();
                 }
             }, 3000);

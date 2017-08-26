@@ -51,9 +51,7 @@
         <service android:name=".BackgroundService" />
 
         <activity android:name=".SplashScreenActivity">
-
             <intent-filter>
-
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -101,6 +99,7 @@
             </intent-filter>
         </activity>
 
+
         <receiver android:name=".AutoReply.BroadcastReceivers.SMSReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -123,13 +122,16 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/atm_widget" />
         </receiver>
-        <activity android:name=".Authentication.AuthActivity"/>
+
+        <activity android:name=".Authentication.AuthActivity" />
         <activity android:name=".Settings" />
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".AutoReply.AutoReplyActivity" />
-        <activity android:name=".MainActivity" />
-
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".Intro.WelcomeActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            ></activity>
     </application>
 
 </manifest>
