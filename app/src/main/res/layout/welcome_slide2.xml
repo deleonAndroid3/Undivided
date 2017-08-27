@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen2">
+    <ImageView
+        android:layout_width="@dimen/img_width_height"
+        android:layout_height="@dimen/img_width_height"
+        app:srcCompat="@drawable/girl"
+        android:layout_above="@+id/linearLayout"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/imageView5" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:id="@+id/linearLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="161dp">
 
-        <ImageView
-            android:layout_width="@dimen/img_width_height"
-            android:layout_height="@dimen/img_width_height"
-            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,4 +43,24 @@
             android:textSize="@dimen/slide_desc" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="@dimen/img_width_height"
+        android:layout_height="@dimen/img_width_height"
+        app:srcCompat="@drawable/man"
+        android:layout_marginBottom="50dp"
+        android:layout_marginStart="62dp"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="@dimen/img_width_height"
+        android:layout_height="@dimen/img_width_height"
+        app:srcCompat="@drawable/boy"
+        android:layout_alignTop="@+id/imageView6"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="57dp" />
+
 </RelativeLayout>
