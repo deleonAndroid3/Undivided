@@ -12,20 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-   <android.support.constraint.ConstraintLayout
-       android:layout_width="match_parent"
-       android:layout_height="200dp"
-       android:layout_alignParentBottom="true"
-       android:gravity="center"
-       android:background="@color/light_gray">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/light_gray"
+        android:gravity="center">
 
-       <TextView
-           android:id="@+id/idTotalDistance"
-           android:layout_width="100dp"
-           android:layout_height="100dp"
-           android:text="Total Distance:"
-           tools:layout_editor_absoluteX="37dp"
-           tools:layout_editor_absoluteY="392dp" />
-   </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
