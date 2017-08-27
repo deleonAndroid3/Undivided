@@ -1,6 +1,7 @@
 package com.training.android.undivided.Authentication;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -57,7 +58,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
     private TextView mStatusText;
     private TextView mDetailText;
-
+private TextView title;
     private EditText mPhoneNumberField;
 
 
@@ -89,6 +90,7 @@ public class AuthActivity extends AppCompatActivity implements View.OnClickListe
 
         mPhoneNumberField = (EditText) findViewById(R.id.field_phone_number);
         mVerificationField = (EditText) findViewById(R.id.field_verification_code);
+
 
         mStartButton = (Button) findViewById(R.id.button_start_verification);
         mVerifyButton = (Button) findViewById(R.id.button_verify_phone);
