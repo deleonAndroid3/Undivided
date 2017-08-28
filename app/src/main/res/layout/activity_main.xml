@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/ivDriveStart"
-        android:layout_width="389dp"
-        android:layout_height="501dp"
+        android:layout_width="508dp"
+        android:layout_height="603dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -18,7 +18,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/undivided_drivemode_logo"
-        app:layout_constraintHorizontal_bias="0.476" />
+        app:srcCompat="@drawable/undivided_drivemode_logo" />
 
 </android.support.constraint.ConstraintLayout>
