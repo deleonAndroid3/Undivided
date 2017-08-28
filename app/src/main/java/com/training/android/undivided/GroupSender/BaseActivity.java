@@ -5,4 +5,5 @@ package com.training.android.undivided.GroupSender;
  */
 
 public abstract class BaseActivity {
+    // TODO
 }

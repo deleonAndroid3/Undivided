@@ -12,6 +12,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
+import com.training.android.undivided.BackgroundService.BackgroundService;
 
 public class Settings extends AppCompatActivity {
 

@@ -46,8 +46,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MainTheme">
-        <service android:name=".BackgroundIntentService" />
-        <service android:name=".BackgroundService" />
+        <service android:name=".BackgroundService.BackgroundIntentService" />
+        <service android:name=".BackgroundService.BackgroundService" />
+
+        android:theme="@style/AppTheme">
+        <service android:name=".BackgroundService.BackgroundIntentService" />
+        <service android:name=".BackgroundService.BackgroundService" />
 
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
@@ -86,10 +90,10 @@
             android:label="@string/outbox_title"
             android:parentActivityName=".AutoReply.AutoReplyActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
-        <activity android:name=".AutoReply.CustomizeMessage">
+        <activity
+            android:name=".AutoReply.CustomizeMessage"
             android:parentActivityName=".AutoReply.AutoReplyActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-        </activity>
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
             android:name=".AutoReply.Widget.ConfigureWidget"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -126,13 +130,18 @@
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".AutoReply.AutoReplyActivity" />
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".Intro.WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NavigationMode.SearchDestination"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+
+        <!--        <activity android:name=".EditReplyMessage" />-->
+        <activity android:name=".History" />
+        <activity android:name=".Emergency" />
+        <activity android:name=".Functions" />
     </application>
 
 </manifest>

@@ -298,7 +298,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         // The user canceled the operation.
                         startActivity(new Intent(Navigation.this, MainActivity.class));
                         break;
-
                 }
                 break;
             case REQUEST_CHECK_SETTINGS:
