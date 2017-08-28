@@ -57,6 +57,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -83,11 +84,12 @@
         </activity>
         <activity
             android:name=".AutoReply.Outbox"
-            android:label="@string/outbox_title" android:parentActivityName=".AutoReply.AutoReplyActivity"
+            android:label="@string/outbox_title"
+            android:parentActivityName=".AutoReply.AutoReplyActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity android:name=".AutoReply.CustomizeMessage">
             android:parentActivityName=".AutoReply.AutoReplyActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
         </activity>
         <activity
             android:name=".AutoReply.Widget.ConfigureWidget"
@@ -120,13 +122,17 @@
                 android:resource="@xml/atm_widget" />
         </receiver>
 
+        <activity android:name=".Authentication.AuthActivity" />
         <activity android:name=".Settings" />
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".AutoReply.AutoReplyActivity" />
         <activity android:name=".MainActivity" />
-
-
+        <activity
+            android:name=".Intro.WelcomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NavigationMode.SearchDestination"
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity"/>
     </application>
 
 </manifest>

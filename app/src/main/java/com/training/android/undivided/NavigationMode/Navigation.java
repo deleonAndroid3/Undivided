@@ -555,17 +555,14 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                 }
 
-
-                // Drawing polyline in the Google Map for the i-th route
-                mMap.addPolyline(new PolylineOptions()
-                        .addAll(points)
-                        .width(10)
-                        .geodesic(true)
-                        .color(Color.BLUE));
-
-
             }
 
+            // Drawing polyline in the Google Map for the i-th route
+            mMap.addPolyline(new PolylineOptions()
+                    .addAll(points)
+                    .width(10)
+                    .geodesic(true)
+                    .color(Color.BLUE));
 
         }
     }

@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.training.android.undivided.AutoReply.AutoReplyActivity;
 import com.training.android.undivided.NavigationMode.Navigation;
+import com.training.android.undivided.NavigationMode.SearchDestination;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -119,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case 1:
-                        Intent navi = new Intent(MainActivity.this, Navigation.class);
+                        Intent navi = new Intent(MainActivity.this, SearchDestination.class);
                         startActivity(navi);
                         Toast.makeText(MainActivity.this, "Navigation Mode Selected", Toast.LENGTH_SHORT).show();
                         break;
