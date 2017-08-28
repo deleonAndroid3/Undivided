@@ -19,5 +19,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/undivided_drivemode_logo" />
-
 </android.support.constraint.ConstraintLayout>

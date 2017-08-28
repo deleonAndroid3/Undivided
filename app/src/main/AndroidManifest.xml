@@ -4,7 +4,6 @@
     android:versionCode="2"
     android:versionName="Alpha">
 
-    <uses-sdk android:minSdkVersion="8" />
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="22" />
@@ -22,6 +21,7 @@
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.BROADCAST_SMS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.READ_LOGS" />
@@ -36,7 +36,6 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -46,6 +45,10 @@
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:theme="@style/MainTheme">
+        <service android:name=".BackgroundService.BackgroundIntentService" />
+        <service android:name=".BackgroundService.BackgroundService" />
+
         android:theme="@style/AppTheme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
@@ -87,13 +90,10 @@
             android:label="@string/outbox_title"
             android:parentActivityName=".AutoReply.AutoReplyActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
-        <activity android:name=".AutoReply.CustomizeMessage">
+        <activity
+            android:name=".AutoReply.CustomizeMessage"
             android:parentActivityName=".AutoReply.AutoReplyActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-        </activity>
-            android:parentActivityName=".AutoReplyActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
-        <activity android:name=".CustomizeMessage" />
         <activity
             android:name=".AutoReply.Widget.ConfigureWidget"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -101,7 +101,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-
 
         <receiver android:name=".AutoReply.BroadcastReceivers.SMSReceiver">
             <intent-filter>
@@ -125,26 +124,24 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/atm_widget" />
         </receiver>
+
         <activity android:name=".Authentication.AuthActivity" />
         <activity android:name=".Settings" />
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".AutoReply.AutoReplyActivity" />
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".Intro.WelcomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            ></activity>
-        <activity android:name=".Settings" />
-        <activity android:name=".SpeechToText" />
-        <activity android:name=".TextToSpeech" />
-        <activity android:name=".Settings" />
-        <activity android:name=".AutoReply.AutoReplyActivity" />
-<!--        <activity android:name=".EditReplyMessage" />-->
         <activity android:name=".MainActivity" />
-        <activity android:name=".MainActivity" />
+        <activity
+            android:name=".Intro.WelcomeActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NavigationMode.SearchDestination"
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+
+        <!--        <activity android:name=".EditReplyMessage" />-->
         <activity android:name=".History" />
         <activity android:name=".Emergency" />
-        <activity android:name=".Functions"></activity>
+        <activity android:name=".Functions" />
     </application>
 
 </manifest>

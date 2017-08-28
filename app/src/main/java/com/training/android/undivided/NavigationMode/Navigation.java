@@ -11,11 +11,15 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -45,7 +49,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
@@ -139,10 +142,10 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public void onConnected(Bundle bundle) {
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(2000);
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setSmallestDisplacement(0.1F);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setSmallestDisplacement(10);
         settingsRequest();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -167,20 +170,45 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         if (location != null) {
 
             mLastLocation = location;
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
             // KM/S
             double currentSpeed = location.getSpeed() * 3.6;
 
-            if (mCurrLocationMarker != null) {
-                //Remove previous marker
-                mCurrLocationMarker.remove();
-            } else {
-
+            if (mCurrLocationMarker == null) {
                 mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title("Your Location"));
+
             }
+
+
+            final Handler handler = new Handler();
+            final long start = SystemClock.uptimeMillis();
+
+            final long duration = 1000;
+            final Interpolator interpolator = new LinearInterpolator();
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    long elapsed = SystemClock.uptimeMillis() - start;
+                    float t = interpolator.getInterpolation((float) elapsed
+                            / duration);
+                    double lng = t * latLng.longitude + (1 - t)
+                            * mCurrLocationMarker.getPosition().longitude;
+                    double lat = t * latLng.latitude + (1 - t)
+                            * mCurrLocationMarker.getPosition().latitude;
+
+                    mCurrLocationMarker.setPosition(new LatLng(lat, lng));
+
+                    if (t < 1.0) {
+                        // Post again 16ms later.
+                        handler.postDelayed(this, 16);
+                    }
+                }
+            });
+
 
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
@@ -237,25 +265,22 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                         if (mLastLocation != null) {
                             Place place = PlaceAutocomplete.getPlace(this, data);
-                            LatLng curlatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                            LatLng startLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
                             //Adds Marker to the users destination
                             mMap.addMarker(new MarkerOptions().position(place.getLatLng())
                                     .title(place.getAddress().toString()));
 
                             //Adds Marker to the users first Location
-                            mCurrLocationMarker = mMap.addMarker(new MarkerOptions().position(curlatLng)
+                            mMap.addMarker(new MarkerOptions().position(startLatLng)
                                     .title("Starting Location")
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
                             //Get The Distance from starting position to Destination
-                            mDestination.setLatitude(place.getLatLng().latitude);
-                            mDestination.setLongitude(place.getLatLng().longitude);
-                            float TotalDistance = mLastLocation.distanceTo(mDestination) / 1000;
-                            Toast.makeText(this, "Total Distance: " + String.valueOf(TotalDistance) + " km", Toast.LENGTH_SHORT).show();
+                            //NAA ra sa API makuha ang total distance
 
 
-                            String url = getDirectionsUrl(curlatLng, place.getLatLng());
+                            String url = getDirectionsUrl(startLatLng, place.getLatLng());
                             DownloadTask downloadTask = new DownloadTask();
                             downloadTask.execute(url);
                         } else
@@ -390,14 +415,17 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         // Sensor enabled
         String sensor = "sensor=false";
 
-        // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor;
+        //Units: metric
+        String unit = "units=metric";
 
-        // Output format
-        String output = "json";
+        // Alternate Routes
+        String route = "alternatives=true";
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + unit + "&" + route;
 
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+        String url = "https://maps.googleapis.com/maps/api/directions/json?" + parameters;
         return url;
     }
 
@@ -523,27 +551,20 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     LatLng position = new LatLng(lat, lng);
 
                     points.add(position);
+
                 }
-
-                // Adding all the points in the route to LineOptions
-                lineOptions.addAll(points);
-                lineOptions.width(5);
-                lineOptions.color(Color.BLACK);
-                lineOptions.geodesic(true);
-                lineOptions.clickable(true);
-
-                mMap.setOnPolylineClickListener(new GoogleMap.OnPolylineClickListener() {
-                    @Override
-                    public void onPolylineClick(Polyline polyline) {
-                        Toast.makeText(Navigation.this, "Gwapo", Toast.LENGTH_SHORT).show();
-                    }
-                });
 
             }
 
             // Drawing polyline in the Google Map for the i-th route
-            mMap.addPolyline(lineOptions);
+            mMap.addPolyline(new PolylineOptions()
+                    .addAll(points)
+                    .width(10)
+                    .geodesic(true)
+                    .color(Color.BLUE));
+
         }
     }
+
 
 }
