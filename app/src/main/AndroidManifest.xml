@@ -4,7 +4,6 @@
     android:versionCode="2"
     android:versionName="Alpha">
 
-    <uses-sdk android:minSdkVersion="8" />
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="22" />
@@ -46,7 +45,7 @@
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/MainTheme">
         <service android:name=".BackgroundIntentService" />
         <service android:name=".BackgroundService" />
 
@@ -127,12 +126,13 @@
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".AutoReply.AutoReplyActivity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"/>
         <activity
             android:name=".Intro.WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NavigationMode.SearchDestination"
-            android:theme="@style/ThemeOverlay.MyNoTitleActivity"/>
+        <activity
+            android:name=".NavigationMode.SearchDestination"
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
     </application>
 
 </manifest>
