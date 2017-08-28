@@ -4,32 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_100"
+    android:background="@drawable/bg_eight"
     android:orientation="vertical"
     android:weightSum="4"
+
     tools:context="com.training.android.undivided.Authentication.AuthActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
         android:gravity="center_horizontal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="303dp"
+            android:layout_height="153dp"
+            android:layout_weight="0.56"
+            app:srcCompat="@drawable/logopng" />
 
         <ImageView
             android:id="@+id/icon"
             style="@style/ThemeOverlay.FirebaseIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/desc_firebase_lockup"
-            />
-
-        <TextView
-            android:id="@+id/title_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/title_bottom_margin"
-            android:text="@string/phone_title_text"
-            android:theme="@style/ThemeOverlay.MyTitleText" />
+            android:contentDescription="@string/desc_firebase_lockup" />
 
         <TextView
             android:id="@+id/status"
@@ -48,7 +49,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@color/grey_300"
+
         android:gravity="center_vertical">
 
         <LinearLayout
@@ -69,17 +70,17 @@
                     android:id="@+id/field_phone_number"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_phone_number"
                     android:layout_weight="1.0"
-                    android:inputType="phone"/>
+                    android:hint="@string/hint_phone_number"
+                    android:inputType="phone" />
 
                 <EditText
                     android:id="@+id/field_verification_code"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/hint_verification_code"
                     android:layout_weight="1.0"
-                    android:inputType="number"/>
+                    android:hint="@string/hint_verification_code"
+                    android:inputType="number" />
 
             </LinearLayout>
 
@@ -90,28 +91,28 @@
                 android:weightSum="3.0">
 
                 <Button
-                    android:theme="@style/ThemeOverlay.MyDarkButton"
                     android:id="@+id/button_start_verification"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.0"
-                    android:text="@string/start_phone_auth"/>
+                    android:text="@string/start_phone_auth"
+                    android:theme="@style/ThemeOverlay.MyDarkButton" />
 
                 <Button
-                    android:theme="@style/ThemeOverlay.MyDarkButton"
                     android:id="@+id/button_verify_phone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.0"
-                    android:text="@string/verify_phone_auth"/>
+                    android:text="@string/verify_phone_auth"
+                    android:theme="@style/ThemeOverlay.MyDarkButton" />
 
                 <Button
-                    android:theme="@style/ThemeOverlay.MyDarkButton"
                     android:id="@+id/button_resend"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.0"
-                    android:text="@string/resend_phone_auth"/>
+                    android:text="@string/resend_phone_auth"
+                    android:theme="@style/ThemeOverlay.MyDarkButton" />
             </LinearLayout>
 
         </LinearLayout>
