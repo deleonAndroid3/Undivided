@@ -1,4 +1,4 @@
-package com.training.android.undivided;
+package com.training.android.undivided.BackgroundService;
 
 import android.app.IntentService;
 import android.content.Intent;

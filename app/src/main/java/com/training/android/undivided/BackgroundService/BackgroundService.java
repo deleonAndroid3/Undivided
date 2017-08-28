@@ -1,4 +1,4 @@
-package com.training.android.undivided;
+package com.training.android.undivided.BackgroundService;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -16,6 +16,8 @@ import android.os.Process;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.training.android.undivided.MainActivity;
 
 /**
  * Created by Maouusama on 7/20/2017.

@@ -1,8 +1,10 @@
 package com.training.android.undivided;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -17,11 +19,10 @@ import com.training.android.undivided.NavigationMode.Navigation;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button mbtnSTT;
-    Button mbtnMessage;
-    Button mbtnAR;
+
     AlertDialog ModeDialog;
     private ImageView mIvStart;
+    public static final int  MY_PERMISSIONS_REQUEST_CALL_PHONE=11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +30,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE},
+                MY_PERMISSIONS_REQUEST_CALL_PHONE);
 
-        mbtnMessage = (Button) findViewById(R.id.btnMessage);
-        mbtnSTT = (Button) findViewById(R.id.btnSTT);
-        mbtnAR = (Button) findViewById(R.id.btnAR);
+
         mIvStart = (ImageView) findViewById(R.id.ivDriveStart);
 
 
@@ -40,33 +41,21 @@ public class MainActivity extends AppCompatActivity {
          *  SEND SMS FUNCTION FOR SPEECH TO TEXT REPLY.
          *  (IMPLEMENTED WITH BUTTON RIGHT NOW)
          */
-        mbtnMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent textToSpeech = new Intent(MainActivity.this, TextToSpeech.class);
-                startActivity(textToSpeech);
-            }
-        });
 
-        mbtnSTT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent speechToSpeech = new Intent(MainActivity.this, SpeechToText.class);
-                startActivity(speechToSpeech);
-            }
-        });
-        mbtnAR.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent autoReply = new Intent(MainActivity.this, AutoReplyActivity.class);
-                startActivity(autoReply);
-            }
-        });
 
         mIvStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseMode();
+            }
+        });
+
+        mIvStart.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent emergency = new Intent(MainActivity.this, Emergency.class);
+                startActivity(emergency);
+                return false;
             }
         });
 
@@ -92,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.menu_settings:
                 Intent settings = new Intent(MainActivity.this, Settings.class);
                 startActivity(settings);
+                break;
+
+            case R.id.menu_functions:
+                Intent functions = new Intent(MainActivity.this, Functions.class);
+                startActivity(functions);
                 break;
 
         }
@@ -128,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                 }
+
 
             }
         });
