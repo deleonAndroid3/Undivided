@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case 1:
-                        Intent navi = new Intent(MainActivity.this, SearchDestination.class);
+                        Intent navi = new Intent(MainActivity.this, Navigation.class);
                         startActivity(navi);
                         Toast.makeText(MainActivity.this, "Navigation Mode Selected", Toast.LENGTH_SHORT).show();
                         break;

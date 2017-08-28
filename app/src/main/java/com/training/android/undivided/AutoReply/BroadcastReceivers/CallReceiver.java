@@ -129,7 +129,7 @@ public class CallReceiver extends BroadcastReceiver {
             dbManager.addSMS(new SMS(System.currentTimeMillis(), replyText, String.valueOf(phoneNo), r.getName()));
 
             //documentation & feedback
-            Toast.makeText(mContext, "Replied to " + phoneNo + ": " + replyText.substring(0,80) + "...", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mContext, "Replied to " + phoneNo + ": " + replyText.substring(0,80) + "...", Toast.LENGTH_SHORT).show();
             Log.i(logTag, "Sent out an SMS to " + phoneNo);
 
             // According to the settings, mute the ringer
