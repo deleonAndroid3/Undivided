@@ -40,7 +40,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/undivided_logo"
+        android:icon="@mipmap/undivided_logo_notext"
         android:label="@string/app_name"
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -75,7 +75,7 @@
 
         <activity
             android:name=".NavigationMode.Navigation"
-            android:label="@string/title_activity_navigation" />
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
         <activity
             android:name=".AutoReply.ContactPicker"
             android:label="@string/contactpicker_title"

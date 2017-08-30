@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
@@ -18,8 +19,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,6 +45,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -82,6 +87,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private LocationRequest mLocationRequest;
     private GoogleMap mMap;
 
+    private LinearLayout mSpeedometer;
+    private TextView mtvSpeed, mtvTotalDistance, mtvDestination, mtvPlace;
 
     @Override
     protected void onStop() {
@@ -101,6 +108,18 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         mapFragment.getMapAsync(this);
 
+        mSpeedometer = findViewById(R.id.Speedometer);
+        mtvSpeed = findViewById(R.id.tvSpeedometer);
+        mtvTotalDistance = findViewById(R.id.tvTotalDistance);
+        mtvDestination = findViewById(R.id.tvDestination);
+        mtvPlace = findViewById(R.id.tvPlaceName);
+
+        mSpeedometer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(Navigation.this, "Gwapo", Toast.LENGTH_SHORT).show();
+            }
+        });
 //        markerIconBitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.user_location);
     }
 
@@ -111,7 +130,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        mMap.setMapStyle(mapStyleOptions);
+//        mMap.setMapStyle(mapStyleOptions);
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -120,7 +139,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mMap.setMyLocationEnabled(true);
+                mMap.setMyLocationEnabled(false);
             }
         } else {
             buildGoogleApiClient();
@@ -174,6 +193,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             // KM/S
             double currentSpeed = location.getSpeed() * 3.6;
+            int speed = (int) currentSpeed;
+            mtvSpeed.setText(String.valueOf(speed));
 
             if (mCurrLocationMarker == null) {
                 mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
@@ -182,33 +203,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             }
 
-
-            final Handler handler = new Handler();
-            final long start = SystemClock.uptimeMillis();
-
-            final long duration = 1000;
-            final Interpolator interpolator = new LinearInterpolator();
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    long elapsed = SystemClock.uptimeMillis() - start;
-                    float t = interpolator.getInterpolation((float) elapsed
-                            / duration);
-                    double lng = t * latLng.longitude + (1 - t)
-                            * mCurrLocationMarker.getPosition().longitude;
-                    double lat = t * latLng.latitude + (1 - t)
-                            * mCurrLocationMarker.getPosition().latitude;
-
-                    mCurrLocationMarker.setPosition(new LatLng(lat, lng));
-
-                    if (t < 1.0) {
-                        // Post again 16ms later.
-                        handler.postDelayed(this, 16);
-                    }
-                }
-            });
-
+            animateMarker(mCurrLocationMarker, latLng, false);
 
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
@@ -221,8 +216,44 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             float CurrentDistance = mDestination.distanceTo(location) / 1000;
             Toast.makeText(this, "Current Distance: " + String.valueOf(CurrentDistance) + " km", Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, String.format("%.0f km/s", currentSpeed), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void animateMarker(final Marker marker, final LatLng toPosition,
+                               final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = mMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 1000;
+
+        final Interpolator interpolator = new LinearInterpolator();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -279,6 +310,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                             //Get The Distance from starting position to Destination
                             //NAA ra sa API makuha ang total distance
 
+                            mtvDestination.setText(place.getAddress());
+                            mtvPlace.setText(place.getName());
 
                             String url = getDirectionsUrl(startLatLng, place.getLatLng());
                             DownloadTask downloadTask = new DownloadTask();
@@ -554,14 +587,16 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                 }
 
+                // Drawing polyline in the Google Map for the i-th route
+                mMap.addPolyline(new PolylineOptions()
+                        .addAll(points)
+                        .width(10)
+                        .geodesic(true)
+                        .color(Color.BLUE));
+
+
             }
 
-            // Drawing polyline in the Google Map for the i-th route
-            mMap.addPolyline(new PolylineOptions()
-                    .addAll(points)
-                    .width(10)
-                    .geodesic(true)
-                    .color(Color.BLUE));
 
         }
     }

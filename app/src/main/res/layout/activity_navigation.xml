@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen"
     tools:context="com.training.android.undivided.NavigationMode.Navigation">
 
 
@@ -11,55 +12,153 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="0dp"
-        android:layout_marginRight="0dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginLeft="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="0dp"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintLeft_creator="1" />
 
-    <!--<RelativeLayout-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="150dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_marginBottom="0dp"-->
-        <!--android:layout_marginLeft="0dp"-->
-        <!--android:layout_marginRight="0dp"-->
-        <!--android:background="@color/green"-->
-        <!--android:gravity="center"-->
-        <!--app:layout_constraintBottom_toBottomOf="@+id/map"-->
-        <!--app:layout_constraintHorizontal_bias="0.0"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent">-->
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="8dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@+id/map"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:layout_constraintLeft_creator="1"
+        tools:layout_constraintRight_creator="1">
 
-    <!--</RelativeLayout>-->
+        <TextView
+            android:id="@+id/tvTotalDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:text="12 Km"
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tvPlaceName"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
-    <!--<RelativeLayout-->
-        <!--android:layout_width="50dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_marginBottom="8dp"-->
-        <!--android:layout_marginLeft="8dp"-->
-        <!--android:layout_marginRight="8dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.918"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--app:layout_constraintVertical_bias="0.741">-->
+        <TextView
+            android:id="@+id/tvPlaceName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="75dp"
+            android:text="Seaside SM"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tvDestination"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
-        <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:gravity="center"-->
-            <!--android:text="30"-->
-            <!--android:textAlignment="center" />-->
+        <TextView
+            android:id="@+id/tvDestination"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="Cebu South Coastal Rd, Cebu City, Cebu, Philippines"
+            android:textAlignment="textStart"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1" />
+    </android.support.constraint.ConstraintLayout>
 
-    <!--</RelativeLayout>-->
+    <LinearLayout
+        android:id="@+id/Speedometer"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="@color/colorPrimary"
+        android:elevation="10dp"
+        android:orientation="vertical"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.967"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.869"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintRight_creator="1">
+
+        <TextView
+            android:id="@+id/tvSpeedometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="30"
+            android:textColor="@android:color/white"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Km/h"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
