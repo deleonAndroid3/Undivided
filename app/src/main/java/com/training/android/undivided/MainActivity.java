@@ -4,26 +4,30 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.training.android.undivided.AutoReply.AutoReplyActivity;
 import com.training.android.undivided.NavigationMode.Navigation;
-import com.training.android.undivided.NavigationMode.SearchDestination;
 
 public class MainActivity extends AppCompatActivity {
 
 
+    public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 11;
     AlertDialog ModeDialog;
     private ImageView mIvStart;
-    public static final int  MY_PERMISSIONS_REQUEST_CALL_PHONE=11;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
         mIvStart = (ImageView) findViewById(R.id.ivDriveStart);
 
-
-        /**
-         *  SEND SMS FUNCTION FOR SPEECH TO TEXT REPLY.
-         *  (IMPLEMENTED WITH BUTTON RIGHT NOW)
-         */
+        initToolbar();
+        setupDrawerLayout();
 
 
         mIvStart.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +89,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent functions = new Intent(MainActivity.this, Functions.class);
                 startActivity(functions);
                 break;
-
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
         }
 
 
@@ -137,6 +140,32 @@ public class MainActivity extends AppCompatActivity {
         ModeDialog = builder.create();
         ModeDialog.show();
 
+    }
+
+    private void initToolbar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    private void setupDrawerLayout() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                menuItem.setChecked(true);
+                drawerLayout.closeDrawers();
+                return true;
+            }
+        });
     }
 
 }

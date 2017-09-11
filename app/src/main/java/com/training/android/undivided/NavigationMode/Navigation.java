@@ -163,7 +163,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setSmallestDisplacement(0.1F);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         settingsRequest();
 
@@ -207,53 +206,13 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
-                    zoom(19).
+                    zoom(16).
                     bearing(location.getBearing()).
-                    tilt(90).
                     build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-            float CurrentDistance = mDestination.distanceTo(location) / 1000;
-            Toast.makeText(this, "Current Distance: " + String.valueOf(CurrentDistance) + " km", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void animateMarker(final Marker marker, final LatLng toPosition,
-                               final boolean hideMarker) {
-        final Handler handler = new Handler();
-        final long start = SystemClock.uptimeMillis();
-        Projection proj = mMap.getProjection();
-        Point startPoint = proj.toScreenLocation(marker.getPosition());
-        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
-        final long duration = 1000;
-
-        final Interpolator interpolator = new LinearInterpolator();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float t = interpolator.getInterpolation((float) elapsed
-                        / duration);
-                double lng = t * toPosition.longitude + (1 - t)
-                        * startLatLng.longitude;
-                double lat = t * toPosition.latitude + (1 - t)
-                        * startLatLng.latitude;
-
-                marker.setPosition(new LatLng(lat, lng));
-
-                if (t < 1.0) {
-                    // Post again 16ms later.
-                    handler.postDelayed(this, 16);
-                } else {
-                    if (hideMarker) {
-                        marker.setVisible(false);
-                    } else {
-                        marker.setVisible(true);
-                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -432,6 +391,43 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         // Location settings are not satisfied. However, we have no way to fix the
                         // settings so we won't show the dialog.
                         break;
+                }
+            }
+        });
+    }
+
+    private void animateMarker(final Marker marker, final LatLng toPosition,
+                               final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = mMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 1000;
+
+        final Interpolator interpolator = new LinearInterpolator();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
                 }
             }
         });

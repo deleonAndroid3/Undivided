@@ -22,7 +22,8 @@ public class DirectionsJSONParser {
         JSONArray jRoutes = null;
         JSONArray jLegs = null;
         JSONArray jSteps = null;
-        String totalDistance = null;
+        String totalDistance;
+        List<String> distanceList = null;
 
         try {
 
@@ -36,7 +37,9 @@ public class DirectionsJSONParser {
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+
                     totalDistance = (String) ((JSONObject) jLegs.get(j)).getJSONObject("distance").get("text");
+                    distanceList.add(totalDistance);
 
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
@@ -61,6 +64,7 @@ public class DirectionsJSONParser {
         } catch (Exception e) {
         }
         return routes;
+
     }
 
     private List<LatLng> decodePoly(String encoded) {
