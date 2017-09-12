@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -17,13 +18,14 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.LocationSource;
 import com.training.android.undivided.MainActivity;
 
 /**
  * Created by Maouusama on 7/20/2017.
  */
 
-public class BackgroundService extends Service{
+public class BackgroundService extends Service implements LocationSource.OnLocationChangedListener {
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
 
@@ -44,7 +46,7 @@ public class BackgroundService extends Service{
         Toast.makeText(this, "Destroyed Service", Toast.LENGTH_SHORT).show();
     }
 
-    public void restartService(){
+    public void launchApp(){
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -97,6 +99,21 @@ public class BackgroundService extends Service{
        return null;
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location!=null){
+
+            double currentSpeed = location.getSpeed() * 3.6;
+            int speed = (int) currentSpeed;
+
+            if(speed>=20){
+                launchApp();
+                Toast.makeText(this, "App is Starting!", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
     // Object responsible for
     private final class ServiceHandler extends Handler {
 
@@ -111,22 +128,7 @@ public class BackgroundService extends Service{
 
             // Add your cpu-blocking activity here
 
-            try {
 
-                Thread.sleep(5000);
-                showToast("Service is currently running (TEST#0001)");
-                Thread.sleep(5000);
-
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-
-
-
-            showToast("Auto Starting UNDIVIDED, id: " + msg.arg1);
-            restartService();
-
-            stopSelf(msg.arg1);
         }
     }
 }
