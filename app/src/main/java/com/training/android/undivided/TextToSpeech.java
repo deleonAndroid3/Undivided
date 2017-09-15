@@ -65,6 +65,7 @@ public class TextToSpeech extends AppCompatActivity {
         check.setAction(android.speech.tts.TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(check, CHECK_CODE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == CHECK_CODE){
