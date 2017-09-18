@@ -82,11 +82,10 @@ private TextView title;
         }
 
         // Assign views
-        mPhoneNumberViews = (ViewGroup) findViewById(R.id.phone_auth_fields);
+       mPhoneNumberViews = (ViewGroup) findViewById(R.id.phone_auth_fields);
         mSignedInViews = (ViewGroup) findViewById(R.id.signed_in_buttons);
-
         mStatusText = (TextView) findViewById(R.id.status);
-        mDetailText = (TextView) findViewById(R.id.detail);
+       mDetailText = (TextView) findViewById(R.id.detail);
 
         mPhoneNumberField = (EditText) findViewById(R.id.field_phone_number);
         mVerificationField = (EditText) findViewById(R.id.field_verification_code);
