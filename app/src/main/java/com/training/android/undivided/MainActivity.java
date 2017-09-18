@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.training.android.undivided.NavigationMode.Navigation;
+import com.training.android.undivided.NavigationMode.SearchDestination;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -160,7 +161,18 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+
+//                switch (menuItem.getTitle()) {
+//                    case :
+//                        break;
+//                    case 1:
+//                        break;
+//                    case 2:
+//                        break;
+//                }
+
+
+
                 menuItem.setChecked(true);
                 drawerLayout.closeDrawers();
                 return true;
