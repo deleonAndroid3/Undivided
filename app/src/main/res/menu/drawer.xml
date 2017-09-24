@@ -26,12 +26,12 @@
             android:title="Profile"/>
 
         <item
-            android:id="@+id/drawer_favourite"
+            android:id="@+id/drawer_view_group"
             android:icon="@drawable/ic_group"
             android:title="View Groups"/>
 
         <item
-            android:id="@+id/drawer_downloaded"
+            android:id="@+id/drawer_history"
             android:icon="@drawable/call"
             android:title="History"/>
 

@@ -36,7 +36,7 @@
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/MainTheme">
+        android:theme="@style/AppTheme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
         <service android:name=".BackgroundService.BackgroundIntentService" />
@@ -64,7 +64,7 @@
 
         <activity
             android:name=".NavigationMode.Navigation"
-            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AutoReply.ContactPicker"
             android:label="@string/contactpicker_title"
@@ -127,13 +127,14 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NavigationMode.SearchDestination"
-            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- <activity android:name=".EditReplyMessage" /> -->
         <activity android:name=".History" />
         <activity android:name=".Emergency" />
         <activity android:name=".Functions" />
-        <activity android:name=".Group.ViewGroup"></activity>
+        <activity android:name=".Group.ViewGroup" />
+        <activity android:name=".Group.AddGroup"></activity>
     </application>
 
 </manifest>
