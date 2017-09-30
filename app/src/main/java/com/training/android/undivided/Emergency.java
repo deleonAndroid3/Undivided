@@ -17,7 +17,6 @@ public class Emergency extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emergency);
 
-
         int i = 0;
         String[] contact = {"09053274403", "09952635512"};
         String message = "EMERGENCY SOS HELP";

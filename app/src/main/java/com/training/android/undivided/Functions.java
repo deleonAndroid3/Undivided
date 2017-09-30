@@ -13,6 +13,7 @@ public class Functions extends AppCompatActivity {
     Button mbtnSTT;
     Button mbtnMessage;
     Button mbtnAR;
+    Button mbtnEmergency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,7 @@ public class Functions extends AppCompatActivity {
         mbtnMessage = (Button) findViewById(R.id.btnMessage);
         mbtnSTT = (Button) findViewById(R.id.btnSTT);
         mbtnAR = (Button) findViewById(R.id.btnAR);
+        mbtnEmergency = (Button) findViewById(R.id.btnEmergency);
 
         mbtnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +45,13 @@ public class Functions extends AppCompatActivity {
             public void onClick(View view) {
                 Intent autoReply = new Intent(Functions.this, AutoReplyActivity.class);
                 startActivity(autoReply);
+            }
+        });
+        mbtnEmergency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent emergency = new Intent(Functions.this, Emergency.class);
+                startActivity(emergency);
             }
         });
     }

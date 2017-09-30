@@ -7,6 +7,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -15,19 +18,42 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.LocationSource;
 import com.training.android.undivided.MainActivity;
+import com.training.android.undivided.Settings;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Maouusama on 7/20/2017.
  */
 
-public class BackgroundService extends Service implements LocationSource.OnLocationChangedListener {
+public class BackgroundService extends Service implements LocationSource.OnLocationChangedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener{
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
+    boolean status;
+    LocationManager locationManager;
+    static double distance=0;
+    private static final long INTERVAL = 1000*2;
+    private static final long FASTEST_INTERVAL = 1000*2;
+    LocationRequest mLocationRequest;
+    GoogleApiClient mGoogleApiClient;
+    Location mCurrentLocation,lStart, lEnd;
+    private final IBinder mBinder = new BackgroundService.LocalBinder();
+
+
 
     public void onCreate(){
 
@@ -96,22 +122,96 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
 
     @Override
     public IBinder onBind(Intent intent) {
-       return null;
+        createLocationRequest();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mGoogleApiClient.connect();
+        return mBinder;
+    }
+
+    public boolean onUnbind(Intent intent){
+        stopLocationUpdates();
+        if(mGoogleApiClient.isConnected())
+            mGoogleApiClient.disconnect();
+        lStart = lEnd = null;
+        distance = 0;
+        return super.onUnbind(intent);
+    }
+
+    private void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, (com.google.android.gms.location.LocationListener) this);
+        distance=0;
+    }
+
+    private void createLocationRequest(){
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        if (location!=null){
-
-            double currentSpeed = location.getSpeed() * 3.6;
-            int speed = (int) currentSpeed;
-
-            if(speed>=20){
-                launchApp();
-                Toast.makeText(this, "App is Starting!", Toast.LENGTH_SHORT).show();
-            }
-
+        mCurrentLocation = location;
+        if(lStart == null)
+        {
+            lStart = lEnd = mCurrentLocation;
         }
+        else
+            lEnd = mCurrentLocation;
+
+
+        updateStatus();
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
+
+    private void updateStatus() {
+        if(Settings.p==0) {
+            distance = distance + (lStart.distanceTo(lEnd) / 1000.00);
+            Settings.endTime = System.currentTimeMillis();
+            long diff = Settings.endTime - Settings.startTime;
+            diff = TimeUnit.MILLISECONDS.toMinutes(diff);
+
+            lStart = lEnd;
+
+            double speed = distance / (diff*60);
+            
+            if(speed>30)
+                launchApp();
+        }
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     // Object responsible for
@@ -129,6 +229,12 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
             // Add your cpu-blocking activity here
 
 
+        }
+    }
+
+    public class LocalBinder extends Binder {
+        public BackgroundService getService(){
+            return BackgroundService.this;
         }
     }
 }

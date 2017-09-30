@@ -9,6 +9,7 @@
         android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -26,7 +27,6 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -43,11 +43,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MainTheme">
-        <service android:name=".BackgroundService.BackgroundIntentService" />
-        <service android:name=".BackgroundService.BackgroundService" />
 
-        <service android:name=".BackgroundService.BackgroundIntentService" />
-        <service android:name=".BackgroundService.BackgroundService" />
+
 
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
@@ -56,6 +53,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".BackgroundService.BackgroundIntentService" />
+        <service android:name=".BackgroundService.BackgroundService" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
