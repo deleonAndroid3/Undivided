@@ -33,7 +33,6 @@ import com.training.android.undivided.BackgroundService.BackgroundService;
 public class Settings extends AppCompatActivity {
 
     private Switch mAutoStartSwitch;
-<<<<<<< HEAD
     private Switch mAutoDeclineCalls;
     BackgroundService myService;
     static boolean status;
@@ -89,9 +88,6 @@ public class Settings extends AppCompatActivity {
             } return;
         }
     }
-=======
->>>>>>> d44680782121a64ea2a9d8c290d8bb7901979626
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

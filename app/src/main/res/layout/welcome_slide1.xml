@@ -10,7 +10,7 @@
         android:id="@+id/imageView3"
         android:layout_width="1000dp"
         android:layout_height="900dp"
-        app:srcCompat="@drawable/Welcome1"
+        app:srcCompat="@drawable/welcome1"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 

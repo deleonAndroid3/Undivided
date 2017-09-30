@@ -9,11 +9,8 @@
         android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<<<<<<< HEAD
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-=======
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
->>>>>>> d44680782121a64ea2a9d8c290d8bb7901979626
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -40,17 +37,11 @@
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-<<<<<<< HEAD
-        android:theme="@style/MainTheme">
-
-
-=======
         android:theme="@style/AppTheme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
->>>>>>> d44680782121a64ea2a9d8c290d8bb7901979626
 
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
@@ -62,9 +53,10 @@
 
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
+
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
+            android:value="@integer/google_play_services_version" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -150,7 +142,8 @@
         <activity android:name=".Emergency" />
         <activity android:name=".Functions" />
         <activity android:name=".Group.ViewGroup" />
-        <activity android:name=".Group.AddGroup"></activity>
+        <activity android:name=".Group.AddGroup" />
+        <activity android:name=".DisableAppSwitch"></activity>
     </application>
 
 </manifest>
