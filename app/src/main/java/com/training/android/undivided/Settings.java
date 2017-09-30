@@ -33,6 +33,7 @@ import com.training.android.undivided.BackgroundService.BackgroundService;
 public class Settings extends AppCompatActivity {
 
     private Switch mAutoStartSwitch;
+<<<<<<< HEAD
     private Switch mAutoDeclineCalls;
     BackgroundService myService;
     static boolean status;
@@ -88,6 +89,8 @@ public class Settings extends AppCompatActivity {
             } return;
         }
     }
+=======
+>>>>>>> d44680782121a64ea2a9d8c290d8bb7901979626
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +98,6 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         mAutoStartSwitch = (Switch) findViewById(R.id.swAutoStart);
-        mAutoDeclineCalls = (Switch) findViewById(R.id.swAutoDeclineCalls);
 
         if(ContextCompat.checkSelfPermission(Settings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(Settings.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
@@ -145,15 +147,6 @@ public class Settings extends AppCompatActivity {
                     stopService(i);
                     Toast.makeText(Settings.this, "Auto Start disabled", Toast.LENGTH_SHORT).show();
                 }*/
-            }
-        });
-
-        mAutoDeclineCalls.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-
-                }
             }
         });
 

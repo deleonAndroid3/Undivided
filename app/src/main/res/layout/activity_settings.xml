@@ -19,16 +19,4 @@
         android:textSize="24sp"
         tools:checked="false" />
 
-    <Switch
-        android:id="@+id/swAutoDeclineCalls"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:checked="false"
-        android:padding="5dp"
-        android:text="Auto Decline Calls"
-        android:textAlignment="textStart"
-        android:textSize="24sp"
-        tools:checked="false" />
-
 </LinearLayout>

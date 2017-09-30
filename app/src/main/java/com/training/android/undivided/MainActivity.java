@@ -18,7 +18,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.NavigationMode.Navigation;
+import com.training.android.undivided.NavigationMode.SearchDestination;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.settings, menu);
@@ -114,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         Toast.makeText(MainActivity.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
-
                         break;
                     case 1:
                         Intent navi = new Intent(MainActivity.this, Navigation.class);
@@ -123,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         Toast.makeText(MainActivity.this, "Passenger Mode Selected", Toast.LENGTH_SHORT).show();
-
                         break;
                 }
 
@@ -160,7 +162,19 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+
+                switch (menuItem.getItemId()) {
+                    case R.id.drawer_profile :
+                        break;
+                    case R.id.drawer_view_group:
+                        startActivity(new Intent(MainActivity.this, ViewGroup.class));
+                        break;
+                    case R.id.drawer_history:
+                        break;
+                }
+
+
+
                 menuItem.setChecked(true);
                 drawerLayout.closeDrawers();
                 return true;

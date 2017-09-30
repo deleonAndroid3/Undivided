@@ -9,8 +9,13 @@
         android:targetSdkVersion="22" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<<<<<<< HEAD
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+=======
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+>>>>>>> d44680782121a64ea2a9d8c290d8bb7901979626
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
@@ -20,20 +25,13 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
     <uses-permission android:name="android.permission.BROADCAST_SMS" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality.
-    -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -42,9 +40,17 @@
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+<<<<<<< HEAD
         android:theme="@style/MainTheme">
 
 
+=======
+        android:theme="@style/AppTheme">
+        <service android:name=".BackgroundService.BackgroundIntentService" />
+        <service android:name=".BackgroundService.BackgroundService" />
+        <service android:name=".BackgroundService.BackgroundIntentService" />
+        <service android:name=".BackgroundService.BackgroundService" />
+>>>>>>> d44680782121a64ea2a9d8c290d8bb7901979626
 
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
@@ -74,7 +80,7 @@
 
         <activity
             android:name=".NavigationMode.Navigation"
-            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AutoReply.ContactPicker"
             android:label="@string/contactpicker_title"
@@ -137,12 +143,14 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NavigationMode.SearchDestination"
-            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <!-- <activity android:name=".EditReplyMessage" /> -->
         <activity android:name=".History" />
         <activity android:name=".Emergency" />
         <activity android:name=".Functions" />
+        <activity android:name=".Group.ViewGroup" />
+        <activity android:name=".Group.AddGroup"></activity>
     </application>
 
 </manifest>

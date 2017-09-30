@@ -202,8 +202,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             }
 
-            animateMarker(mCurrLocationMarker, latLng, false);
-
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
                     zoom(16).
@@ -211,7 +209,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+            animateMarker(mCurrLocationMarker, latLng, false);
         }
     }
 
@@ -258,11 +256,13 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                             LatLng startLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
                             //Adds Marker to the users destination
-                            mMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(place.getLatLng())
                                     .title(place.getAddress().toString()));
 
                             //Adds Marker to the users first Location
-                            mMap.addMarker(new MarkerOptions().position(startLatLng)
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(startLatLng)
                                     .title("Starting Location")
                                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 
@@ -317,7 +317,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     }
 
     public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
 
             // Asking user if explanation is needed
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
