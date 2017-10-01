@@ -13,6 +13,8 @@ public class Functions extends AppCompatActivity {
     Button mbtnSTT;
     Button mbtnMessage;
     Button mbtnAR;
+    Button mbtnEmergency;
+    Button mbtnDAS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,8 @@ public class Functions extends AppCompatActivity {
         mbtnMessage = (Button) findViewById(R.id.btnMessage);
         mbtnSTT = (Button) findViewById(R.id.btnSTT);
         mbtnAR = (Button) findViewById(R.id.btnAR);
+        mbtnEmergency = (Button) findViewById(R.id.btnEmergency);
+        mbtnDAS = (Button) findViewById(R.id.btnDisableAppSwitch);
 
         mbtnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +47,20 @@ public class Functions extends AppCompatActivity {
             public void onClick(View view) {
                 Intent autoReply = new Intent(Functions.this, AutoReplyActivity.class);
                 startActivity(autoReply);
+            }
+        });
+        mbtnEmergency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent emergency = new Intent(Functions.this, Emergency.class);
+                startActivity(emergency);
+            }
+        });
+        mbtnDAS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent DAS = new Intent(Functions.this, DisableAppSwitch.class);
+                startActivity(DAS);
             }
         });
     }
