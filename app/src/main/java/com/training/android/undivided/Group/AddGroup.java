@@ -14,7 +14,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.training.android.undivided.AutoReply.ContactPicker;
 import com.training.android.undivided.Group.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.R;

@@ -1,4 +1,4 @@
-package com.training.android.undivided.AutoReply;
+package com.training.android.undivided.Group;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -13,10 +13,8 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.training.android.undivided.Group.AddGroup;
 import com.training.android.undivided.Group.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
-import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.R;
 
 import java.util.ArrayList;

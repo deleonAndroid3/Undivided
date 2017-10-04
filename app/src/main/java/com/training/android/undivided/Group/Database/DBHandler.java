@@ -2,12 +2,15 @@ package com.training.android.undivided.Group.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
+
+import java.util.ArrayList;
 
 public class DBHandler extends SQLiteOpenHelper {
 
@@ -99,13 +102,55 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public void addContact(ContactsModel contactsModel, String name) {
 
-        db.execSQL("INSERT INTO " + TABLE_CONTACTS +" VALUES (null,'" +
+        db.execSQL("INSERT INTO " + TABLE_CONTACTS + " VALUES (null,'" +
                 contactsModel.getContactNumber() + "', '" +
                 contactsModel.getContactName() + "', (SELECT " +
                 COLUMN_GROUPID + " FROM " + TABLE_CREATE_GROUP +
                 " WHERE " + COLUMN_GROUPNAME + " = '" + name + "'));"
         );
 
+    }
+
+//    public List<GroupModel> getallGroups() {
+//        SQLiteDatabase rdb = getReadableDatabase();
+//        List<GroupModel> list = new ArrayList<>();
+//
+//        Cursor c = rdb.rawQuery("SELECT * from " + TABLE_CREATE_GROUP, null);
+//
+//        while (c.moveToNext()){
+//            c.getColumnIndex()
+//        }
+//
+//        return list;
+//    }
+
+    public ArrayList<GroupModel> getAllGroups() {
+        SQLiteDatabase rdb = getReadableDatabase();
+        Cursor c = rdb.rawQuery("SELECT * FROM " + TABLE_CREATE_GROUP, null);
+        ArrayList<GroupModel> list = new ArrayList<>();
+        GroupModel gm;
+
+
+        while (c.moveToNext()) {
+            gm = new GroupModel();
+            gm.setGroupName(c.getString(1));
+            gm.setGroupDesc(c.getString(2));
+            gm.setGroupMessage(c.getString(3));
+            gm.setRule1(Integer.parseInt(c.getString(4)));
+            gm.setRule2(Integer.parseInt(c.getString(5)));
+            gm.setRule3(Integer.parseInt(c.getString(6)));
+            gm.setRule4(Integer.parseInt(c.getString(7)));
+            gm.setRule5(Integer.parseInt(c.getString(8)));
+            gm.setRule6(Integer.parseInt(c.getString(9)));
+            gm.setRule7(Integer.parseInt(c.getString(10)));
+
+            list.add(gm);
+        }
+
+        c.close();
+        rdb.close();
+
+        return list;
     }
 
 }

@@ -20,7 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.training.android.undivided.AutoReply.ContactPicker;
+import com.training.android.undivided.Group.ContactPicker;
 import  com.training.android.undivided.AutoReply.Database.DatabaseManager;
 import  com.training.android.undivided.AutoReply.Objects.Rule;
 import com.training.android.undivided.R;
