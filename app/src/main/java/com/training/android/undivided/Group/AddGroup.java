@@ -110,12 +110,15 @@ public class AddGroup extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         getData();
                         Toast.makeText(AddGroup.this, "Group Created", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddGroup.this, "Add Contacts to this Group", Toast.LENGTH_SHORT).show();
 
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                startActivity(new Intent(AddGroup.this, ViewGroup.class));
+                                Intent contactpick = new Intent(AddGroup.this, ContactPicker.class);
+                                contactpick.putExtra("groupname", mEtGroupName.getText().toString());
+                                startActivity(contactpick);
 
                                 finish();
                             }

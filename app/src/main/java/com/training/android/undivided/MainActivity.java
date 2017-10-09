@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE},
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE,
+                        Manifest.permission.READ_CONTACTS},
                 MY_PERMISSIONS_REQUEST_CALL_PHONE);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);

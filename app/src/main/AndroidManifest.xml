@@ -74,7 +74,7 @@
             android:name=".NavigationMode.Navigation"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AutoReply.ContactPicker"
+            android:name=".Group.ContactPicker"
             android:label="@string/contactpicker_title"
             android:parentActivityName=".AutoReply.CustomizeMessage"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
