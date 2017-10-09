@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,7 +58,7 @@ public class AutoStartService extends Service implements GoogleApiClient.Connect
         try {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest, (com.google.android.gms.location.LocationListener) this);
         } catch (SecurityException e){
-
+            Log.i("SECURITY_EXCEPTION", "Security exception on connected");
         }
     }
 
