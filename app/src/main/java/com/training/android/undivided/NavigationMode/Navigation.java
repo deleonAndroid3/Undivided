@@ -143,7 +143,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             }
         } else {
             buildGoogleApiClient();
-//            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+            mMap.getUiSettings().setMyLocationButtonEnabled(false);
             mMap.setMyLocationEnabled(false);
         }
 
@@ -188,7 +188,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         if (location != null) {
 
             mLastLocation = location;
-            final LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
             // KM/S
             double currentSpeed = location.getSpeed() * 3.6;
@@ -200,7 +200,10 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         .position(latLng)
                         .title("Your Location"));
 
+            } else {
+                mCurrLocationMarker.setPosition(latLng);
             }
+
 
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(latLng).
@@ -209,7 +212,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            animateMarker(mCurrLocationMarker, latLng, false);
+
         }
     }
 
@@ -456,6 +459,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         // Building the url to the web service
         String url = "https://maps.googleapis.com/maps/api/directions/json?" + parameters;
+        Log.i("TAG", url);
         return url;
     }
 
