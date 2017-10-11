@@ -174,8 +174,8 @@
     <string name="slide_3_title">Set-Up</string>
     <string name="slide_3_desc">Set-up your settings for your convenience </string>
 
-    <string name="slide_4_title">Ambot</string>
-    <string name="slide_4_desc">Hehe</string>
+    <string name="slide_4_title">Navigation</string>
+    <string name="slide_4_desc"></string>
 
     <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
     <string name="play_again">Play Again</string>

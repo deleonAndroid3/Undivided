@@ -41,8 +41,10 @@ public class MainActivity extends AppCompatActivity {
                         Manifest.permission.READ_CONTACTS},
                 MY_PERMISSIONS_REQUEST_CALL_PHONE);
 
-
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mIvStart = (ImageView) findViewById(R.id.ivDriveStart);
+
+        drawerLayout.getBackground().setAlpha(120);
 
         initToolbar();
         setupDrawerLayout();

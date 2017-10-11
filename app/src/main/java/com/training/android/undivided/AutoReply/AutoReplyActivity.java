@@ -74,7 +74,7 @@ public class AutoReplyActivity extends AppCompatActivity {
         @Override
         protected ArrayList<Rule> doInBackground(Boolean... getDB) {
             Log.i(logTag, "PopulateListTask background task started with runResume = " + runResume);
-            // Should I get a DBmanager?
+
             if (getDB[0]) {
                 Log.i(logTag, "PopulateListTask is gettign a new DBManager.");
                 dbManager = new DatabaseManager(getApplicationContext());

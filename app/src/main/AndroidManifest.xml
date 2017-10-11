@@ -141,7 +141,8 @@
         <activity android:name=".Functions" />
         <activity android:name=".Group.ViewGroup" />
         <activity android:name=".Group.AddGroup" />
-        <activity android:name=".DisableAppSwitch"></activity>
+        <activity android:name=".DisableAppSwitch" />
+        <activity android:name=".Profile"></activity>
     </application>
 
 </manifest>

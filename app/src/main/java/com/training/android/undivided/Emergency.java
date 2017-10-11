@@ -22,6 +22,8 @@ public class Emergency extends AppCompatActivity {
         String message = "EMERGENCY SOS HELP";
         while (i != contact.length) {
             try {
+
+
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(contact[i], null, message, null, null);
 
@@ -32,7 +34,7 @@ public class Emergency extends AppCompatActivity {
             i++;
         }
 
-       /* Intent callIntent = new Intent(Intent.ACTION_CALL);
+       /* Intent callIntent = new Intent(Intent.ACTION_CALL);                                                                                   jjyuio;;
         callIntent.setData(Uri.parse("tel:09053274403"));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "No Permission.", Toast.LENGTH_SHORT).show();
