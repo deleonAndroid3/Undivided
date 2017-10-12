@@ -144,7 +144,8 @@
         <activity android:name=".Group.ViewGroup" />
         <activity android:name=".Group.AddGroup" />
         <activity android:name=".DisableAppSwitch" />
-        <activity android:name=".Profile"></activity>
+        <activity android:name=".Profile" />
+        <activity android:name=".SafeMode"></activity>
     </application>
 
 </manifest>

@@ -45,6 +45,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:11.0.4'
     compile 'com.google.android.gms:play-services-auth:11.0.4'
     compile 'com.firebaseui:firebase-ui-auth:1.2.0'
+    compile 'jp.wasabeef:blurry:2.1.1'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

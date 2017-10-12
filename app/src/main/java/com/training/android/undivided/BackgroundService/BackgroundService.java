@@ -7,7 +7,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
@@ -27,6 +26,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.LocationSource;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.Settings;
@@ -56,7 +56,7 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
 
 
     public void onCreate(){
-
+    Log.i("EXISTING", "THIS SERVICE HAS STARTED");
         // to avoid cpu-blocking, handler for running the service
         HandlerThread thread = new HandlerThread("TestService", Process.THREAD_PRIORITY_BACKGROUND);
 
@@ -76,6 +76,7 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        stopSelf();
     }
 
     @Override
@@ -167,21 +168,6 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
         updateStatus();
     }
 
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
     private void updateStatus() {
         if(Settings.p==0) {
             distance = distance + (lStart.distanceTo(lEnd) / 1000.00);
@@ -201,7 +187,11 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+        try {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,mLocationRequest, (com.google.android.gms.location.LocationListener) this);
+        } catch (SecurityException e){
+            Log.i("SECURITY_EXCEPTION", "Security exception on connected");
+        }
     }
 
     @Override
