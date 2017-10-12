@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                             mIvStart.setImageResource(R.drawable.undivided_drivemode_logo);
                             flag = false;
                             stopLockTask();
+                            return;
                         }
                         Toast.makeText(MainActivity.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
                         ComponentName mDeviceAdmin;
