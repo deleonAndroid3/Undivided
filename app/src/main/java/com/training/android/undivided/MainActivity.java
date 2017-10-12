@@ -19,7 +19,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.training.android.undivided.Group.ViewGroup;
+import com.training.android.undivided.NavigationMode.NavMode;
 import com.training.android.undivided.NavigationMode.Navigation;
+import com.training.android.undivided.NavigationMode.NavigationMode;
 import com.training.android.undivided.NavigationMode.SearchDestination;
 
 public class MainActivity extends AppCompatActivity {
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        Intent navi = new Intent(MainActivity.this, Navigation.class);
+                        Intent navi = new Intent(MainActivity.this, NavMode.class);
                         startActivity(navi);
                         Toast.makeText(MainActivity.this, "Navigation Mode Selected", Toast.LENGTH_SHORT).show();
                         break;

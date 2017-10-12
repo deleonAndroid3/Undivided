@@ -26,7 +26,8 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.BROADCAST_STICKY" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -38,8 +39,6 @@
         android:theme="@style/AppTheme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
-        <service android:name=".BackgroundService.BackgroundIntentService" />
-        <service android:name=".BackgroundService.BackgroundService" />
 
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
@@ -48,9 +47,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service android:name=".BackgroundService.BackgroundIntentService" />
-        <service android:name=".BackgroundService.BackgroundService" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -142,7 +138,9 @@
         <activity android:name=".Group.ViewGroup" />
         <activity android:name=".Group.AddGroup" />
         <activity android:name=".DisableAppSwitch" />
-        <activity android:name=".Profile"></activity>
+        <activity android:name=".Profile" />
+        <activity android:name=".NavigationMode.NavigationMode" />
+        <activity android:name=".NavigationMode.NavMode"></activity>
     </application>
 
 </manifest>
