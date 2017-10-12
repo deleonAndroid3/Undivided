@@ -1,11 +1,17 @@
 package com.training.android.undivided;
 
 import android.Manifest;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -18,6 +24,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.training.android.undivided.BackgroundService.BackgroundService;
 import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.NavigationMode.NavMode;
 import com.training.android.undivided.NavigationMode.Navigation;
@@ -32,6 +39,22 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mIvStart;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private boolean flag=false;
+
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch(requestCode)
+        {
+            case 1000:
+            {
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Denied", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,14 +62,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent i = getIntent();
+        if(i.getFlags()==Intent.FLAG_ACTIVITY_NEW_TASK)
+        stopService(i);
+
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE,
                         Manifest.permission.READ_CONTACTS},
                 MY_PERMISSIONS_REQUEST_CALL_PHONE);
+        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+            requestPermissions(new String[]{
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            },1000);
+        }*/
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mIvStart = (ImageView) findViewById(R.id.ivDriveStart);
 
-        drawerLayout.getBackground().setAlpha(120);
+        drawerLayout.getBackground().setAlpha(80);
 
         initToolbar();
         setupDrawerLayout();
@@ -56,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 chooseMode();
+
+
             }
         });
 
@@ -122,7 +160,37 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (position) {
                     case 0:
+                        if(!flag) {
+                            mIvStart.setImageResource(R.drawable.undivided_drivemode_logo_red);
+                            flag = true;
+                        }
+                        else {
+                            mIvStart.setImageResource(R.drawable.undivided_drivemode_logo);
+                            flag = false;
+                            stopLockTask();
+                            return;
+                        }
                         Toast.makeText(MainActivity.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
+                        ComponentName mDeviceAdmin;
+                        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+                        mDeviceAdmin = new ComponentName(MainActivity.this, MainActivity.class);
+
+                        if (myDevicePolicyManager.isDeviceOwnerApp(MainActivity.this.getPackageName())) {
+                            // Device owner
+                            String[] packages = {MainActivity.this.getPackageName()};
+                            myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Failed.", Toast.LENGTH_SHORT).show();
+                        }
+
+                        if (myDevicePolicyManager.isLockTaskPermitted(MainActivity.this.getPackageName())) {
+                            // Lock allowed
+                            // NOTE: locking device also disables notification
+                            startLockTask();
+                        } else {
+                            Toast.makeText(MainActivity.this, "2nd Failed.", Toast.LENGTH_SHORT).show();
+                            startLockTask();
+                        }
                         break;
                     case 1:
                         Intent navi = new Intent(MainActivity.this, NavMode.class);

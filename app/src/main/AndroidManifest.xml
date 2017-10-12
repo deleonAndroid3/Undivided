@@ -139,8 +139,10 @@
         <activity android:name=".Group.AddGroup" />
         <activity android:name=".DisableAppSwitch" />
         <activity android:name=".Profile" />
+
         <activity android:name=".NavigationMode.NavigationMode" />
         <activity android:name=".NavigationMode.NavMode"></activity>
+        <activity android:name=".SafeMode"></activity>
     </application>
 
 </manifest>

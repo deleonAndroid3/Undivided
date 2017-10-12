@@ -57,6 +57,7 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-auth:1.2.0'
     compile 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.6.2'
     compile 'com.mapbox.mapboxsdk:mapbox-android-plugin-locationlayer:0.1.0'
+    compile 'jp.wasabeef:blurry:2.1.1'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'
