@@ -127,7 +127,6 @@ public class Settings extends AppCompatActivity {
                         return;
                     if(status==false)
                         bindService();
-                    
                 }
                 else
                 {
@@ -135,6 +134,7 @@ public class Settings extends AppCompatActivity {
                         unbindService();
 
                 }
+
                 /*Intent i = new Intent(Settings.this, BackgroundService.class);
                 if (b) {
                     startService(i);

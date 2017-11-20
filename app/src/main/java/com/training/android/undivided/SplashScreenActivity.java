@@ -1,6 +1,7 @@
 package com.training.android.undivided;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.training.android.undivided.Authentication.AuthActivity;
+
+import jp.wasabeef.blurry.Blurry;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -22,7 +25,16 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         constraintLayout = (ConstraintLayout) findViewById(R.id.constraint_layout);
-        constraintLayout.getBackground().setAlpha(120);
+
+        constraintLayout.getBackground().setAlpha(80);
+        Blurry.with(this)
+                .radius(10)
+                .sampling(8)
+                .color(Color.argb(66, 255, 255, 0))
+                .async()
+                .animate(500)
+                .onto(constraintLayout);
+
         getSupportActionBar().hide();
 
         Handler handler = new Handler();
@@ -33,7 +45,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 finish();
             }
         }, 3000);
-
 
 
     }
