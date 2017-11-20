@@ -144,7 +144,9 @@
         <activity android:name=".Group.ViewGroup" />
         <activity android:name=".Group.AddGroup" />
         <activity android:name=".DisableAppSwitch" />
-        <activity android:name=".Profile"></activity>
+        <activity android:name=".Profile" />
+        <activity android:name=".GroupSender.Activity.MainActivity" />
+        <activity android:name=".GroupSender.GroupSenderActivity"></activity>
     </application>
 
 </manifest>
