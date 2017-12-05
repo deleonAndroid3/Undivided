@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.training.android.undivided"
-    android:versionCode="2"
-    android:versionName="Alpha">
-
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="22" />
+    package="com.training.android.undivided">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -141,7 +135,6 @@
         <activity android:name=".Profile" />
 
         <activity android:name=".NavigationMode.NavigationMode" />
-        <activity android:name=".NavigationMode.NavMode"></activity>
         <activity android:name=".SafeMode"></activity>
     </application>
 
