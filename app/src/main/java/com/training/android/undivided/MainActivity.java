@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 chooseMode();
-
-
             }
         });
 
@@ -106,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
     }
 
     protected void onDestroy() {

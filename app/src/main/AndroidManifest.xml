@@ -8,6 +8,18 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="22" />
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -139,15 +151,11 @@
         <activity android:name=".Group.AddGroup" />
         <activity android:name=".DisableAppSwitch" />
         <activity android:name=".Profile" />
-<<<<<<< HEAD
         <activity android:name=".GroupSender.Activity.MainActivity" />
         <activity android:name=".GroupSender.GroupSenderActivity"></activity>
-=======
-
         <activity android:name=".NavigationMode.NavigationMode" />
         <activity android:name=".NavigationMode.NavMode"></activity>
         <activity android:name=".SafeMode"></activity>
->>>>>>> 60b324aaaea404fbf4fcb6f33c4a093dbb0437d6
     </application>
 
 </manifest>
