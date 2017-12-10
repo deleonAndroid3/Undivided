@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.training.android.undivided.AutoReply.AutoReplyActivity;
+import com.training.android.undivided.CallLog.CallLogActivity;
 
 public class Functions extends AppCompatActivity {
 
@@ -15,6 +16,7 @@ public class Functions extends AppCompatActivity {
     Button mbtnAR;
     Button mbtnEmergency;
     Button mbtnDAS;
+    Button mbtnCallLog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,15 @@ public class Functions extends AppCompatActivity {
         mbtnAR = (Button) findViewById(R.id.btnAR);
         mbtnEmergency = (Button) findViewById(R.id.btnEmergency);
         mbtnDAS = (Button) findViewById(R.id.btnDisableAppSwitch);
+        mbtnCallLog = findViewById(R.id.btnCallLog);
+
+        mbtnCallLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent callLog = new Intent(Functions.this, CallLogActivity.class);
+                startActivity(callLog);
+            }
+        });
 
         mbtnMessage.setOnClickListener(new View.OnClickListener() {
             @Override
