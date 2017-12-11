@@ -15,11 +15,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include
-            layout="@layout/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?actionBarSize" />
-
 
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -45,8 +40,6 @@
             app:bb_tabXmlResource="@xml/bottombar_tabs_three" />
 
     </LinearLayout>
-
-
     <android.support.design.widget.NavigationView
         android:id="@+id/nvView"
         android:layout_width="wrap_content"
@@ -56,5 +49,8 @@
         android:background="@android:color/white"
         app:headerLayout="@layout/nav_header_main"
         app:itemTextColor="#000000"
-        app:menu="@menu/drawer_view" />
+        />
+
+
+
 </android.support.v4.widget.DrawerLayout>

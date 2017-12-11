@@ -29,11 +29,13 @@ import com.roughike.bottombar.BottomBar;
 import com.training.android.undivided.GroupSender.Interface.IBaseActivity;
 import com.training.android.undivided.GroupSender.Interface.IDeletionListener;
 import com.training.android.undivided.GroupSender.Interface.ISmsStatusListener;
+import com.training.android.undivided.GroupSender.Model.Contact;
 import com.training.android.undivided.GroupSender.Model.Group;
 import com.training.android.undivided.GroupSender.Model.Message;
 import com.training.android.undivided.GroupSender.Model.MessageStatus;
 import com.training.android.undivided.GroupSender.Model.SendConfiguration;
 import com.training.android.undivided.GroupSender.Model.SmsTask;
+import com.training.android.undivided.GroupSender.Model.SmsTaskMode;
 import com.training.android.undivided.GroupSender.Utils.SmsUtils;
 import com.training.android.undivided.R;
 
@@ -143,7 +145,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         mSharedPref = getApplicationContext().getSharedPreferences(getApplicationContext().getPackageName(), 0);
 
         initModel();
-        toolbar = findViewById(R.id.toolbar_item);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         setToolbarTitle();

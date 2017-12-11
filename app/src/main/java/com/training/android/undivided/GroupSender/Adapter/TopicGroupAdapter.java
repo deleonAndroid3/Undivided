@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.training.android.undivided.GroupSender.Interface.IViewHolderCheckListener;
 import com.training.android.undivided.GroupSender.Model.Contact;
 import com.training.android.undivided.GroupSender.Model.Group;
 import com.training.android.undivided.R;

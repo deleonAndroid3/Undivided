@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground"
+    android:orientation="vertical"
+    tools:context="com.training.android.undivided.GroupSender.Fragment.MessageItemFragment">
+
+    <EditText
+        android:id="@+id/message_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="MessageTitle"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/message_topic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="MessageTopic"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        android:textSize="30sp" />
+
+    <EditText
+        android:id="@+id/message_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:hint="here is your message"
+        android:imeOptions="actionDone"
+        android:inputType="textMultiLine"
+        android:minLines="6"
+        android:scrollbars="vertical"
+        android:textSize="15sp" />
+
+
+</LinearLayout>
