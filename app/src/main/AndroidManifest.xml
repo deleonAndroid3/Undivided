@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.training.android.undivided">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -135,7 +137,12 @@
         <activity android:name=".Profile" />
         <activity android:name=".GroupSender.Activity.MainActivity" />
         <activity android:name=".GroupSender.GroupSenderActivity"></activity>
-        <activity android:name=".SafeMode"></activity>
+        <activity android:name=".SafeMode"/>
+        <activity android:name=".NavigationMode.NavigationMode" />
+        <activity android:name=".NavigationMode.NavMode" />
+
+        <activity android:name=".CallLog.CallLogActivity" />
+        <activity android:name=".GroupSender.SimpleDividerItemDecoration"></activity>
     </application>
 
 </manifest>
