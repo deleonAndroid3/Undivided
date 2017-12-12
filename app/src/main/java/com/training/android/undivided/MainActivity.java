@@ -22,7 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.training.android.undivided.Group.ViewGroup;
-import com.training.android.undivided.NavigationMode.NavigationMode;
+import com.training.android.undivided.NavigationMode.Navigation;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -101,16 +101,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected void onDestroy() {
-//        Intent intent = new Intent(this, BackgroundService.class);
-//        startService(intent);
-        super.onDestroy();
-
-
-    }
-
-    
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.settings, menu);
@@ -186,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     case 1:
-                        Intent navi = new Intent(MainActivity.this, NavigationMode.class);
+                        Intent navi = new Intent(MainActivity.this, Navigation.class);
                         startActivity(navi);
                         Toast.makeText(MainActivity.this, "Navigation Mode Selected", Toast.LENGTH_SHORT).show();
                         break;
@@ -246,6 +236,19 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+
+    /**
+     *Activitiy Lifecycle
+     */
+
+    protected void onDestroy() {
+//        Intent intent = new Intent(this, BackgroundService.class);
+//        startService(intent);
+        super.onDestroy();
+
+
     }
 
 }

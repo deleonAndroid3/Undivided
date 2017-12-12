@@ -116,7 +116,7 @@ public class AddGroup extends AppCompatActivity {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Intent contactpick = new Intent(AddGroup.this, ContactPicker.class);
+                                Intent contactpick = new Intent(AddGroup.this, GroupContactPicker.class);
                                 contactpick.putExtra("groupname", mEtGroupName.getText().toString());
                                 startActivity(contactpick);
 

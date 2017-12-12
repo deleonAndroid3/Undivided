@@ -20,7 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.training.android.undivided.Group.ContactPicker;
+import com.training.android.undivided.Group.GroupContactPicker;
 import  com.training.android.undivided.AutoReply.Database.DatabaseManager;
 import  com.training.android.undivided.AutoReply.Objects.Rule;
 import com.training.android.undivided.R;
@@ -88,7 +88,7 @@ public class CustomizeMessage extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Intent intent = new Intent(getApplicationContext(), ContactPicker.class);
+                    Intent intent = new Intent(getApplicationContext(), GroupContactPicker.class);
                     if (edit) {
                         intent.putExtra(filterString, outgoingExtraTag);
                     }
@@ -112,14 +112,14 @@ public class CustomizeMessage extends AppCompatActivity {
 
     public void launchIncludeContactPicker(View view) {
         // Pass nos that are already selected to the contact picker
-        Intent intent = new Intent(this, ContactPicker.class);
+        Intent intent = new Intent(this, GroupContactPicker.class);
         intent.putExtra(outgoingExtraTag, includeString);
         startActivityForResult(intent, PICK_INCLUDE_CONTACT_REQUEST);
     }
 
     public void launchExcludeContactPicker(View view) {
         // Pass nos that are already selected to the contact picker
-        Intent intent = new Intent(this, ContactPicker.class);
+        Intent intent = new Intent(this, GroupContactPicker.class);
         intent.putExtra(outgoingExtraTag, excludeString);
         startActivityForResult(intent, PICK_EXCLUDE_CONTACT_REQUEST);
     }

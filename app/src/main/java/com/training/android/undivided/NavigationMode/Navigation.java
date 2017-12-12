@@ -5,10 +5,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.Point;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,9 +45,7 @@ import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -78,15 +76,16 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     protected static final int REQUEST_CHECK_SETTINGS = 2;
-    private static BitmapDescriptor markerIconBitmapDescriptor;
 
+    private static float angle;
+    ArrayList<LatLng> mPathPolygonPoints = null;
+    int mIndexCurrentPoint = 0;
+    Bitmap mMarkerIcon;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
-    private Location mDestination = new Location(LocationManager.GPS_PROVIDER);
     private Marker mCurrLocationMarker;
     private LocationRequest mLocationRequest;
     private GoogleMap mMap;
-
     private LinearLayout mSpeedometer;
     private TextView mtvSpeed, mtvTotalDistance, mtvDestination, mtvPlace;
 
@@ -130,6 +129,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMarkerIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_navigation);
 //        mMap.setMapStyle(mapStyleOptions);
 
         //Initialize Google Play Services
@@ -212,6 +212,14 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     build();
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+
+//            locationUpdate(location);
+//            if (mLastLocation != null) {
+//                double bearing = angleFromCoordinate(mLastLocation.getLatitude(), mLastLocation.getLongitude(), location.getLatitude(), location.getLongitude());
+//                changeMarkerPosition(bearing);
+//            }
+//            mLastLocation = location;
 
         }
     }
@@ -400,42 +408,165 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         });
     }
 
-    private void animateMarker(final Marker marker, final LatLng toPosition,
-                               final boolean hideMarker) {
-        final Handler handler = new Handler();
-        final long start = SystemClock.uptimeMillis();
-        Projection proj = mMap.getProjection();
-        Point startPoint = proj.toScreenLocation(marker.getPosition());
-        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
-        final long duration = 1000;
+    /**
+     * Map Navigation
+     */
 
-        final Interpolator interpolator = new LinearInterpolator();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float t = interpolator.getInterpolation((float) elapsed
-                        / duration);
-                double lng = t * toPosition.longitude + (1 - t)
-                        * startLatLng.longitude;
-                double lat = t * toPosition.latitude + (1 - t)
-                        * startLatLng.latitude;
+//    private void locationUpdate(Location location) {
+//        LatLng latLng = new LatLng((location.getLatitude()), (location.getLongitude()));
+//        MarkerOptions markerOptions = new MarkerOptions();
+//        markerOptions.position(latLng);
+//        markerOptions.title("Current Position");
+////        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.car_right));
+//        if (mCurrLocationMarker == null) {
+//            mCurrLocationMarker = mMap.addMarker(markerOptions);
+//        }else
+//        {
+//            mCurrLocationMarker.setPosition(latLng);
+//        }
+//
+//        CameraPosition position = CameraPosition.builder()
+//                .target(new LatLng(location.getLatitude(), location.getLongitude()))
+//                .zoom(18)
+//                .build();
+//        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
+//    }
 
-                marker.setPosition(new LatLng(lat, lng));
+//    private void changeMarkerPosition(double position) {
+//        float direction = (float) position;
+//        Log.e("LocationBearing", "" + direction);
+//
+//        if (direction == 360.0) {
+//            //default
+//            mCurrLocationMarker.setRotation(angle);
+//        } else {
+//            mCurrLocationMarker.setRotation(direction);
+//            angle = direction;
+//        }
+//    }
 
-                if (t < 1.0) {
-                    // Post again 16ms later.
-                    handler.postDelayed(this, 16);
-                } else {
-                    if (hideMarker) {
-                        marker.setVisible(false);
-                    } else {
-                        marker.setVisible(true);
-                    }
-                }
-            }
-        });
-    }
+//    private double angleFromCoordinate(double lat1, double long1, double lat2,
+//                                       double long2) {
+//        double dLon = (long2 - long1);
+//
+//        double y = Math.sin(dLon) * Math.cos(lat2);
+//        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
+//                * Math.cos(lat2) * Math.cos(dLon);
+//
+//        double brng = Math.atan2(x, y);
+//
+//        brng = Math.toDegrees(brng);
+//        brng = (brng + 360) % 360;
+//        brng = 360 - brng;
+//        return brng;
+//    }
+
+
+//    private void animateCarMove(final Marker marker, final LatLng beginLatLng, final LatLng endLatLng, final long duration) {
+//        final Handler handler = new Handler();
+//        final long startTime = SystemClock.uptimeMillis();
+//
+//        final Interpolator interpolator = new LinearInterpolator();
+//
+//        // set car bearing for current part of path
+//        float angleDeg = (float) (180 * getAngle(beginLatLng, endLatLng) / Math.PI);
+//        Matrix matrix = new Matrix();
+//        matrix.postRotate(angleDeg);
+//        marker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createBitmap(mMarkerIcon, 0, 0, mMarkerIcon.getWidth(), mMarkerIcon.getHeight(), matrix, true)));
+//
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                // calculate phase of animation
+//                long elapsed = SystemClock.uptimeMillis() - startTime;
+//                float t = interpolator.getInterpolation((float) elapsed / duration);
+//                // calculate new position for marker
+//                double lat = (endLatLng.latitude - beginLatLng.latitude) * t + beginLatLng.latitude;
+//                double lngDelta = endLatLng.longitude - beginLatLng.longitude;
+//
+//                if (Math.abs(lngDelta) > 180) {
+//                    lngDelta -= Math.signum(lngDelta) * 360;
+//                }
+//                double lng = lngDelta * t + beginLatLng.longitude;
+//
+//                marker.setPosition(new LatLng(lat, lng));
+//
+//                // if not end of line segment of path
+//                if (t < 1.0) {
+//                    // call next marker position
+//                    handler.postDelayed(this, 16);
+//                } else {
+//                    // call turn animation
+//                    nextTurnAnimation();
+//                }
+//            }
+//        });
+//    }
+//
+//    private double getAngle(LatLng beginLatLng, LatLng endLatLng) {
+//        double f1 = Math.PI * beginLatLng.latitude / 180;
+//        double f2 = Math.PI * endLatLng.latitude / 180;
+//        double dl = Math.PI * (endLatLng.longitude - beginLatLng.longitude) / 180;
+//        return Math.atan2(Math.sin(dl) * Math.cos(f2), Math.cos(f1) * Math.sin(f2) - Math.sin(f1) * Math.cos(f2) * Math.cos(dl));
+//    }
+//
+//    private void nextTurnAnimation() {
+//        mIndexCurrentPoint++;
+//
+//        if (mIndexCurrentPoint < mPathPolygonPoints.size() - 1) {
+//            LatLng prevLatLng = mPathPolygonPoints.get(mIndexCurrentPoint - 1);
+//            LatLng currLatLng = mPathPolygonPoints.get(mIndexCurrentPoint);
+//            LatLng nextLatLng = mPathPolygonPoints.get(mIndexCurrentPoint + 1);
+//
+//            float beginAngle = (float) (180 * getAngle(prevLatLng, currLatLng) / Math.PI);
+//            float endAngle = (float) (180 * getAngle(currLatLng, nextLatLng) / Math.PI);
+//
+//            animateCarTurn(mCurrLocationMarker, beginAngle, endAngle, 1);
+//        }
+//    }
+//
+//    private void animateCarTurn(final Marker marker, final float startAngle, final float endAngle, final long duration) {
+//        final Handler handler = new Handler();
+//        final long startTime = SystemClock.uptimeMillis();
+//        final Interpolator interpolator = new LinearInterpolator();
+//
+//        final float dAndgle = endAngle - startAngle;
+//
+//        Matrix matrix = new Matrix();
+//        matrix.postRotate(startAngle);
+//        Bitmap rotatedBitmap = Bitmap.createBitmap(mMarkerIcon, 0, 0, mMarkerIcon.getWidth(), mMarkerIcon.getHeight(), matrix, true);
+//        marker.setIcon(BitmapDescriptorFactory.fromBitmap(rotatedBitmap));
+//
+//        handler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                long elapsed = SystemClock.uptimeMillis() - startTime;
+//                float t = interpolator.getInterpolation((float) elapsed / duration);
+//
+//                Matrix m = new Matrix();
+//                m.postRotate(startAngle + dAndgle * t);
+//                marker.setIcon(BitmapDescriptorFactory.fromBitmap(Bitmap.createBitmap(mMarkerIcon, 0, 0, mMarkerIcon.getWidth(), mMarkerIcon.getHeight(), m, true)));
+//
+//                if (t < 1.0) {
+//                    handler.postDelayed(this, 16);
+//                } else {
+//                    nextMoveAnimation();
+//                }
+//            }
+//        });
+//    }
+//
+//    private void nextMoveAnimation() {
+//        if (mIndexCurrentPoint < mPathPolygonPoints.size() - 1) {
+//            animateCarMove(mCurrLocationMarker, mPathPolygonPoints.get(mIndexCurrentPoint), mPathPolygonPoints.get(mIndexCurrentPoint + 1), 1);
+//        }
+//    }
+
+
+    /**
+     * JSON ROUTE PARSING
+     */
 
     private String getDirectionsUrl(LatLng origin, LatLng dest) {
 
@@ -565,12 +696,12 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         // Executes in UI thread, after the parsing process
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-            ArrayList<LatLng> points = null;
+
             PolylineOptions lineOptions = null;
 
             // Traversing through all the routes
             for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList<LatLng>();
+                mPathPolygonPoints = new ArrayList<LatLng>();
                 lineOptions = new PolylineOptions();
 
                 // Fetching i-th route
@@ -584,23 +715,20 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     double lng = Double.parseDouble(point.get("lng"));
                     LatLng position = new LatLng(lat, lng);
 
-                    points.add(position);
+                    mPathPolygonPoints.add(position);
+
+                    // Drawing polyline in the Google Map for the i-th route
+                    mMap.addPolyline(new PolylineOptions()
+                            .addAll(mPathPolygonPoints)
+                            .width(10)
+                            .geodesic(true)
+                            .clickable(true)
+                            .color(R.color.colorPrimary));
 
                 }
-
-                // Drawing polyline in the Google Map for the i-th route
-                mMap.addPolyline(new PolylineOptions()
-                        .addAll(points)
-                        .width(10)
-                        .geodesic(true)
-                        .color(Color.BLUE));
-
-
             }
-
 
         }
     }
-
 
 }

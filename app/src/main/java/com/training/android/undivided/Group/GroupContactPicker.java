@@ -22,10 +22,11 @@ import java.util.ArrayList;
 /***\
  *  Created by Hillary Briones
  *  */
-public class ContactPicker extends AppCompatActivity {
+
+public class GroupContactPicker extends AppCompatActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 11;
-    public static final String logTag = "ContactPicker";
+    public static final String logTag = "GroupContactPicker";
     private static String incomingExtraTag = "selected_contacts";
 
     private ListView listView;
@@ -39,7 +40,7 @@ public class ContactPicker extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_contact_picker);
+        setContentView(R.layout.activity_groupcontact_picker);
 
         // Set result the canceled incase user bails
         setResult(RESULT_CANCELED);
@@ -110,7 +111,7 @@ public class ContactPicker extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent gotoViewGroup = new Intent(ContactPicker.this, ViewGroup.class);
+                Intent gotoViewGroup = new Intent(GroupContactPicker.this, ViewGroup.class);
                 startActivity(gotoViewGroup);
                 finish();
             }
