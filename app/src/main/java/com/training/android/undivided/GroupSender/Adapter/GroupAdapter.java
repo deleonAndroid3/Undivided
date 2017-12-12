@@ -27,6 +27,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
 
     private Context context = null;
 
+
     private IViewHolderClickListener mListener;
 
     private int selected_position = -1;
@@ -136,4 +137,5 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             mListener.onClick(v);
         }
     }
+
 }

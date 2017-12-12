@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.training.android.undivided.Group.Adapter.GroupAdapter;
+
+import com.training.android.undivided.GroupSender.Adapter.GroupAdapter;
 import com.training.android.undivided.GroupSender.Adapter.MessageAdapter;
 import com.training.android.undivided.GroupSender.Model.Group;
 import com.training.android.undivided.GroupSender.Model.Message;

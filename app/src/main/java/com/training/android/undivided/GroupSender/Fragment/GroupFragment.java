@@ -19,21 +19,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.training.android.undivided.Group.Adapter.GroupAdapter;
+
+import com.training.android.undivided.GroupSender.Adapter.GroupAdapter;
 import com.training.android.undivided.GroupSender.BaseActivity;
+import com.training.android.undivided.GroupSender.Interface.IDeletionListener;
 import com.training.android.undivided.GroupSender.Interface.IFragment;
 import com.training.android.undivided.GroupSender.Interface.IViewHolderClickListener;
+import com.training.android.undivided.GroupSender.SimpleDividerItemDecoration;
 import com.training.android.undivided.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class GroupFragment extends ListFragmentAbstract implements IFragment {
 
     private GroupItemFragment mFragment;
+
     public GroupFragment() {
-        // Required empty public constructor
     }
+
     protected FragmentActivity mActivity;
 
     @Override
@@ -42,6 +44,7 @@ public class GroupFragment extends ListFragmentAbstract implements IFragment {
         final View view = inflater.inflate(R.layout.group_fragment, container, false);
         return view;
     }
+
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

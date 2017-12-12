@@ -55,4 +55,14 @@
         android:text="DAS"
         app:layout_constraintLeft_toRightOf="@+id/btnEmergency"
         app:layout_constraintTop_toBottomOf="@+id/btnMessage" />
+
+    <Button
+        android:id="@+id/btnCallLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Call Log"
+        app:layout_constraintStart_toEndOf="@+id/btnDisableAppSwitch"
+        app:layout_constraintTop_toBottomOf="@+id/btnSTT" />
 </android.support.constraint.ConstraintLayout>

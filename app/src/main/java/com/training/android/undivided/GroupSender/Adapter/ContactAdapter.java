@@ -16,59 +16,58 @@ import android.widget.TextView;
 import com.training.android.undivided.GroupSender.Interface.IViewHolderCheckListener;
 import com.training.android.undivided.GroupSender.Model.Contact;
 import com.training.android.undivided.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Hillary Briones on 9/15/2017.
- */
+// * Created by Hillary Briones on 9/15/2017.
+// */
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder>  {
 
-    List<Contact> contactList = new ArrayList<>();
-    private Context context = null;
-    private IViewHolderCheckListener mListener;
-    public ContactAdapter(List<Contact> list, Context context, IViewHolderCheckListener listener) {
-        this.contactList = list;
-        this.context = context;
-        this.mListener = listener;
+   List<Contact> contactList = new ArrayList<>();
+   private Context context = null;
+   private IViewHolderCheckListener mListener;
+
+   public ContactAdapter(List<Contact> list, Context context, IViewHolderCheckListener listener) {
+       this.contactList = list;
+       this.context = context;
+       this.mListener = listener;
     }
     @Override
-    public ContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_item, parent, false);
-        return new ViewHolder(v, mListener);
+  public ContactAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+       View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_item, parent, false);
+       return new ViewHolder(v, mListener);
     }
 
-    @Override
-    public void onBindViewHolder(ContactAdapter.ViewHolder holder, int position) {
+   @Override
+   public void onBindViewHolder(ContactAdapter.ViewHolder holder, int position) {
         Contact item = contactList.get(position);
         if (item.getPhoneNumber().size() == 1) {
-            holder.phoneNumberTv.setVisibility(View.VISIBLE);
-            holder.phoneNumberSpinner.setVisibility(View.GONE);
+           holder.phoneNumberTv.setVisibility(View.VISIBLE);
+           holder.phoneNumberSpinner.setVisibility(View.GONE);
             holder.phoneNumberTv.setText(item.getPhoneNumber().get(0));
-        } else {
-            holder.phoneNumberTv.setVisibility(View.GONE);
-            holder.phoneNumberSpinner.setVisibility(View.VISIBLE);
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context,
-                    R.layout.contact_phonenum_spinner, item.getPhoneNumber());
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            holder.phoneNumberSpinner.setAdapter(dataAdapter);
-            for (int i = 0; i < item.getPhoneNumber().size(); i++) {
-                if (item.getPhoneNumber().get(i).equals(item.getSelectedPhoneNumber())) {
-                    holder.phoneNumberSpinner.setSelection(i);
-                    break;
-                }
-            }
+       } else {
+           holder.phoneNumberTv.setVisibility(View.GONE);
+           holder.phoneNumberSpinner.setVisibility(View.VISIBLE);
+           ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(context,
+                   R.layout.contact_phonenum_spinner, item.getPhoneNumber());
+           dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+           holder.phoneNumberSpinner.setAdapter(dataAdapter);
+           for (int i = 0; i < item.getPhoneNumber().size(); i++) {
+               if (item.getPhoneNumber().get(i).equals(item.getSelectedPhoneNumber())) {
+                   holder.phoneNumberSpinner.setSelection(i);
+                   break;
+              }
+           }
         }
         //holder.phoneNumberSpinner.setText("" + item.getPhoneNumber().replaceAll("\\s+", "").replaceAll("\\+[0-9]{2}", "0").replaceAll("-", ""));
-        holder.displayName.setText("" + item.getDisplayName());
-        holder.checkBox.setChecked(item.isChecked());
+      holder.displayName.setText("" + item.getDisplayName());
+       holder.checkBox.setChecked(item.isChecked());
 
+   }
 
-    }
-
-    public void setContactList(List<Contact> list) {
+   public void setContactList(List<Contact> list) {
         contactList = list;
     }
 
@@ -78,10 +77,10 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHold
         return position;
     }
 
-    @Override
+   @Override
     public int getItemCount()
     {
-        return contactList.size();
+       return contactList.size();
     }
     public class ViewHolder extends RecyclerView.ViewHolder {
 

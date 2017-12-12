@@ -10,6 +10,7 @@
     tools:context="com.training.android.undivided.GroupSender.GroupSenderActivity">
 
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -52,5 +53,54 @@
         />
 
 
+
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical">-->
+
+        <!--<include-->
+            <!--layout="@layout/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?actionBarSize" />-->
+
+
+        <!--<android.support.v4.widget.NestedScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_weight="1"-->
+            <!--android:fillViewport="true">-->
+
+            <!--<FrameLayout-->
+                <!--android:id="@+id/fragment_frame"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="?android:colorBackground" />-->
+
+        <!--</android.support.v4.widget.NestedScrollView>-->
+
+        <!--<com.roughike.bottombar.BottomBar-->
+            <!--android:id="@+id/bottomBar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:gravity="bottom"-->
+            <!--app:bb_tabXmlResource="@xml/bottombar_tabs_three" />-->
+
+    <!--</LinearLayout>-->
+
+
+    <!--<android.support.design.widget.NavigationView-->
+        <!--android:id="@+id/nvView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:layout_marginTop="@dimen/abc_action_bar_default_height_material"-->
+        <!--android:background="@android:color/white"-->
+        <!--app:headerLayout="@layout/nav_header_main"-->
+        <!--app:itemTextColor="#000000"-->
+        <!--app:menu="@menu/drawer_view" />-->
 
 </android.support.v4.widget.DrawerLayout>

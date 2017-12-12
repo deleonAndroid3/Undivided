@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.training.android.undivided.GroupSender.Interface.IViewHolderCheckListener;
 import com.training.android.undivided.GroupSender.Model.Contact;
 import com.training.android.undivided.GroupSender.Model.Group;
+import com.training.android.undivided.GroupSender.SimpleDividerItemDecoration;
 import com.training.android.undivided.R;
 
 import java.util.ArrayList;
@@ -122,3 +123,4 @@ public class TopicGroupAdapter extends RecyclerView.Adapter<TopicGroupAdapter.Vi
     }
 
 }
+

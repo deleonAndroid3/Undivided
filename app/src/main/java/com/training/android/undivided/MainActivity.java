@@ -25,7 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.training.android.undivided.BackgroundService.BackgroundService;
-import com.training.android.undivided.Group.ViewGroup;
+//import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.NavigationMode.NavMode;
 import com.training.android.undivided.NavigationMode.Navigation;
 import com.training.android.undivided.NavigationMode.NavigationMode;
@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 chooseMode();
-
-
             }
         });
 
@@ -106,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
     }
 
     protected void onDestroy() {

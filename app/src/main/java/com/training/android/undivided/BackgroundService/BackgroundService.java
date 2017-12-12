@@ -178,9 +178,10 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
             lStart = lEnd;
 
             double speed = distance / (diff*60);
-            
-            if(speed>30)
-                launchApp();
+
+
+              if(speed>10)
+            launchApp();
         }
 
     }
@@ -217,7 +218,6 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
             // this method will be called.
 
             // Add your cpu-blocking activity here
-
 
         }
     }
