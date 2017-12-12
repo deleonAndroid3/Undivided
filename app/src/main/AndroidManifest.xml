@@ -61,13 +61,41 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!--Navigation Package-->
+        <activity
             android:name=".NavigationMode.Navigation"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NavigationMode.SearchDestination"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!--Group Package-->
         <activity
             android:name=".Group.GroupContactPicker"
             android:label="@string/contactpicker_title"
             android:parentActivityName=".AutoReply.CustomizeMessage"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.training.android.undivided.AutoReply.CustomizeMessage" />
+        </activity>
+        <activity android:name=".Group.ViewGroup" />
+        <activity android:name=".Group.AddGroup" />
+
+        <!--Authentication Package-->
+        <activity android:name=".Authentication.AuthActivity" />
+
+        <!--AUTO REPLY PACKAGE-->
+        <activity
+            android:name=".AutoReply.ContactPicker"
+            android:label="@string/contactpicker_title"
+            android:parentActivityName=".AutoReply.CustomizeMessage"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.training.android.undivided.AutoReply.CustomizeMessage" />
@@ -88,7 +116,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".AutoReply.AutoReplyActivity" />
         <receiver android:name=".AutoReply.BroadcastReceivers.SMSReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -112,37 +140,30 @@
                 android:resource="@xml/atm_widget" />
         </receiver>
 
-        <activity android:name=".Authentication.AuthActivity" />
-        <activity android:name=".Settings" />
-        <activity android:name=".SpeechToText" />
-        <activity android:name=".TextToSpeech" />
-        <activity android:name=".AutoReply.AutoReplyActivity" />
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!--GroupSender Package-->
+        <activity android:name=".GroupSender.Activity.MainActivity" />
+        <activity android:name=".GroupSender.GroupSenderActivity"/>
+        <activity android:name=".GroupSender.SimpleDividerItemDecoration"/>
+
+        <!--Intro Package-->
         <activity
             android:name=".Intro.WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".NavigationMode.SearchDestination"
-            android:theme="@style/AppTheme.NoActionBar" />
 
+        <activity android:name=".Settings" />
+        <activity android:name=".SpeechToText" />
+        <activity android:name=".TextToSpeech" />
         <!-- <activity android:name=".EditReplyMessage" /> -->
         <activity android:name=".History" />
         <activity android:name=".Emergency" />
         <activity android:name=".Functions" />
-        <activity android:name=".Group.ViewGroup" />
-        <activity android:name=".Group.AddGroup" />
         <activity android:name=".DisableAppSwitch" />
         <activity android:name=".Profile" />
-        <activity android:name=".GroupSender.Activity.MainActivity" />
-        <activity android:name=".GroupSender.GroupSenderActivity"></activity>
-        <activity android:name=".SafeMode"/>
-        <activity android:name=".NavigationMode.NavigationMode" />
-        <activity android:name=".NavigationMode.NavMode" />
+        <activity android:name=".SafeMode" />
 
+        <!--Call Log Package-->
         <activity android:name=".CallLog.CallLogActivity" />
-        <activity android:name=".GroupSender.SimpleDividerItemDecoration"></activity>
+
     </application>
 
 </manifest>

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //package com.training.android.undivided.GroupSender;
 //
 //import android.content.BroadcastReceiver;
@@ -539,7 +538,6 @@
 //        return mConfigurationList;
 //    }
 //}
-=======
 
 package com.training.android.undivided.GroupSender;
 
@@ -1085,4 +1083,3 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         return mConfigurationList;
     }
 }
->>>>>>> 99baa0c39caeca263b9b9def25e2950cc67f3f0c

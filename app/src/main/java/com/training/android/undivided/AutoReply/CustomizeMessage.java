@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.training.android.undivided.AutoReply;
 
 import android.appwidget.AppWidgetManager;
@@ -113,7 +112,7 @@ public class CustomizeMessage extends AppCompatActivity {
 
     public void launchIncludeContactPicker(View view) {
         // Pass nos that are already selected to the contact picker
-        Intent intent = new Intent(this, GroupContactPicker.class);
+        Intent intent = new Intent(this, ContactPicker.class);
         intent.putExtra(outgoingExtraTag, includeString);
         startActivityForResult(intent, PICK_INCLUDE_CONTACT_REQUEST);
     }
@@ -287,7 +286,6 @@ public class CustomizeMessage extends AppCompatActivity {
 
 
 }
-=======
 //package com.training.android.undivided.AutoReply;
 //
 //import android.appwidget.AppWidgetManager;
@@ -576,4 +574,3 @@ public class CustomizeMessage extends AppCompatActivity {
 //
 //
 //}
->>>>>>> 99baa0c39caeca263b9b9def25e2950cc67f3f0c

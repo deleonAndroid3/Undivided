@@ -18,16 +18,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-<<<<<<< HEAD
-import com.training.android.undivided.Group.ViewGroup;
-=======
-import com.training.android.undivided.BackgroundService.BackgroundService;
-//import com.training.android.undivided.Group.ViewGroup;
-import com.training.android.undivided.NavigationMode.NavMode;
->>>>>>> 99baa0c39caeca263b9b9def25e2950cc67f3f0c
 import com.training.android.undivided.NavigationMode.Navigation;
 
 public class MainActivity extends AppCompatActivity {
@@ -104,25 +98,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-<<<<<<< HEAD
-=======
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
     }
 
-    protected void onDestroy() {
-//        Intent intent = new Intent(this, BackgroundService.class);
-//        startService(intent);
-        super.onDestroy();
-
-
-    }
-
-    
-
->>>>>>> 99baa0c39caeca263b9b9def25e2950cc67f3f0c
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.settings, menu);

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //package com.training.android.undivided.GroupSender.Adapter;
 //
 //import android.content.Context;
@@ -122,7 +121,6 @@
 //    }
 //
 //}
-=======
 package com.training.android.undivided.GroupSender.Adapter;
 
 import android.content.Context;
@@ -249,4 +247,3 @@ public class TopicGroupAdapter extends RecyclerView.Adapter<TopicGroupAdapter.Vi
 
 }
 
->>>>>>> 99baa0c39caeca263b9b9def25e2950cc67f3f0c

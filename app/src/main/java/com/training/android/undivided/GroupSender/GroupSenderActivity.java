@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 //package com.training.android.undivided.GroupSender;
 //
 //import android.app.Dialog;
@@ -116,7 +115,6 @@
 //        mFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
 //    }
 //}
-=======
 package com.training.android.undivided.GroupSender;
 
 import android.app.Dialog;
@@ -237,4 +235,3 @@ public class GroupSenderActivity extends BaseActivity {
         mFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
->>>>>>> 99baa0c39caeca263b9b9def25e2950cc67f3f0c
