@@ -111,19 +111,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-//    public List<GroupModel> getallGroups() {
-//        SQLiteDatabase rdb = getReadableDatabase();
-//        List<GroupModel> list = new ArrayList<>();
-//
-//        Cursor c = rdb.rawQuery("SELECT * from " + TABLE_CREATE_GROUP, null);
-//
-//        while (c.moveToNext()){
-//            c.getColumnIndex()
-//        }
-//
-//        return list;
-//    }
-
     public ArrayList<GroupModel> getAllGroups() {
         SQLiteDatabase rdb = getReadableDatabase();
         Cursor c = rdb.rawQuery("SELECT * FROM " + TABLE_CREATE_GROUP, null);
