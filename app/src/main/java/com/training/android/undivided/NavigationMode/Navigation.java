@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -15,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -97,7 +94,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private Button mBtnChangeRoute;
     private RelativeLayout mBtnStartDriving;
     private LinearLayout mSpeedometer;
-    private TextView mtvSpeed, mtvTotalDistance,mtvTotalDuration , mtvDestination, mtvPlace;
+    private TextView mtvSpeed, mtvTotalDistance, mtvTotalDuration, mtvDestination, mtvPlace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,17 +128,17 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             }
         });
 
-      mSpeedometer.setOnLongClickListener(new View.OnLongClickListener() {
-          @Override
-          public boolean onLongClick(View view) {
+        mSpeedometer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
 
-              //TODO: Create a method that will automatically text all contacts in Emergency Group and Call 160 or ERUF
+                //TODO: Create a method that will automatically text all contacts in Emergency Group and Call 160 or ERUF
 
-              Toast.makeText(Navigation.this, "Gwapo ko", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Navigation.this, "Gwapo ko", Toast.LENGTH_SHORT).show();
 
-              return true;
-          }
-      });
+                return true;
+            }
+        });
 
     }
 
@@ -152,6 +149,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setBuildingsEnabled(true);
         //        mMap.setMapStyle(mapStyleOptions);
 
 
@@ -159,7 +157,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             checkLocationPermission();
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager .PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mMap.setMyLocationEnabled(false);
@@ -221,7 +219,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 CameraPosition cameraPosition = new CameraPosition.Builder().
                         target(mNextLatLng).
                         zoom(17).
-                        tilt(30).
                         bearing((float) bearingBetweenLocations(mLastLatLng, mNextLatLng)).
                         build();
 
@@ -232,6 +229,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
                         .position(mNextLatLng)
                         .title("Current Location")
+                        .flat(true)
                         .anchor(0.5f, 1f)
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.compass)));
             } else {
@@ -439,7 +437,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-        int padding = (int) (height * 0.20);
+        int padding = (int) (height * 0.15);
 
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding);
 
@@ -473,6 +471,21 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         brng = (brng + 360) % 360;
 
         return brng;
+
+//        double lat = Math.abs(latLng1.latitude - latLng2.latitude);
+//        double lng = Math.abs(latLng1.longitude - latLng2.longitude);
+//
+//        if (latLng1.latitude < latLng2.latitude && latLng1.longitude < latLng2.longitude) {
+//            return (float) (Math.toDegrees(Math.atan(lng / lat)));
+//        } else if (latLng1.latitude >= latLng2.latitude && latLng1.longitude < latLng2.longitude) {
+//            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
+//        }else if (latLng1.latitude >= latLng2.latitude && latLng1.longitude >= latLng2.longitude) {
+//            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
+//        }else if (latLng1.latitude < latLng2.latitude && latLng1.longitude >= latLng2.longitude) {
+//            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 270);
+//        }
+//
+//        return -1;
     }
 
     public void rotateMarker(final Marker marker, final float toRotation, final float st) {
@@ -849,13 +862,15 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         protected void onPostExecute(final List<List<HashMap<String, String>>> result) {
 
 
-
             mBtnChangeRoute.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     String distance = "";
                     String duration = "";
+//                    String sDist = "";
+//                    Double slat = 0.0, slng = 0.0;
+
                     routeCounter++;
                     mPathPolygonPoints = new ArrayList<>();
 
@@ -870,13 +885,29 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     for (int j = 0; j < path.size(); j++) {
                         HashMap<String, String> point = path.get(j);
 
-                        if(j==0){    // Get distance from the list
-                            distance = (String)point.get("distance");
+                        if (j == 0) {    // Get distance from the list
+                            distance = (String) point.get("distance");
                             continue;
-                        }else if(j==1){ // Get duration from the list
-                            duration = (String)point.get("duration");
+                        } else if (j == 1) { // Get duration from the list
+                            duration = (String) point.get("duration");
                             continue;
                         }
+//
+//                        else if (j == 3) {
+//                            sDist = point.get("sdist");
+//                            continue;
+//                        } else if (j == 4) {
+//                            slat = Double.parseDouble(point.get("sLat"));
+//                            continue;
+//                        } else if (j == 5) {
+//                            slng = Double.parseDouble(point.get("sLat"));
+//                            continue;
+//                        }
+//                        LatLng sPos = new LatLng(slat, slng);
+//
+//                        mMap.addMarker(new MarkerOptions().
+//                                position(sPos).
+//                                title(sDist));
 
                         double lat = Double.parseDouble(point.get("lat"));
                         double lng = Double.parseDouble(point.get("lng"));

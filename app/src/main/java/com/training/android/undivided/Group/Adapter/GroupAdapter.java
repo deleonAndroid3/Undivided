@@ -57,6 +57,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.mtvRule5.setText(currentgm.getRule5() + "");
         holder.mtvRule6.setText(currentgm.getRule6() + "");
         holder.mtvRule7.setText(currentgm.getRule7() + "");
+
+
     }
 
 

@@ -21,6 +21,9 @@ public class DirectionsJSONParser {
         JSONArray jSteps = null;
         JSONObject jDistance = null;
         JSONObject jDuration = null;
+        JSONObject sDistance = null;
+        JSONObject sLat = null;
+        JSONObject sLong = null;
 
         try {
 
@@ -58,6 +61,25 @@ public class DirectionsJSONParser {
                         String polyline = "";
                         polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = decodePoly(polyline);
+
+//                        /** Get Distance of Steps*/
+//                        sDistance = ((JSONObject) jSteps.get(k)).getJSONObject("distance");
+//                        HashMap<String,String> hmdist = new HashMap<>();
+//                        hmdist.put("sdist", sDistance.getString("text"));
+//
+//                        /** Get Latitude of Steps*/
+//                        sLat = ((JSONObject) jSteps.get(k)).getJSONObject("end_location");
+//                        HashMap<String,String> hmLat = new HashMap<>();
+//                        hmLat.put("sLat", sLat.getString("lat"));
+//
+//                        /** Get Longitude of Steps*/
+//                        sLong = ((JSONObject) jSteps.get(k)).getJSONObject("end_location");
+//                        HashMap<String,String> hmLong = new HashMap<>();
+//                        hmLong.put("sLng", sLong.getString("lng"));
+//
+//                        path.add(hmdist);
+//                        path.add(hmLat);
+//                        path.add(hmLong);
 
                         /** Traversing all points */
                         for(int l=0;l<list.size();l++){

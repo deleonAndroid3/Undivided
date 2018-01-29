@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.training.android.undivided.Group.Adapter.GroupAdapter;
 import com.training.android.undivided.Group.Database.DBHandler;
@@ -31,13 +30,23 @@ public class ViewGroup extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Groups");
 
+        //TODO: Check if an EMERGENCY Group Exists in group table (DONE)
+
         dbHandler = new DBHandler(this);
 
-
-        mAdapter = new GroupAdapter(dbHandler.getAllGroups(), this, R.layout.card_groups);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(ViewGroup.this));
-
+        if (dbHandler.EmergencyGroupExists()) {
+            //PID Found
+            mAdapter = new GroupAdapter(dbHandler.getAllGroups(), this, R.layout.card_groups);
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(ViewGroup.this));
+        } else {
+            //PID Not Found
+            Intent addGroupIntent = new Intent(ViewGroup.this, AddGroup.class);
+            addGroupIntent.putExtra("Title", "Emergency");
+            addGroupIntent.putExtra("Desc", "This Contacts will automatically receive a text message if you press the emergency button");
+            addGroupIntent.putExtra("Message", "I am involved in a car accident. Call me Immediately");
+            startActivity(addGroupIntent);
+        }
     }
 
     @Override

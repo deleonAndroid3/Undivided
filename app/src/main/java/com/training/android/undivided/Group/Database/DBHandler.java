@@ -140,4 +140,36 @@ public class DBHandler extends SQLiteOpenHelper {
         return list;
     }
 
+    public boolean EmergencyGroupExists() {
+
+        Cursor cursor = null;
+
+        try {
+            String sql = "SELECT groupid FROM " + TABLE_CREATE_GROUP + " WHERE groupname = 'Emergency'";
+            cursor = db.rawQuery(sql, null);
+
+            return (cursor.getCount() > 0);
+        }finally {
+            if (cursor != null)
+                cursor.close();
+        }
+
+    }
+
+    public boolean numberExists(String Phonenum){
+
+        Cursor cursor = null;
+
+        try {
+            String sql = "SELECT contactid FROM " + TABLE_CONTACTS + " WHERE contactnum = '" + Phonenum + "' AND NOT group_id = 1 " ;
+            cursor = db.rawQuery(sql, null);
+
+            return (cursor.getCount() > 0);
+        }finally {
+            if (cursor != null)
+                cursor.close();
+        }
+
+    }
+
 }
