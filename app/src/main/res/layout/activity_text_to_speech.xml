@@ -13,7 +13,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="@string/sms_label"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -25,7 +25,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/none"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         />
 
     <ToggleButton

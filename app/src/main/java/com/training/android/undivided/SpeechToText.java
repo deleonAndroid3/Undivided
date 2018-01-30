@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,6 +23,8 @@ public class SpeechToText extends AppCompatActivity {
         setContentView(R.layout.activity_speech_to_text);
         voiceInput = (TextView) findViewById(R.id.voiceInput);
         speakButton = (TextView) findViewById(R.id.btnSpeak);
+
+
 
         speakButton.setOnClickListener(new View.OnClickListener() {
 
@@ -65,6 +68,7 @@ public class SpeechToText extends AppCompatActivity {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     voiceInput.setText(result.get(0));
+
                 }
                 break;
             }

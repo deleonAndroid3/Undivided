@@ -94,9 +94,10 @@ public class TextToSpeech extends AppCompatActivity {
 
                         speaker.pause(LONG_DURATION);
                         speaker.speak("You have a new message from" + sender + "!");
-                        speaker.pause(SHORT_DURATION);
+                        speaker.pause(LONG_DURATION);
                         speaker.speak(text);
                         speaker.speak("Do you want to reply to?"+sender+"!");
+
                         smsSender.setText("Message from " + sender);
                         smsText.setText(text);
 

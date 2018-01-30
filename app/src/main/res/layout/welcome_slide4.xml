@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen4">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -12,12 +13,12 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:weightSum="1">
-
         <ImageView
             app:srcCompat="@drawable/welcome4"
-            android:layout_width="445dp"
-            android:layout_height="445dp"
-            android:layout_weight="8.05" />
+            android:layout_width="400dp"
+            android:layout_height="350dp"
+
+            />
 
         <TextView
             android:layout_width="wrap_content"
@@ -25,7 +26,9 @@
             android:text="@string/slide_4_title"
             android:textColor="@android:color/white"
             android:textSize="@dimen/slide_title"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+
+            />
 
         <TextView
             android:layout_width="wrap_content"
