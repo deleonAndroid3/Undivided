@@ -80,6 +80,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         if(currentgm.getRule7() == 1){
             holder.cbRule7.setChecked(true);
         }
+//        holder.mtvRule7.setText(currentgm.getRule7() + "");
+
 
     }
 
@@ -98,6 +100,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     public int getItemViewType(int position) {
         return position;
     }
+
+//    public boolean isSelected(int index) {
+//    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 

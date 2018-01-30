@@ -6,12 +6,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -24,12 +21,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.stetho.Stetho;
 import com.training.android.undivided.BackgroundService.BackgroundService;
 import com.training.android.undivided.Group.ViewGroup;
-import com.training.android.undivided.NavigationMode.NavMode;
 import com.training.android.undivided.NavigationMode.Navigation;
-import com.training.android.undivided.NavigationMode.NavigationMode;
-import com.training.android.undivided.NavigationMode.SearchDestination;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Stetho.initializeWithDefaults(this);
 
         Intent i = getIntent();
         if(i.getFlags()==Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -104,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
     @Override
     public void onBackPressed() {
         if(!flag)
@@ -211,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     case 1:
-                        Intent navi = new Intent(MainActivity.this, NavMode.class);
+                        Intent navi = new Intent(MainActivity.this, Navigation.class);
                         startActivity(navi);
                         Toast.makeText(MainActivity.this, "Navigation Mode Selected", Toast.LENGTH_SHORT).show();
                         break;
@@ -273,4 +269,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     *Activitiy Lifecycle
+     */
+
+
 }
+

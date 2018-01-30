@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import com.training.android.undivided.AutoReply.AutoReplyActivity;
 import com.training.android.undivided.CallLog.CallLogActivity;
+import com.training.android.undivided.GroupSender.GroupSenderActivity;
 
 public class Functions extends AppCompatActivity {
 
@@ -17,6 +18,7 @@ public class Functions extends AppCompatActivity {
     Button mbtnEmergency;
     Button mbtnDAS;
     Button mbtnCallLog;
+    Button mbtnCreateGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,7 @@ public class Functions extends AppCompatActivity {
         mbtnEmergency = (Button) findViewById(R.id.btnEmergency);
         mbtnDAS = (Button) findViewById(R.id.btnDisableAppSwitch);
         mbtnCallLog = findViewById(R.id.btnCallLog);
+        mbtnCreateGroup=findViewById(R.id.btnCreateGroup);
 
         mbtnCallLog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,5 +77,13 @@ public class Functions extends AppCompatActivity {
                 startActivity(DAS);
             }
         });
+        mbtnCreateGroup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent DAS = new Intent(Functions.this, GroupSenderActivity.class);
+                startActivity(DAS);
+            }
+        });
+
     }
 }
