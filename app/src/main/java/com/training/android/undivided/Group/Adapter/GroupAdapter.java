@@ -37,8 +37,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     public GroupAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         context = parent.getContext();
-        final View itemLayoutView = LayoutInflater.from(context).inflate(layout, null);
+        final View itemLayoutView = LayoutInflater.from(context).inflate(layout, parent, false);
         holder = new ViewHolder(itemLayoutView);
+
 
         return holder;
     }

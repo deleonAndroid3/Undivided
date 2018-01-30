@@ -64,7 +64,7 @@
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <!--Navigation Package-->
+        <!-- Navigation Package -->
         <activity
             android:name=".NavigationMode.Navigation"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -72,13 +72,12 @@
             android:name=".NavigationMode.SearchDestination"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <!--Group Package-->
+        <!-- Group Package -->
         <activity
             android:name=".Group.GroupContactPicker"
             android:label="@string/contactpicker_title"
             android:parentActivityName=".AutoReply.CustomizeMessage"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.training.android.undivided.AutoReply.CustomizeMessage" />
@@ -86,16 +85,15 @@
         <activity android:name=".Group.ViewGroup" />
         <activity android:name=".Group.AddGroup" />
 
-        <!--Authentication Package-->
+        <!-- Authentication Package -->
         <activity android:name=".Authentication.AuthActivity" />
 
-        <!--AUTO REPLY PACKAGE-->
+        <!-- AUTO REPLY PACKAGE -->
         <activity
             android:name=".AutoReply.ContactPicker"
             android:label="@string/contactpicker_title"
             android:parentActivityName=".AutoReply.CustomizeMessage"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.training.android.undivided.AutoReply.CustomizeMessage" />
@@ -117,6 +115,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AutoReply.AutoReplyActivity" />
+
         <receiver android:name=".AutoReply.BroadcastReceivers.SMSReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
@@ -140,16 +139,15 @@
                 android:resource="@xml/atm_widget" />
         </receiver>
 
-        <!--GroupSender Package-->
+        <!-- GroupSender Package -->
         <activity android:name=".GroupSender.Activity.MainActivity" />
-        <activity android:name=".GroupSender.GroupSenderActivity"/>
-        <activity android:name=".GroupSender.SimpleDividerItemDecoration"/>
+        <activity android:name=".GroupSender.GroupSenderActivity" />
+        <activity android:name=".GroupSender.SimpleDividerItemDecoration" />
 
-        <!--Intro Package-->
+        <!-- Intro Package -->
         <activity
             android:name=".Intro.WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".Settings" />
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
@@ -161,9 +159,9 @@
         <activity android:name=".Profile" />
         <activity android:name=".SafeMode" />
 
-        <!--Call Log Package-->
+        <!-- Call Log Package -->
         <activity android:name=".CallLog.CallLogActivity" />
-
+        <activity android:name=".Group.ViewCard"></activity>
     </application>
 
 </manifest>

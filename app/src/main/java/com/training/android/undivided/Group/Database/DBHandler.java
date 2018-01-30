@@ -172,4 +172,19 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
+    public boolean GroupNameExists(String name){
+
+        Cursor cursor = null;
+
+        try {
+            String sql = "SELECT groupid FROM " + TABLE_CREATE_GROUP + " WHERE groupname = '" + name + "'"  ;
+            cursor = db.rawQuery(sql, null);
+
+            return (cursor.getCount() > 0);
+        }finally {
+            if (cursor != null)
+                cursor.close();
+        }
+    }
+
 }

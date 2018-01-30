@@ -2,7 +2,6 @@ package com.training.android.undivided.Group;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -61,7 +60,7 @@ public class AddGroup extends AppCompatActivity {
         mEtGroupMessage.setHorizontallyScrolling(false);
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
+        if (bundle != null) {
             mEtGroupName.setText(bundle.getString("Title"));
             mEtGroupDescription.setText(bundle.getString("Desc"));
             mEtGroupMessage.setText(bundle.getString("Message"));
@@ -82,7 +81,20 @@ public class AddGroup extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.save_group:
-                showAlert();
+                if (mEtGroupName.getText().toString().trim().isEmpty()) {
+                    mEtGroupName.setError("Please provide group name");
+                }
+                if (mEtGroupDescription.getText().toString().trim().isEmpty()) {
+                    mEtGroupDescription.setError("Please provide group description");
+                }
+                if (mEtGroupMessage.getText().toString().trim().isEmpty()) {
+                    mEtGroupMessage.setError("Please provide group message");
+                }
+                if (!mEtGroupName.getText().toString().trim().isEmpty()
+                        && !mEtGroupDescription.getText().toString().trim().isEmpty()
+                        && !mEtGroupMessage.getText().toString().trim().isEmpty()) {
+                    showAlert();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -119,6 +131,7 @@ public class AddGroup extends AppCompatActivity {
         } else {
             builder = new AlertDialog.Builder(this);
         }
+
         builder.setTitle("Create Group")
                 .setMessage("Are you sure you want to create this group?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -148,7 +161,6 @@ public class AddGroup extends AppCompatActivity {
                 .show();
 
     }
-
 
 
 }
