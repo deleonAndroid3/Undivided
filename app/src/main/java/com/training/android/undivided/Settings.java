@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -94,6 +95,9 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         mAutoStartSwitch = (Switch) findViewById(R.id.swAutoStart);
+        //SET STATUS
+        SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
+        mAutoStartSwitch.setChecked(sharedPrefs.getBoolean("status", true));
 
         if(ContextCompat.checkSelfPermission(Settings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(Settings.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
@@ -106,6 +110,16 @@ public class Settings extends AppCompatActivity {
             }, 1000);
         }
 
+        /*if (tgpref = true) //if (tgpref) may be enough, not sure
+        {
+            mAutoStartSwitch.setChecked(true);
+        }
+        else
+        {
+            mAutoStartSwitch.setChecked(false);
+        }*/
+
+
         onClickListeners();
 
     }
@@ -116,24 +130,33 @@ public class Settings extends AppCompatActivity {
          * BACKGROUND FUNCTION WITH AUTO START ( INCLUDING ON DESTROY )
          * (IMPLEMENTED WITH SWITCH RIGHT NOW)
          */
+
+
         mAutoStartSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) {
-                    checkGPS();
-                    locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                    if(!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                        return;
-                    if(status==false)
+                    if (b) {
+                        checkGPS();
+                        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+                            return;
+
+                        SharedPreferences.Editor editor = getSharedPreferences("com.example.xyz", MODE_PRIVATE).edit();
+                        editor.putBoolean("status", true);
+                        editor.commit();
+
                         bindService();
-                }
-                else
-                {
-                    if(status==true)
+                    } else {
+                        SharedPreferences.Editor editor = getSharedPreferences("com.example.xyz", MODE_PRIVATE).edit();
+                        editor.putBoolean("status", false);
+                        editor.commit();
+
                         unbindService();
 
-                }
+
+                    }
+
 
                 /*Intent i = new Intent(Settings.this, BackgroundService.class);
                 if (b) {
