@@ -33,7 +33,7 @@ public class ViewGroup extends AppCompatActivity {
 
         dbHandler = new DBHandler(this);
 
-
+    // TODO: CHANGE UI FOR CARD GROUPS (VIEW GROUPS) - REFERENCE - ADDGROUP
         mAdapter = new GroupAdapter(dbHandler.getAllGroups(), this, R.layout.card_groups);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ViewGroup.this));

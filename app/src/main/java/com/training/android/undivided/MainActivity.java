@@ -33,7 +33,6 @@ import com.training.android.undivided.NavigationMode.SearchDestination;
 
 public class MainActivity extends AppCompatActivity {
 
-
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 11;
     AlertDialog ModeDialog;
     private ImageView mIvStart;
@@ -108,18 +107,33 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
+        if(!flag)
+        super.onBackPressed();
     }
 
+    @Override
     protected void onDestroy() {
-//        Intent intent = new Intent(this, BackgroundService.class);
-//        startService(intent);
+        Intent intent = new Intent(this, BackgroundService.class);
+        startService(intent);
         super.onDestroy();
 
 
     }
 
-    
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         if(!flag) {
                             mIvStart.setImageResource(R.drawable.undivided_drivemode_logo_red);
+
                             flag = true;
                         }
                         else {
