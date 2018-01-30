@@ -8,15 +8,4 @@
         android:orderInCategory="1"
         android:title="@string/contactpicker_menu_done" />
 
-    <item
-        android:id="@+id/contactpicker_action_selectAll"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:orderInCategory="2"
-        android:title="@string/contactpicker_menu_selectAll" />
-
-    <item
-        android:id="@+id/contactpicker_action_deselectAll"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:orderInCategory="3"
-        android:title="@string/contactpicker_menu_deselectAll" />
 </menu>

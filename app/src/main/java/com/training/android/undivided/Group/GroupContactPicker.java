@@ -61,7 +61,6 @@ public class GroupContactPicker extends AppCompatActivity {
 
     }
 
-
     private void getContactList() {
         Uri myContacts = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Data.DISPLAY_NAME};
@@ -130,7 +129,6 @@ public class GroupContactPicker extends AppCompatActivity {
         }
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_contact_picker, menu);
@@ -151,4 +149,9 @@ public class GroupContactPicker extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
 }

@@ -144,12 +144,6 @@ public class ContactPicker extends AppCompatActivity {
             case R.id.contactpicker_action_done:
                 doneSelected();
                 return true;
-            case R.id.contactpicker_action_selectAll:
-                setAll(true);
-                return true;
-            case R.id.contactpicker_action_deselectAll:
-                setAll(false);
-                return true;
             case android.R.id.home:
                 onBackPressed();
                 return true;

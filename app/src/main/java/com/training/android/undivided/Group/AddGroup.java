@@ -81,6 +81,9 @@ public class AddGroup extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.save_group:
+                if (dbHandler.GroupNameExists(mEtGroupName.getText().toString().toLowerCase())) {
+                    Toast.makeText(this, "Group Name " + mEtGroupName.getText() + " already exists", Toast.LENGTH_SHORT).show();
+                }
                 if (mEtGroupName.getText().toString().trim().isEmpty()) {
                     mEtGroupName.setError("Please provide group name");
                 }
@@ -92,7 +95,8 @@ public class AddGroup extends AppCompatActivity {
                 }
                 if (!mEtGroupName.getText().toString().trim().isEmpty()
                         && !mEtGroupDescription.getText().toString().trim().isEmpty()
-                        && !mEtGroupMessage.getText().toString().trim().isEmpty()) {
+                        && !mEtGroupMessage.getText().toString().trim().isEmpty()
+                        && !dbHandler.GroupNameExists(mEtGroupName.getText().toString().toLowerCase())) {
                     showAlert();
                 }
                 break;

@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.training.android.undivided.Group.Model.GroupModel;
@@ -51,14 +52,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.mtvName.setText(currentgm.getGroupName());
         holder.mtvDesc.setText(currentgm.getGroupDesc());
         holder.mtvGroupMessage.setText(currentgm.getGroupMessage());
-        holder.mtvRule1.setText(currentgm.getRule1() + "");
-        holder.mtvRule2.setText(currentgm.getRule2() + "");
-        holder.mtvRule3.setText(currentgm.getRule3() + "");
-        holder.mtvRule4.setText(currentgm.getRule4() + "");
-        holder.mtvRule5.setText(currentgm.getRule5() + "");
-        holder.mtvRule6.setText(currentgm.getRule6() + "");
-        holder.mtvRule7.setText(currentgm.getRule7() + "");
-
 
     }
 
@@ -86,13 +79,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         TextView mtvName;
         TextView mtvDesc;
         TextView mtvGroupMessage;
-        TextView mtvRule1;
-        TextView mtvRule2;
-        TextView mtvRule3;
-        TextView mtvRule4;
-        TextView mtvRule5;
-        TextView mtvRule6;
-        TextView mtvRule7;
+
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -100,13 +88,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             mtvName = itemView.findViewById(R.id.tvName);
             mtvDesc = itemView.findViewById(R.id.tvDesc);
             mtvGroupMessage = itemView.findViewById(R.id.tvGroupMessage);
-            mtvRule1 = itemView.findViewById(R.id.tvRule1);
-            mtvRule2 = itemView.findViewById(R.id.tvRule2);
-            mtvRule3 = itemView.findViewById(R.id.tvRule3);
-            mtvRule4 = itemView.findViewById(R.id.tvRule4);
-            mtvRule5 = itemView.findViewById(R.id.tvRule5);
-            mtvRule6 = itemView.findViewById(R.id.tvRule6);
-            mtvRule7 = itemView.findViewById(R.id.tvRule7);
+
         }
     }
 

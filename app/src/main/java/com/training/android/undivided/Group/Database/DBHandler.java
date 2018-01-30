@@ -177,7 +177,7 @@ public class DBHandler extends SQLiteOpenHelper {
         Cursor cursor = null;
 
         try {
-            String sql = "SELECT groupid FROM " + TABLE_CREATE_GROUP + " WHERE groupname = '" + name + "'"  ;
+            String sql = "SELECT groupid FROM " + TABLE_CREATE_GROUP + " WHERE lower(groupname) = '" + name + "'"  ;
             cursor = db.rawQuery(sql, null);
 
             return (cursor.getCount() > 0);

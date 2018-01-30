@@ -30,8 +30,6 @@ public class ViewGroup extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Groups");
 
-        //TODO: Check if an EMERGENCY Group Exists in group table (DONE)
-
         dbHandler = new DBHandler(this);
 
         if (dbHandler.EmergencyGroupExists()) {

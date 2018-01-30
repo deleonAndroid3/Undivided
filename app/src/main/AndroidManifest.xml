@@ -77,13 +77,14 @@
             android:name=".Group.GroupContactPicker"
             android:label="@string/contactpicker_title"
             android:parentActivityName=".AutoReply.CustomizeMessage"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.training.android.undivided.AutoReply.CustomizeMessage" />
         </activity>
         <activity android:name=".Group.ViewGroup" />
         <activity android:name=".Group.AddGroup" />
+        <activity android:name=".Group.ViewCard"/>
 
         <!-- Authentication Package -->
         <activity android:name=".Authentication.AuthActivity" />
@@ -161,7 +162,7 @@
 
         <!-- Call Log Package -->
         <activity android:name=".CallLog.CallLogActivity" />
-        <activity android:name=".Group.ViewCard"></activity>
+
     </application>
 
 </manifest>

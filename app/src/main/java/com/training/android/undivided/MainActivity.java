@@ -22,11 +22,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
+import com.training.android.undivided.BackgroundService.BackgroundService;
 import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.NavigationMode.Navigation;
 
 public class MainActivity extends AppCompatActivity {
-
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 11;
     AlertDialog ModeDialog;
@@ -103,7 +103,32 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
+        if(!flag)
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(this, BackgroundService.class);
+        startService(intent);
+        super.onDestroy();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -150,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         if(!flag) {
                             mIvStart.setImageResource(R.drawable.undivided_drivemode_logo_red);
+
                             flag = true;
                         }
                         else {
@@ -189,7 +215,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "Passenger Mode Selected", Toast.LENGTH_SHORT).show();
                         break;
                 }
-
 
             }
         });
@@ -233,10 +258,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.drawer_history:
                         break;
                 }
-
-
-
-                menuItem.setChecked(true);
+                menuItem.setChecked(false);
                 drawerLayout.closeDrawers();
                 return true;
             }
@@ -248,13 +270,6 @@ public class MainActivity extends AppCompatActivity {
      *Activitiy Lifecycle
      */
 
-    protected void onDestroy() {
-//        Intent intent = new Intent(this, BackgroundService.class);
-//        startService(intent);
-        super.onDestroy();
-
-
-    }
 
 }
 
