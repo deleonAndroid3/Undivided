@@ -111,19 +111,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-//    public List<GroupModel> getallGroups() {
-//        SQLiteDatabase rdb = getReadableDatabase();
-//        List<GroupModel> list = new ArrayList<>();
-//
-//        Cursor c = rdb.rawQuery("SELECT * from " + TABLE_CREATE_GROUP, null);
-//
-//        while (c.moveToNext()){
-//            c.getColumnIndex()
-//        }
-//
-//        return list;
-//    }
-
     public ArrayList<GroupModel> getAllGroups() {
         SQLiteDatabase rdb = getReadableDatabase();
         Cursor c = rdb.rawQuery("SELECT * FROM " + TABLE_CREATE_GROUP, null);
@@ -151,6 +138,38 @@ public class DBHandler extends SQLiteOpenHelper {
         rdb.close();
 
         return list;
+    }
+
+    public boolean EmergencyGroupExists() {
+
+        Cursor cursor = null;
+
+        try {
+            String sql = "SELECT groupid FROM " + TABLE_CREATE_GROUP + " WHERE groupname = 'Emergency'";
+            cursor = db.rawQuery(sql, null);
+
+            return (cursor.getCount() > 0);
+        }finally {
+            if (cursor != null)
+                cursor.close();
+        }
+
+    }
+
+    public boolean numberExists(String Phonenum){
+
+        Cursor cursor = null;
+
+        try {
+            String sql = "SELECT contactid FROM " + TABLE_CONTACTS + " WHERE contactnum = '" + Phonenum + "' AND NOT group_id = 1 " ;
+            cursor = db.rawQuery(sql, null);
+
+            return (cursor.getCount() > 0);
+        }finally {
+            if (cursor != null)
+                cursor.close();
+        }
+
     }
 
 }

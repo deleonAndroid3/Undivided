@@ -2,6 +2,7 @@ package com.training.android.undivided.Group;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,6 +59,20 @@ public class AddGroup extends AppCompatActivity {
         mEtGroupDescription.setHorizontallyScrolling(false);
         mEtGroupMessage.setMaxLines(Integer.MAX_VALUE);
         mEtGroupMessage.setHorizontallyScrolling(false);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            mEtGroupName.setText(bundle.getString("Title"));
+            mEtGroupDescription.setText(bundle.getString("Desc"));
+            mEtGroupMessage.setText(bundle.getString("Message"));
+            cbRule1.setEnabled(false);
+            cbRule2.setEnabled(false);
+            cbRule3.setEnabled(false);
+            cbRule4.setEnabled(false);
+            cbRule5.setEnabled(false);
+            cbRule6.setEnabled(false);
+            cbRule7.setEnabled(false);
+        }
     }
 
     @Override
@@ -133,5 +148,7 @@ public class AddGroup extends AppCompatActivity {
                 .show();
 
     }
+
+
 
 }

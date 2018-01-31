@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.training.android.undivided.Group.Model.GroupModel;
@@ -50,13 +51,38 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         holder.mtvName.setText(currentgm.getGroupName());
         holder.mtvDesc.setText(currentgm.getGroupDesc());
         holder.mtvGroupMessage.setText(currentgm.getGroupMessage());
-        holder.mtvRule1.setText(currentgm.getRule1() + "");
+       /* holder.mtvRule1.setText(currentgm.getRule1() + "");
         holder.mtvRule2.setText(currentgm.getRule2() + "");
         holder.mtvRule3.setText(currentgm.getRule3() + "");
         holder.mtvRule4.setText(currentgm.getRule4() + "");
         holder.mtvRule5.setText(currentgm.getRule5() + "");
         holder.mtvRule6.setText(currentgm.getRule6() + "");
-        holder.mtvRule7.setText(currentgm.getRule7() + "");
+        holder.mtvRule7.setText(currentgm.getRule7() + "");*/
+
+        if(currentgm.getRule1() == 1){
+           holder.cbRule1.setChecked(true);
+        }
+        if(currentgm.getRule2() == 1){
+            holder.cbRule2.setChecked(true);
+        }
+        if(currentgm.getRule3() == 1){
+            holder.cbRule3.setChecked(true);
+        }
+        if(currentgm.getRule4() == 1){
+            holder.cbRule4.setChecked(true);
+        }
+        if(currentgm.getRule5() == 1){
+            holder.cbRule5.setChecked(true);
+        }
+        if(currentgm.getRule6() == 1){
+            holder.cbRule6.setChecked(true);
+        }
+        if(currentgm.getRule7() == 1){
+            holder.cbRule7.setChecked(true);
+        }
+//        holder.mtvRule7.setText(currentgm.getRule7() + "");
+
+
     }
 
 
@@ -91,19 +117,37 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         TextView mtvRule6;
         TextView mtvRule7;
 
+        private CheckBox cbRule1;
+        private CheckBox cbRule2;
+        private CheckBox cbRule3;
+        private CheckBox cbRule4;
+        private CheckBox cbRule5;
+        private CheckBox cbRule6;
+        private CheckBox cbRule7;
+
+
         public ViewHolder(View itemView) {
             super(itemView);
 
             mtvName = itemView.findViewById(R.id.tvName);
             mtvDesc = itemView.findViewById(R.id.tvDesc);
             mtvGroupMessage = itemView.findViewById(R.id.tvGroupMessage);
-            mtvRule1 = itemView.findViewById(R.id.tvRule1);
+
+            cbRule1 = itemView.findViewById(R.id.cbRule1);
+            cbRule2 = itemView.findViewById(R.id.cbRule2);
+            cbRule3 = itemView.findViewById(R.id.cbRule3);
+            cbRule4 = itemView.findViewById(R.id.cbRule4);
+            cbRule5 = itemView.findViewById(R.id.cbRule5);
+            cbRule6 = itemView.findViewById(R.id.cbRule6);
+            cbRule7 = itemView.findViewById(R.id.cbRule7);
+
+            /*mtvRule1 = itemView.findViewById(R.id.tvRule1);
             mtvRule2 = itemView.findViewById(R.id.tvRule2);
             mtvRule3 = itemView.findViewById(R.id.tvRule3);
             mtvRule4 = itemView.findViewById(R.id.tvRule4);
             mtvRule5 = itemView.findViewById(R.id.tvRule5);
             mtvRule6 = itemView.findViewById(R.id.tvRule6);
-            mtvRule7 = itemView.findViewById(R.id.tvRule7);
+            mtvRule7 = itemView.findViewById(R.id.tvRule7);*/
         }
     }
 

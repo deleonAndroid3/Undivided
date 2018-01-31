@@ -18,14 +18,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.stetho.Stetho;
+import com.training.android.undivided.BackgroundService.BackgroundService;
+import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.NavigationMode.Navigation;
 
 public class MainActivity extends AppCompatActivity {
-
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 11;
     AlertDialog ModeDialog;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Stetho.initializeWithDefaults(this);
 
         Intent i = getIntent();
         if(i.getFlags()==Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -100,7 +103,32 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
+        if(!flag)
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(this, BackgroundService.class);
+        startService(intent);
+        super.onDestroy();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -147,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         if(!flag) {
                             mIvStart.setImageResource(R.drawable.undivided_drivemode_logo_red);
+
                             flag = true;
                         }
                         else {
@@ -245,13 +274,6 @@ public class MainActivity extends AppCompatActivity {
      *Activitiy Lifecycle
      */
 
-    protected void onDestroy() {
-//        Intent intent = new Intent(this, BackgroundService.class);
-//        startService(intent);
-        super.onDestroy();
-
-
-    }
 
 }
 

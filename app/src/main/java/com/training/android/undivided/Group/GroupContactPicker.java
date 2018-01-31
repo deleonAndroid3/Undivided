@@ -10,9 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.training.android.undivided.Group.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
@@ -101,11 +101,18 @@ public class GroupContactPicker extends AppCompatActivity {
         ContactsModel cm = new ContactsModel();
 
         for (int i = 0; i < listView.getCount(); i++) {
+
             if (checked.get(i)) {
                 cm.setContactName(contactNames.get(i));
                 cm.setContactNumber(phoneNos.get(i));
-                db.addContact(cm, name.getStringExtra("groupname"));
+                if (db.numberExists(phoneNos.get(i))) {
+                    //TODO: create an alert dialog if a number exists in another group
+                    Toast.makeText(this, "Phone Number " + phoneNos.get(i) + " already exists in another group and won't be added to this group", Toast.LENGTH_SHORT).show();
+                } else {
+                    db.addContact(cm, name.getStringExtra("groupname"));
+                }
             }
+
         }
 
         Handler handler = new Handler();
