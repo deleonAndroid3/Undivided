@@ -1,46 +1,36 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="5dp"
-    android:background="?android:colorBackground"
-    tools:context="com.training.android.undivided.GroupSender.Fragment.MessageFragment">
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="com.training.android.undivided.GroupSender.Module.Message_List.MessageFragment">
+    <TextView
+        android:id="@+id/search_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/bg_search"
+        android:drawableStart="@drawable/ic_menu_search"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/search_message"
+        android:textColor="@android:color/darker_gray"
+        android:transitionName="@string/transition_name_search"
+        tools:ignore="RtlCompat" />
 
-    <RelativeLayout
-        android:id="@+id/display_frame"
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#11CD6E"/>
+
+    <include
+        layout="@layout/layout_empty"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/message_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swiperefresh"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/message_list"
-                android:layout_width="match_parent"
-                android:layout_height="455dp"
-                android:scrollbars="vertical" />
-        </android.support.v4.widget.SwipeRefreshLayout>
-    </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/waiting_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
-
-        <TextView
-            android:id="@+id/nothing_to_show"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="@string/no_message"
-            android:textColor="#1a1a1a"
-            android:textSize="18sp" />
-
-    </FrameLayout>
-
-
-</FrameLayout>
+        tools:listitem="@layout/item_message"/>
+</LinearLayout>

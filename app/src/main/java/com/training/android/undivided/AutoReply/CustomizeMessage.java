@@ -84,6 +84,7 @@ public class CustomizeMessage extends AppCompatActivity {
 		/*	Set onCheckedChangeListener to the ContactFilter switch
         /	when turned on, launches contact picker
 		*/
+
         switchContactsFilter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

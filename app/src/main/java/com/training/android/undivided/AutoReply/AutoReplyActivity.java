@@ -124,7 +124,7 @@ public class AutoReplyActivity extends AppCompatActivity {
                 launchAddEditRuleActivity(null); //launch addEdit rule in add mode
                 return true;
             case R.id.action_outbox:
-                startActivity(new Intent(this, Outbox.class));
+              //  startActivity(new Intent(this, Outbox.class));
                 return true;
 
             default:
@@ -146,7 +146,7 @@ public class AutoReplyActivity extends AppCompatActivity {
     }
     public void onItemToggleClicked(final String name, int position, final boolean status) {
 
-        Log.i(logTag, "onItemToggleClicked for " + name + " at " + position + ", settign status to " + status);
+        Log.i(logTag, "onItemToggleClicked for " + name + " at " + position + ", setting status to " + status);
 
         // Get the old rule to make it easier to construct the new one
         Rule cRule = ruleArray.get(position);
