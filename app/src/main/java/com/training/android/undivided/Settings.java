@@ -22,7 +22,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -30,9 +37,13 @@ import java.lang.reflect.Method;
 
 import com.google.android.gms.location.LocationServices;
 import com.training.android.undivided.BackgroundService.BackgroundService;
+import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Group.Model.GroupModel;
 
 public class Settings extends AppCompatActivity {
 
+    private DBHandler dbHandler;
+    private EditText mEtThreshold;
     private Switch mAutoStartSwitch;
     private Switch mAutoDeclineCalls;
     BackgroundService myService;
@@ -40,6 +51,7 @@ public class Settings extends AppCompatActivity {
     LocationManager locationManager;
     public static long startTime, endTime;
     public static int p=0;
+    Spinner spinner;
 
     private ServiceConnection sc = new ServiceConnection() {
         @Override
@@ -94,10 +106,26 @@ public class Settings extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        // SET SPINNER
+        SharedPreferences thresholdPrefs = getSharedPreferences("com.example.threshold", MODE_PRIVATE);
+        spinner = findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.threshold_selection, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(adapter);
+
+        spinner.setSelection(adapter.getPosition(thresholdPrefs.getString("threshold", String.valueOf(1))));
+//        //THRESHOLD
+//        mEtThreshold = findViewById(R.id.etThreshold);
+//
+//        mEtThreshold.setText(thresholdPrefs.getString("threshold", String.valueOf(0)));
+//        //
         mAutoStartSwitch = (Switch) findViewById(R.id.swAutoStart);
         //SET STATUS
         SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
-        mAutoStartSwitch.setChecked(sharedPrefs.getBoolean("status", true));
+        mAutoStartSwitch.setChecked(sharedPrefs.getBoolean("status", false));
 
         if(ContextCompat.checkSelfPermission(Settings.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(Settings.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
@@ -110,18 +138,50 @@ public class Settings extends AppCompatActivity {
             }, 1000);
         }
 
-        /*if (tgpref = true) //if (tgpref) may be enough, not sure
-        {
-            mAutoStartSwitch.setChecked(true);
-        }
-        else
-        {
-            mAutoStartSwitch.setChecked(false);
-        }*/
+//        /*if (tgpref = true) //if (tgpref) may be enough, not sure
+//        {
+//            mAutoStartSwitch.setChecked(true);
+//        }
+//        else
+//        {
+//            mAutoStartSwitch.setChecked(false);
+//        }*/
 
 
         onClickListeners();
 
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                SharedPreferences.Editor editor = getSharedPreferences("com.example.threshold", MODE_PRIVATE).edit();
+                editor.putString("threshold", String.valueOf(spinner.getSelectedItem()));
+                editor.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+//        mEtThreshold.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//                SharedPreferences.Editor editor = getSharedPreferences("com.example.threshold", MODE_PRIVATE).edit();
+//                editor.putString("threshold", String.valueOf(mEtThreshold.getText()));
+//                editor.commit();
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//            }
+//        });
     }
 
 
@@ -146,26 +206,28 @@ public class Settings extends AppCompatActivity {
                         editor.putBoolean("status", true);
                         editor.commit();
 
+                        if(status == false)
                         bindService();
                     } else {
                         SharedPreferences.Editor editor = getSharedPreferences("com.example.xyz", MODE_PRIVATE).edit();
                         editor.putBoolean("status", false);
                         editor.commit();
 
+                        if(status == true)
                         unbindService();
 
 
                     }
 
 
-                /*Intent i = new Intent(Settings.this, BackgroundService.class);
-                if (b) {
-                    startService(i);
-                    Toast.makeText(Settings.this, "Auto Start enabled", Toast.LENGTH_SHORT).show();
-                } else {
-                    stopService(i);
-                    Toast.makeText(Settings.this, "Auto Start disabled", Toast.LENGTH_SHORT).show();
-                }*/
+//                /*Intent i = new Intent(Settings.this, BackgroundService.class);
+//                if (b) {
+//                    startService(i);
+//                    Toast.makeText(Settings.this, "Auto Start enabled", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    stopService(i);
+//                    Toast.makeText(Settings.this, "Auto Start disabled", Toast.LENGTH_SHORT).show();
+//                }*/
             }
         });
 
@@ -207,6 +269,11 @@ public class Settings extends AppCompatActivity {
         bindService(i,sc,BIND_AUTO_CREATE);
         status= true;
         startTime = System.currentTimeMillis();
+    }
+    public void getData() {
+        GroupModel gm = new GroupModel();
+        gm.setGroupName(mEtThreshold.getText().toString());
+        dbHandler.addGroup(gm);
     }
 
     public void disconnectCall() {
