@@ -219,4 +219,6 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="access_token">pk.eyJ1IjoiZGpkeXN0ZSIsImEiOiJjajhuOGt0ZGsxNnJsMndzN2FqNXZ2cWR6In0.9mCwvUJDx78LkgaWCUmQdw</string>
     <string name="directions_activity_toast_message">Route is %1$f meters long.</string>
+    <string name="edit_group">Edit Group</string>
+    <string name="edit_contacts">Edit Contacts</string>
 </resources>

@@ -11,13 +11,12 @@ public class GroupModel {
     private int Rule4;
     private int Rule5;
     private int Rule6;
-    private int Rule7;
 
     public GroupModel() {
     }
 
     public GroupModel(String groupName, String groupDesc, String groupMessage,
-                      int rule1, int rule2, int rule3, int rule4, int rule5, int rule6, int rule7) {
+                      int rule1, int rule2, int rule3, int rule4, int rule5, int rule6) {
         GroupName = groupName;
         GroupDesc = groupDesc;
         GroupMessage = groupMessage;
@@ -27,7 +26,7 @@ public class GroupModel {
         Rule4 = rule4;
         Rule5 = rule5;
         Rule6 = rule6;
-        Rule7 = rule7;
+
     }
 
     public String getGroupName() {
@@ -66,10 +65,6 @@ public class GroupModel {
         return Rule6;
     }
 
-    public int getRule7() {
-        return Rule7;
-    }
-
     public void setGroupName(String groupName) {
         GroupName = groupName;
     }
@@ -106,7 +101,4 @@ public class GroupModel {
         Rule6 = rule6;
     }
 
-    public void setRule7(int rule7) {
-        Rule7 = rule7;
-    }
 }

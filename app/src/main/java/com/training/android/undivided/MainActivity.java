@@ -243,12 +243,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupDrawerLayout() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-
+                menuItem.setChecked(false);
                 switch (menuItem.getItemId()) {
                     case R.id.drawer_profile :
                         break;
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.drawer_history:
                         break;
                 }
-                menuItem.setChecked(false);
+
                 drawerLayout.closeDrawers();
                 return true;
             }

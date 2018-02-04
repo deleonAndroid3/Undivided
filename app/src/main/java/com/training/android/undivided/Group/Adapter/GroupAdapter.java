@@ -1,14 +1,16 @@
 package com.training.android.undivided.Group.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.training.android.undivided.Group.Model.GroupModel;
+import com.training.android.undivided.Group.ViewCard;
 import com.training.android.undivided.R;
 
 import java.util.List;
@@ -46,15 +48,32 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         currentgm = listgm.get(position);
 
         holder.mtvName.setText(currentgm.getGroupName());
         holder.mtvDesc.setText(currentgm.getGroupDesc());
         holder.mtvGroupMessage.setText(currentgm.getGroupMessage());
 
-    }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, position + "", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(context, ViewCard.class);
+                i.putExtra("name", listgm.get(position).getGroupName());
+                i.putExtra("desc", listgm.get(position).getGroupDesc());
+                i.putExtra("message", listgm.get(position).getGroupMessage());
+                i.putExtra("1", listgm.get(position).getRule1());
+                i.putExtra("2", listgm.get(position).getRule2());
+                i.putExtra("3", listgm.get(position).getRule3());
+                i.putExtra("4", listgm.get(position).getRule4());
+                i.putExtra("5", listgm.get(position).getRule5());
+                i.putExtra("6", listgm.get(position).getRule6());
+                context.startActivity(i);
+            }
+        });
 
+    }
 
     @Override
     public int getItemCount() {
@@ -79,8 +98,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         TextView mtvName;
         TextView mtvDesc;
         TextView mtvGroupMessage;
-
-
 
         public ViewHolder(View itemView) {
             super(itemView);

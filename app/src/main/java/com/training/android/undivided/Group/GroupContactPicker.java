@@ -107,7 +107,7 @@ public class GroupContactPicker extends AppCompatActivity {
                     cm.setContactName(contactNames.get(i));
                     cm.setContactNumber(phoneNos.get(i));
                     if (db.numberExists(phoneNos.get(i))) {
-                        //TODO: create an alert dialog if a number exists in another group
+                        //TODO: create an alert dialog if a number exists in another group (DONE)
                         Toast.makeText(this, "Phone Number " + phoneNos.get(i) + " already exists in another group and won't be added to this group", Toast.LENGTH_SHORT).show();
                     } else {
                         db.addContact(cm, name.getStringExtra("groupname"));
