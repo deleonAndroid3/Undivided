@@ -31,7 +31,7 @@
         android:icon="@mipmap/undivided_logo_notext"
         android:label="@string/app_name"
         android:launchMode="singleTask"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/undivided_logo_notext"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
@@ -163,7 +163,8 @@
         <activity android:name=".Functions" />
         <activity android:name=".DisableAppSwitch" />
         <activity android:name=".Profile" />
-        <activity android:name=".SafeMode" />
+        <activity android:name=".SafeMode"
+            android:theme="@style/AppTheme.NoActionBarRed"/>
 
         <activity android:name=".GroupSender.Module.GroupSenderActivity"/>
 
