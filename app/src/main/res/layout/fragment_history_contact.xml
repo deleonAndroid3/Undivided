@@ -3,6 +3,7 @@
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme.NoActionBar"
     tools:context="com.training.android.undivided.GroupSender.Module.Contacts.HistoryContactFragment">
 
     <RelativeLayout

@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_margin="5dp"
+    android:theme="@style/AppTheme.NoActionBar"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/cardview_light_background"
     app:cardCornerRadius="6dp">
@@ -21,7 +22,7 @@
         android:padding="10dp"
         android:textColor="#11CD6E"
         android:textSize="20sp"
-        tools:text="Inno Fang"/>
+        tools:text="Undivided"/>
 
     <TextView
         android:id="@+id/contact_phone_text_view"

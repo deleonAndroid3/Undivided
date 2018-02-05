@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="end"
+    android:theme="@style/AppTheme.NoActionBar"
     tools:context="com.training.android.undivided.GroupSender.Module.Edit_Message.EditMessageFragment">
 
     <LinearLayout

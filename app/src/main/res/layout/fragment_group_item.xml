@@ -5,6 +5,7 @@
     android:background="?android:colorBackground"
     android:descendantFocusability="afterDescendants"
     android:orientation="vertical"
+    android:theme="@style/AppTheme.NoActionBar"
     tools:context="com.training.android.undivided.GroupSender.Fragment.GroupItemFragment">
 
     <LinearLayout

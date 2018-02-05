@@ -166,7 +166,8 @@
         <activity android:name=".SafeMode"
             android:theme="@style/AppTheme.NoActionBarRed"/>
 
-        <activity android:name=".GroupSender.Module.GroupSenderActivity"/>
+        <activity android:name=".GroupSender.Module.GroupSenderActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
 
         <!-- Call Log Package -->
