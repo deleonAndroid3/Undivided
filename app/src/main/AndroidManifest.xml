@@ -78,13 +78,18 @@
             android:name=".Group.GroupContactPicker"
             android:label="@string/contactpicker_title"
             android:parentActivityName=".AutoReply.CustomizeMessage"
+
+            android:theme="@style/AppTheme">
+
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.training.android.undivided.AutoReply.CustomizeMessage" />
         </activity>
         <activity android:name=".Group.ViewGroup" />
         <activity android:name=".Group.AddGroup" />
+        <activity android:name=".Group.ViewCard"/>
 
         <!-- Authentication Package -->
         <activity android:name=".Authentication.AuthActivity" />
@@ -141,7 +146,10 @@
         </receiver>
 
 
-
+        <!-- GroupSender Package -->
+        <activity android:name=".GroupSender.Activity.MainActivity" />
+        <activity android:name=".GroupSender.GroupSenderActivity" />
+        <activity android:name=".GroupSender.SimpleDividerItemDecoration" />
 
         <!-- Intro Package -->
         <activity
@@ -150,7 +158,6 @@
         <activity android:name=".Settings" />
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
-        <!-- <activity android:name=".EditReplyMessage" /> -->
         <activity android:name=".History" />
         <activity android:name=".Emergency" />
         <activity android:name=".Functions" />
@@ -159,10 +166,8 @@
         <activity android:name=".SafeMode"
             android:theme="@style/AppTheme.NoActionBarRed"/>
 
-        <activity android:name=".GroupSender.Module.GroupSenderActivity"
+        <activity android:name=".GroupSender.Module.GroupSenderActivity"/>
 
-            >
-            </activity>
 
         <!-- Call Log Package -->
         <activity android:name=".CallLog.CallLogActivity" />
@@ -171,22 +176,14 @@
         <activity
             android:name=".GroupSender.Module.Edit_Message.EditMessageActivity"
             android:label="@string/edit_message"
-            android:theme="@style/AppTheme"
-            >
+            android:theme="@style/AppTheme"/>
 
-
-            </activity>
         <activity android:name=".GroupSender.Module.Message_Detail.MessageDetailActivity"
+            android:theme="@style/AppTheme"/>
 
-            android:theme="@style/AppTheme"
-
-            >
-        </activity>
         <activity android:name=".GroupSender.Module.Search_Message.SearchMessageActivity"
             android:parentActivityName=".GroupSender.Module.GroupSenderActivity"
             >
-
-
         </activity>
         <activity android:name=".GroupSender.Module.Send_Message.SendMessageActivity"
 

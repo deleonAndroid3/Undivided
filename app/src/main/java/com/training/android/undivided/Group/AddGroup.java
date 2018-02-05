@@ -2,7 +2,6 @@ package com.training.android.undivided.Group;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,7 +30,6 @@ public class AddGroup extends AppCompatActivity {
     private CheckBox cbRule4;
     private CheckBox cbRule5;
     private CheckBox cbRule6;
-    private CheckBox cbRule7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +50,7 @@ public class AddGroup extends AppCompatActivity {
         cbRule3 = (CheckBox) findViewById(R.id.autoreplycall);
         cbRule4 = (CheckBox) findViewById(R.id.replysms);
         cbRule5 = (CheckBox) findViewById(R.id.readsms);
-        cbRule6 = (CheckBox) findViewById(R.id.voicemail);
-        cbRule7 = (CheckBox) findViewById(R.id.answercall);
+        cbRule6 = (CheckBox) findViewById(R.id.answercall);
 
         mEtGroupDescription.setMaxLines(Integer.MAX_VALUE);
         mEtGroupDescription.setHorizontallyScrolling(false);
@@ -61,17 +58,17 @@ public class AddGroup extends AppCompatActivity {
         mEtGroupMessage.setHorizontallyScrolling(false);
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
+        if (bundle != null) {
             mEtGroupName.setText(bundle.getString("Title"));
             mEtGroupDescription.setText(bundle.getString("Desc"));
             mEtGroupMessage.setText(bundle.getString("Message"));
+            mEtGroupName.setEnabled(false);
             cbRule1.setEnabled(false);
             cbRule2.setEnabled(false);
             cbRule3.setEnabled(false);
             cbRule4.setEnabled(false);
             cbRule5.setEnabled(false);
             cbRule6.setEnabled(false);
-            cbRule7.setEnabled(false);
         }
     }
 
@@ -82,7 +79,24 @@ public class AddGroup extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.save_group:
-                showAlert();
+                if (dbHandler.GroupNameExists(mEtGroupName.getText().toString().toLowerCase())) {
+                    Toast.makeText(this, "Group Name " + mEtGroupName.getText() + " already exists", Toast.LENGTH_SHORT).show();
+                }
+                if (mEtGroupName.getText().toString().trim().isEmpty()) {
+                    mEtGroupName.setError("Please provide group name");
+                }
+                if (mEtGroupDescription.getText().toString().trim().isEmpty()) {
+                    mEtGroupDescription.setError("Please provide group description");
+                }
+                if (mEtGroupMessage.getText().toString().trim().isEmpty()) {
+                    mEtGroupMessage.setError("Please provide group message");
+                }
+                if (!mEtGroupName.getText().toString().trim().isEmpty()
+                        && !mEtGroupDescription.getText().toString().trim().isEmpty()
+                        && !mEtGroupMessage.getText().toString().trim().isEmpty()
+                        && !dbHandler.GroupNameExists(mEtGroupName.getText().toString().toLowerCase())) {
+                    showAlert();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -105,7 +119,6 @@ public class AddGroup extends AppCompatActivity {
         gm.setRule4(cbRule4.isChecked() ? 1 : 0);
         gm.setRule5(cbRule5.isChecked() ? 1 : 0);
         gm.setRule6(cbRule6.isChecked() ? 1 : 0);
-        gm.setRule7(cbRule7.isChecked() ? 1 : 0);
         dbHandler.addGroup(gm);
 
     }
@@ -119,6 +132,7 @@ public class AddGroup extends AppCompatActivity {
         } else {
             builder = new AlertDialog.Builder(this);
         }
+
         builder.setTitle("Create Group")
                 .setMessage("Are you sure you want to create this group?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -148,7 +162,6 @@ public class AddGroup extends AppCompatActivity {
                 .show();
 
     }
-
 
 
 }

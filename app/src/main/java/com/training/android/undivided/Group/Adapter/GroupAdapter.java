@@ -1,14 +1,16 @@
 package com.training.android.undivided.Group.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.training.android.undivided.Group.Model.GroupModel;
+import com.training.android.undivided.Group.ViewCard;
 import com.training.android.undivided.R;
 
 import java.util.List;
@@ -38,53 +40,40 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     public GroupAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         context = parent.getContext();
-        final View itemLayoutView = LayoutInflater.from(context).inflate(layout, null);
+        final View itemLayoutView = LayoutInflater.from(context).inflate(layout, parent, false);
         holder = new ViewHolder(itemLayoutView);
+
 
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         currentgm = listgm.get(position);
 
         holder.mtvName.setText(currentgm.getGroupName());
         holder.mtvDesc.setText(currentgm.getGroupDesc());
         holder.mtvGroupMessage.setText(currentgm.getGroupMessage());
-       /* holder.mtvRule1.setText(currentgm.getRule1() + "");
-        holder.mtvRule2.setText(currentgm.getRule2() + "");
-        holder.mtvRule3.setText(currentgm.getRule3() + "");
-        holder.mtvRule4.setText(currentgm.getRule4() + "");
-        holder.mtvRule5.setText(currentgm.getRule5() + "");
-        holder.mtvRule6.setText(currentgm.getRule6() + "");
-        holder.mtvRule7.setText(currentgm.getRule7() + "");*/
 
-        if(currentgm.getRule1() == 1){
-           holder.cbRule1.setChecked(true);
-        }
-        if(currentgm.getRule2() == 1){
-            holder.cbRule2.setChecked(true);
-        }
-        if(currentgm.getRule3() == 1){
-            holder.cbRule3.setChecked(true);
-        }
-        if(currentgm.getRule4() == 1){
-            holder.cbRule4.setChecked(true);
-        }
-        if(currentgm.getRule5() == 1){
-            holder.cbRule5.setChecked(true);
-        }
-        if(currentgm.getRule6() == 1){
-            holder.cbRule6.setChecked(true);
-        }
-        if(currentgm.getRule7() == 1){
-            holder.cbRule7.setChecked(true);
-        }
-//        holder.mtvRule7.setText(currentgm.getRule7() + "");
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, position + "", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(context, ViewCard.class);
+                i.putExtra("name", listgm.get(position).getGroupName());
+                i.putExtra("desc", listgm.get(position).getGroupDesc());
+                i.putExtra("message", listgm.get(position).getGroupMessage());
+                i.putExtra("1", listgm.get(position).getRule1());
+                i.putExtra("2", listgm.get(position).getRule2());
+                i.putExtra("3", listgm.get(position).getRule3());
+                i.putExtra("4", listgm.get(position).getRule4());
+                i.putExtra("5", listgm.get(position).getRule5());
+                i.putExtra("6", listgm.get(position).getRule6());
+                context.startActivity(i);
+            }
+        });
 
     }
-
 
     @Override
     public int getItemCount() {
@@ -109,22 +98,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         TextView mtvName;
         TextView mtvDesc;
         TextView mtvGroupMessage;
-        TextView mtvRule1;
-        TextView mtvRule2;
-        TextView mtvRule3;
-        TextView mtvRule4;
-        TextView mtvRule5;
-        TextView mtvRule6;
-        TextView mtvRule7;
-
-        private CheckBox cbRule1;
-        private CheckBox cbRule2;
-        private CheckBox cbRule3;
-        private CheckBox cbRule4;
-        private CheckBox cbRule5;
-        private CheckBox cbRule6;
-        private CheckBox cbRule7;
-
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -133,21 +106,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
             mtvDesc = itemView.findViewById(R.id.tvDesc);
             mtvGroupMessage = itemView.findViewById(R.id.tvGroupMessage);
 
-            cbRule1 = itemView.findViewById(R.id.cbRule1);
-            cbRule2 = itemView.findViewById(R.id.cbRule2);
-            cbRule3 = itemView.findViewById(R.id.cbRule3);
-            cbRule4 = itemView.findViewById(R.id.cbRule4);
-            cbRule5 = itemView.findViewById(R.id.cbRule5);
-            cbRule6 = itemView.findViewById(R.id.cbRule6);
-            cbRule7 = itemView.findViewById(R.id.cbRule7);
-
-            /*mtvRule1 = itemView.findViewById(R.id.tvRule1);
-            mtvRule2 = itemView.findViewById(R.id.tvRule2);
-            mtvRule3 = itemView.findViewById(R.id.tvRule3);
-            mtvRule4 = itemView.findViewById(R.id.tvRule4);
-            mtvRule5 = itemView.findViewById(R.id.tvRule5);
-            mtvRule6 = itemView.findViewById(R.id.tvRule6);
-            mtvRule7 = itemView.findViewById(R.id.tvRule7);*/
         }
     }
 

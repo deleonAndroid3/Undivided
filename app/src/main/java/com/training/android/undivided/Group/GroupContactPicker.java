@@ -61,7 +61,6 @@ public class GroupContactPicker extends AppCompatActivity {
 
     }
 
-
     private void getContactList() {
         Uri myContacts = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.Data.DISPLAY_NAME};
@@ -99,31 +98,35 @@ public class GroupContactPicker extends AppCompatActivity {
     private void doneSelected() {
         checked = listView.getCheckedItemPositions();
         ContactsModel cm = new ContactsModel();
+        if (checked.size() == 0) {
+            Toast.makeText(this, "Group must at least have 1 contact", Toast.LENGTH_SHORT).show();
+        } else {
+            for (int i = 0; i < listView.getCount(); i++) {
 
-        for (int i = 0; i < listView.getCount(); i++) {
-
-            if (checked.get(i)) {
-                cm.setContactName(contactNames.get(i));
-                cm.setContactNumber(phoneNos.get(i));
-                if (db.numberExists(phoneNos.get(i))) {
-                    //TODO: create an alert dialog if a number exists in another group
-                    Toast.makeText(this, "Phone Number " + phoneNos.get(i) + " already exists in another group and won't be added to this group", Toast.LENGTH_SHORT).show();
-                } else {
-                    db.addContact(cm, name.getStringExtra("groupname"));
+                if (checked.get(i)) {
+                    cm.setContactName(contactNames.get(i));
+                    cm.setContactNumber(phoneNos.get(i));
+                    if (db.numberExists(phoneNos.get(i))) {
+                        //TODO: create an alert dialog if a number exists in another group (DONE)
+                        Toast.makeText(this, "Phone Number " + phoneNos.get(i) + " already exists in another group and won't be added to this group", Toast.LENGTH_SHORT).show();
+                    } else {
+                        db.addContact(cm, name.getStringExtra("groupname"));
+                    }
                 }
+
             }
 
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent gotoViewGroup = new Intent(GroupContactPicker.this, ViewGroup.class);
+                    startActivity(gotoViewGroup);
+                    finish();
+                }
+            }, 1500);
         }
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent gotoViewGroup = new Intent(GroupContactPicker.this, ViewGroup.class);
-                startActivity(gotoViewGroup);
-                finish();
-            }
-        }, 1500);
     }
 
     @Override
@@ -138,12 +141,6 @@ public class GroupContactPicker extends AppCompatActivity {
             case R.id.contactpicker_action_done:
                 doneSelected();
                 return true;
-            case R.id.contactpicker_action_selectAll:
-                setAll(true);
-                return true;
-            case R.id.contactpicker_action_deselectAll:
-                setAll(false);
-                return true;
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -152,14 +149,9 @@ public class GroupContactPicker extends AppCompatActivity {
         }
     }
 
-    /**
-     * Sets all the checkboxes in the listView to the given value
-     *
-     * @param value Value to set
-     */
-    private void setAll(boolean value) {
-        for (int i = 0; i < listView.getCount(); i++) {
-            listView.setItemChecked(i, value);
-        }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
     }
 }

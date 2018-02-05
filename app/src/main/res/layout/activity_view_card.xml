@@ -2,13 +2,16 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_viewcard"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="com.training.android.undivided.Group.AddGroup">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
 
         <android.support.v7.widget.CardView
             android:id="@+id/cvDetails"
@@ -76,8 +79,9 @@
                             android:layout_margin="8dp"
                             android:background="@null"
                             android:ems="10"
+                            android:focusable="false"
                             android:hint="Group Name"
-                            android:inputType="text"
+                            android:inputType="textPersonName"
                             android:maxLength="20"
                             app:layout_constraintHorizontal_bias="0.0"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -118,9 +122,10 @@
                             android:layout_marginTop="8dp"
                             android:background="@null"
                             android:ems="10"
+                            android:focusable="false"
                             android:gravity="top"
                             android:hint="Description"
-                            android:inputType="text"
+                            android:inputType="textPersonName"
                             android:maxLines="3"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
@@ -166,9 +171,10 @@
                             android:layout_marginTop="8dp"
                             android:background="@null"
                             android:ems="10"
+                            android:focusable="false"
                             android:gravity="top"
                             android:hint="Reply Message"
-                            android:inputType="text"
+                            android:inputType="textPersonName"
                             android:maxLines="2"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
@@ -189,21 +195,16 @@
             android:id="@+id/cvRules"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
             app:contentPadding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cvDetails"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toBottomOf="@+id/cvDetails">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -248,6 +249,7 @@
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:layout_marginTop="8dp"
+                        android:clickable="false"
                         android:text="Decline Calls"
                         android:textSize="16sp"
                         app:buttonTint="@color/colorPrimaryDark"
@@ -261,11 +263,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="29dp"
                         android:layout_marginBottom="8dp"
-                        android:layout_marginEnd="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
+                        android:clickable="false"
                         android:padding="5dp"
                         android:text="Notify if there is an Incoming Call"
                         android:textSize="16sp"
@@ -281,11 +282,10 @@
                         android:id="@+id/autoreplysms"
                         android:layout_width="wrap_content"
                         android:layout_height="29dp"
-                        android:layout_marginEnd="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
+                        android:clickable="false"
                         android:padding="5dp"
                         android:text="Auto Reply to SMS"
                         android:textSize="16sp"
@@ -299,11 +299,10 @@
                         android:id="@+id/autoreplycall"
                         android:layout_width="wrap_content"
                         android:layout_height="29dp"
-                        android:layout_marginEnd="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
+                        android:clickable="false"
                         android:padding="5dp"
                         android:text="Auto Reply to Calls"
                         android:textSize="16sp"
@@ -317,11 +316,10 @@
                         android:id="@+id/readsms"
                         android:layout_width="wrap_content"
                         android:layout_height="29dp"
-                        android:layout_marginEnd="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
+                        android:clickable="false"
                         android:padding="5dp"
                         android:text="Read Recieved SMS"
                         android:textSize="16sp"
@@ -335,11 +333,10 @@
                         android:id="@+id/replysms"
                         android:layout_width="wrap_content"
                         android:layout_height="29dp"
-                        android:layout_marginEnd="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
-                        android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
+                        android:clickable="false"
                         android:padding="5dp"
                         android:text="Reply to Recieved SMS"
                         android:textSize="16sp"
@@ -352,6 +349,55 @@
                 </android.support.constraint.ConstraintLayout>
 
             </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cvContacts"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:contentPadding="8dp"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cvRules"
+            app:layout_constraintVertical_bias="0.0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="8dp"-->
+                <!--android:text="Contacts"-->
+                <!--android:textColor="@color/colorPrimaryDark"-->
+                <!--android:textSize="20sp"-->
+                <!--android:textStyle="bold" />-->
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/card_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    app:titleTextColor="@color/colorPrimaryDark" />
+
+                <ListView
+                    android:id="@+id/lvContactsList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/edit_text_round_corner" />
+
+            </LinearLayout>
         </android.support.v7.widget.CardView>
 
     </android.support.constraint.ConstraintLayout>
