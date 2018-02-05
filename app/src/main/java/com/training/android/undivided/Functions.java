@@ -8,7 +8,8 @@ import android.widget.Button;
 
 import com.training.android.undivided.AutoReply.AutoReplyActivity;
 import com.training.android.undivided.CallLog.CallLogActivity;
-import com.training.android.undivided.GroupSender.GroupSenderActivity;
+
+import com.training.android.undivided.GroupSender.Module.GroupSenderActivity;
 
 public class Functions extends AppCompatActivity {
 
@@ -80,8 +81,8 @@ public class Functions extends AppCompatActivity {
         mbtnCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent DAS = new Intent(Functions.this, GroupSenderActivity.class);
-                startActivity(DAS);
+                Intent GS = new Intent(Functions.this, GroupSenderActivity.class);
+                startActivity(GS);
             }
         });
 

@@ -861,16 +861,13 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         @Override
         protected void onPostExecute(final List<List<HashMap<String, String>>> result) {
 
-
             mBtnChangeRoute.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     String distance = "";
                     String duration = "";
 //                    String sDist = "";
 //                    Double slat = 0.0, slng = 0.0;
-
                     routeCounter++;
                     mPathPolygonPoints = new ArrayList<>();
 
@@ -932,7 +929,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     }
                 }
             });
-
 
             mBtnChangeRoute.performClick();
         }

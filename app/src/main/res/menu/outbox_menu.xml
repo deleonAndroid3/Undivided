@@ -3,8 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/outbox_action_deleteAll"
-        android:icon="@drawable/ic_action_discard"
-        app:showAsAction="ifRoom|collapseActionView"
-        android:title="@string/outbox_menu_deleteAll" />
+        android:id="@+id/menu_item_send_again"
+        android:icon="@drawable/ic_send"
+        android:title="@string/send_again"
+        app:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/menu_item_delete"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete"
+        app:showAsAction="ifRoom|withText"/>
 </menu>

@@ -116,6 +116,67 @@
     <string name="label_firebase_ui">FirebaseUI Auth</string>
     <string name="desc_firebase_ui">Use the FirebaseUI-Android library to authenticate with Firebase.</string>
 
+    <!--Group Sender Strings-->
+    <string name="message_list">Message List</string>
+    <string name="contact">Contact</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="organization">Organization</string>
+    <string name="signature">Signature</string>
+    <string name="hint_type_the_message">Type the message ...</string>
+    <string name="edit_message">Edit Message</string>
+    <string name="search_message">Search Message</string>
+    <string name="transition_name_search">search</string>
+
+    <string name="empty_view_desc">Noting ~</string>
+    <string name="send_message">Send Message</string>
+    <string name="add_contact">Add Contact</string>
+    <string name="setting">Setting</string>
+    <string name="hint_input_phone_number">Input phone number</string>
+    <string name="pick">P i c k</string>
+    <string name="click_again_to_exit">Click again to exit</string>
+    <string name="tips_you_have_added_this_contact">You have added this contactAdd</string>
+    <string name="input">Input</string>
+
+    <string name="message_cannot_be_empty">Message cannot be empty</string>
+    <string name="contact_cannot_be_empty">Contact cannot be empty</string>
+    <string name="send">Send</string>
+    <string name="message_have_been_sent">Message have been sent, click OK to exit</string>
+    <string name="tips">Tips</string>
+    <string name="send_message_subtitle">%1$d contact, have sent %2$d</string>
+    <string name="NULL">null</string>
+    <string name="delete">Delete</string>
+    <string name="send_again">Send Again</string>
+    <string name="confirm_to_delete">Sure to delete?</string>
+    <string name="reserved_sms">Reserved SMS</string>
+    <string name="reserved_contact">Reserved Contact</string>
+
+
+    <string name="no_organization">No Organization</string>
+    <string name="add_organization">Add organization</string>
+    <string name="no_signature">No Signature</string>
+    <string name="add_signature">Add Signature</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="history_contact">History</string>
+    <string name="phone_contact">Phone</string>
+    <string name="group_contact">Group</string>
+    <string name="unselected">unselected</string>
+    <string name="delete_of">Delete \"%s\".</string>
+    <string name="cannot_be_empty">Cannot be empty!</string>
+
+    <string-array name="pick_mode_spinner">
+        <item>Pick From The Phone</item>
+        <item>Pick From The Input</item>
+    </string-array>
+
+
+
+
+    <!--Ends here-->
+
     <string name="hint_user_id">User ID</string>
     <string name="get_custom_token">Get Token</string>
     <string name="sign_in">Sign In</string>
@@ -166,7 +227,7 @@
     <string name="start">GOT IT</string>
 
     <string name="slide_1_title">Are you a driver?</string>
-    <string name="slide_1_desc">Keep your ambot unya na and let undivided always stay under control. </string>
+    <string name="slide_1_desc">Let undivided always stay under control. </string>
 
     <string name="slide_2_title">Choose</string>
     <string name="slide_2_desc">Choose contacts who can message or call you even you are driving</string>
@@ -175,14 +236,11 @@
     <string name="slide_3_desc">Set-up your settings for your convenience </string>
 
     <string name="slide_4_title">Navigation</string>
-    <string name="slide_4_desc"></string>
+    <string name="slide_4_desc">Guides you on your way after setting up your destination</string>
 
     <string name="play_again_desc">To see the welcome slider again, goto Settings -> apps -> welcome slider -> clear data</string>
     <string name="play_again">Play Again</string>
     <string name="title_activity_main2">Main2Activity</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
     <string name="nothing_to_show">No contacts found</string>
@@ -193,27 +251,6 @@
     <string name="app_label">SMS Group</string>
     <string name="dialog_ok">OK</string>
     <string name="about">about</string>
-    <string name="menu_title_save">save</string>
-    <string name="menu_title_delete">delete</string>
-    <string name="no_group">no group created yet</string>
-    <string name="no_message">no message created yet</string>
-    <string name="no_topic">no topic created yet</string>
-    <string name="menu_title_send">send message</string>
-    <string name="outbox_empty">outbox is currently empty</string>
-    <string name="send_cancel">cancel</string>
-    <string name="menu_title_replay">replay</string>
-    <string name="title_group">Group list</string>
-    <string name="title_create_group">Create group</string>
-    <string name="title_edit_group">Edit group</string>
-    <string name="title_message">Message list</string>
-    <string name="title_edit_message">Edit message</string>
-    <string name="title_create_message">Create message</string>
-    <string name="title_outbox">Outbox</string>
-    <string name="title_topic">Message topic list</string>
-    <string name="title_topic_send">Send grouped messages</string>
-    <string name="menu_title_add_group">add group</string>
-    <string name="menu_title_add">add message</string>
-    <string name="share_menu_title">share message list</string>
     <string name="app_title">Group</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

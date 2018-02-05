@@ -79,8 +79,7 @@ public class SearchDestination extends AppCompatActivity implements
                 .addConnectionCallbacks(this)
                 .build();
 
-        mAutocompleteTextView = (AutoCompleteTextView) findViewById(R.id
-                .autoCompleteTextView);
+      //  mAutocompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
 
         mAutocompleteTextView.setOnItemClickListener(mAutocompleteClickListener);
         mPlaceArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_MOUNTAIN_VIEW

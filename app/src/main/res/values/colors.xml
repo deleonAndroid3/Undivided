@@ -38,6 +38,11 @@
     <color name="mapboxBlue">#4338e7</color>
     <color name="mapboxWhite">#ffffff</color>
 
+    <!--Group Sender Colors-->
+    <color name="colorWhite">#ffffff</color>
+
+    <!--Ends here -->
+
     <array name="array_dot_active">
         <item>@color/dot_light_screen1</item>
         <item>@color/dot_light_screen2</item>
