@@ -7,11 +7,12 @@ import android.content.Intent;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class SafeMode extends AppCompatActivity {
+public class SafeMode extends AppCompatActivity{
 
     DrawerLayout drawerLayout;
     ImageView imgView;
@@ -36,7 +37,7 @@ public class SafeMode extends AppCompatActivity {
             String[] packages = {SafeMode.this.getPackageName()};
             myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
         } else {
-            Toast.makeText(SafeMode.this, "91826312", Toast.LENGTH_SHORT).show();
+            Log.d("INFO","IS NOT APP OWNER");
         }
 
         if (myDevicePolicyManager.isLockTaskPermitted(SafeMode.this.getPackageName())) {
@@ -44,10 +45,11 @@ public class SafeMode extends AppCompatActivity {
             // NOTE: locking device also disables notification
             startLockTask();
         } else {
-            Toast.makeText(SafeMode.this, "123897123", Toast.LENGTH_SHORT).show();
+            Log.d("INFO","lock not permitted");
             startLockTask();
         }
 
+        broadcastIntent();
         imgView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -56,5 +58,10 @@ public class SafeMode extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    public void broadcastIntent(){
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.PHONE_STATE"); sendBroadcast(intent);
     }
 }
