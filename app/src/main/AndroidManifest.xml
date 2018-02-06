@@ -26,7 +26,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".GroupSender.App"
+
         android:allowBackup="true"
         android:icon="@mipmap/undivided_logo_notext"
         android:label="@string/app_name"
@@ -108,7 +108,13 @@
             android:name=".AutoReply.Outbox"
             android:label="@string/outbox_title"
             android:parentActivityName=".AutoReply.AutoReplyActivity"
-            android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+            />
+
+        <activity
+            android:name=".AutoReply.AutoReplySettings"
+            android:label="Settings"
+            android:parentActivityName=".AutoReply.AutoReplyActivity"
+            />
         <activity
             android:name=".AutoReply.CustomizeMessage"
             android:parentActivityName=".AutoReply.AutoReplyActivity"
@@ -120,6 +126,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+
         <activity android:name=".AutoReply.AutoReplyActivity" />
 
         <receiver android:name=".AutoReply.BroadcastReceivers.SMSReceiver">

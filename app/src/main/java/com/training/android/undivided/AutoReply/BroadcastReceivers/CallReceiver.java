@@ -55,6 +55,7 @@ public class CallReceiver extends BroadcastReceiver {
             // Get mute delay array
             muteDelayArray = context.getResources().getIntArray(R.array.mute_array_int);
             telephony.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+
         }
     }
 
@@ -112,14 +113,7 @@ public class CallReceiver extends BroadcastReceiver {
             } //end of ringing case
         }
 
-        /**
-         * Applies the rule for the given phoneNo.
-         *
-         * That sends and SMS, and mutes the ringer.
-         *
-         * @param r The rule to be applied
-         * @param phoneNo phone number to send SMS to
-         */
+
         private void applyRule(Rule r, String phoneNo) {
             // Reply
             String replyText = r.getText();
