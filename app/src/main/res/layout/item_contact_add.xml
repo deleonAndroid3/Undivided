@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:foreground="?android:attr/selectableItemBackground"
     app:cardBackgroundColor="@color/cardview_light_background"
     android:elevation="2dp"

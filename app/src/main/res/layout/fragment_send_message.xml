@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
+    android:theme="@style/AppTheme.NoActionBar"
     tools:context="com.training.android.undivided.GroupSender.Module.Send_Message.SendMessageFragment">
     <TextView
         android:id="@+id/message_text_view"

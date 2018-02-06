@@ -5,6 +5,7 @@
     android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.training.android.undivided.GroupSender.Module.Message_Detail.MessageDetailActivity">
+    android:theme="@style/AppTheme.NoActionBar"
+   >
 
 </FrameLayout>
