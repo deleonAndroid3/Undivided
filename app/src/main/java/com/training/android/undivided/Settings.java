@@ -184,7 +184,6 @@ public class Settings extends AppCompatActivity {
 //        });
     }
 
-
     public void onClickListeners() {
         /**
          * BACKGROUND FUNCTION WITH AUTO START ( INCLUDING ON DESTROY )
@@ -270,6 +269,7 @@ public class Settings extends AppCompatActivity {
         status= true;
         startTime = System.currentTimeMillis();
     }
+
     public void getData() {
         GroupModel gm = new GroupModel();
         gm.setGroupName(mEtThreshold.getText().toString());

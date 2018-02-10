@@ -20,10 +20,6 @@ import com.training.android.undivided.R;
 
 import java.util.ArrayList;
 
-/***\
- *  Created by Hillary Briones
- *  */
-
 public class GroupContactPicker extends AppCompatActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 11;
@@ -46,7 +42,7 @@ public class GroupContactPicker extends AppCompatActivity {
         // Set result the canceled incase user bails
         setResult(RESULT_CANCELED);
 
-        listView = (ListView) findViewById(R.id.contactpicker_contactsList);
+        listView = findViewById(R.id.contactpicker_contactsList);
 
         name = getIntent();
         db = new DBHandler(this);
@@ -115,7 +111,6 @@ public class GroupContactPicker extends AppCompatActivity {
                 }
 
             }
-
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {

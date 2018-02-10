@@ -42,15 +42,15 @@ public class AddGroup extends AppCompatActivity {
 
         dbHandler = new DBHandler(this);
 
-        mEtGroupName = (EditText) findViewById(R.id.etGroupName);
-        mEtGroupDescription = (EditText) findViewById(R.id.etGroupDesc);
-        mEtGroupMessage = (EditText) findViewById(R.id.etGroupMessage);
-        cbRule1 = (CheckBox) findViewById(R.id.declinecall);
-        cbRule2 = (CheckBox) findViewById(R.id.autoreplysms);
-        cbRule3 = (CheckBox) findViewById(R.id.autoreplycall);
-        cbRule4 = (CheckBox) findViewById(R.id.replysms);
-        cbRule5 = (CheckBox) findViewById(R.id.readsms);
-        cbRule6 = (CheckBox) findViewById(R.id.answercall);
+        mEtGroupName = findViewById(R.id.etGroupName);
+        mEtGroupDescription = findViewById(R.id.etGroupDesc);
+        mEtGroupMessage = findViewById(R.id.etGroupMessage);
+        cbRule1 = findViewById(R.id.declinecall);
+        cbRule2 = findViewById(R.id.autoreplysms);
+        cbRule3 = findViewById(R.id.autoreplycall);
+        cbRule4 = findViewById(R.id.replysms);
+        cbRule5 = findViewById(R.id.readsms);
+        cbRule6 = findViewById(R.id.answercall);
 
         mEtGroupDescription.setMaxLines(Integer.MAX_VALUE);
         mEtGroupDescription.setHorizontallyScrolling(false);
@@ -162,6 +162,5 @@ public class AddGroup extends AppCompatActivity {
                 .show();
 
     }
-
 
 }
