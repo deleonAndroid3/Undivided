@@ -78,18 +78,15 @@
             android:name=".Group.GroupContactPicker"
             android:label="@string/contactpicker_title"
             android:parentActivityName=".AutoReply.CustomizeMessage"
-
             android:theme="@style/AppTheme">
-
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.training.android.undivided.AutoReply.CustomizeMessage" />
         </activity>
         <activity android:name=".Group.ViewGroup" />
         <activity android:name=".Group.AddGroup" />
-        <activity android:name=".Group.ViewCard"/>
+        <activity android:name=".Group.ViewCard" />
 
         <!-- Authentication Package -->
         <activity android:name=".Authentication.AuthActivity" />
@@ -107,14 +104,11 @@
         <activity
             android:name=".AutoReply.Outbox"
             android:label="@string/outbox_title"
-            android:parentActivityName=".AutoReply.AutoReplyActivity"
-            />
-
+            android:parentActivityName=".AutoReply.AutoReplyActivity" />
         <activity
             android:name=".AutoReply.AutoReplySettings"
             android:label="Settings"
-            android:parentActivityName=".AutoReply.AutoReplyActivity"
-            />
+            android:parentActivityName=".AutoReply.AutoReplyActivity" />
         <activity
             android:name=".AutoReply.CustomizeMessage"
             android:parentActivityName=".AutoReply.AutoReplyActivity"
@@ -126,7 +120,6 @@
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-
         <activity android:name=".AutoReply.AutoReplyActivity" />
 
         <receiver android:name=".AutoReply.BroadcastReceivers.SMSReceiver">
@@ -153,10 +146,6 @@
         </receiver>
 
 
-        <!-- GroupSender Package -->
-        <activity android:name=".GroupSender.Activity.MainActivity" />
-        <activity android:name=".GroupSender.GroupSenderActivity" />
-        <activity android:name=".GroupSender.SimpleDividerItemDecoration" />
 
         <!-- Intro Package -->
         <activity
@@ -170,37 +159,27 @@
         <activity android:name=".Functions" />
         <activity android:name=".DisableAppSwitch" />
         <activity android:name=".Profile" />
-        <activity android:name=".SafeMode"
-            android:theme="@style/AppTheme.NoActionBarRed"/>
-
-        <activity android:name=".GroupSender.Module.GroupSenderActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".SafeMode"
+            android:theme="@style/AppTheme.NoActionBarRed" />
 
 
         <!-- Call Log Package -->
         <activity android:name=".CallLog.CallLogActivity" />
-
-        <!--Group Sender Package-->
-        <activity
-            android:name=".GroupSender.Module.Edit_Message.EditMessageActivity"
-            android:label="@string/edit_message"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".GroupSender.Module.Message_Detail.MessageDetailActivity"
-            android:theme="@style/AppTheme"/>
-
-        <activity android:name=".GroupSender.Module.Search_Message.SearchMessageActivity"
-            android:parentActivityName=".GroupSender.Module.GroupSenderActivity"
-            >
-        </activity>
-        <activity android:name=".GroupSender.Module.Send_Message.SendMessageActivity"
-
-            android:label="@string/send_message"
-            android:theme="@style/AppTheme"
-            >
-
-        </activity>
-
+        <!--GROUP SENDER PACKAGE-->
+        <activity android:name=".SmsGroup.Activity.SmsGroupActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"/>
+        <receiver android:name="com.training.android.undivided.SmsGroup.Receiver.SendBroadcastReceiver">
+            <intent-filter>
+                <action android:name="SMS_SENT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.training.android.undivided.SmsGroup.Receiver.DeliveryBroadcastReceiver">
+            <intent-filter>
+                <action android:name="SMS_DELIVERED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
