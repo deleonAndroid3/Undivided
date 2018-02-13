@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
+import com.training.android.undivided.NavigationMode.TowingServicesModel;
 
 import java.util.ArrayList;
 
@@ -58,6 +59,12 @@ public class DBHandler extends SQLiteOpenHelper {
             TABLE_CREATE_GROUP + " (" + COLUMN_GROUPID + ")" +
             " ON DELETE CASCADE);";
 
+    String TowingQuery = "CREATE TABLE IF NOT EXISTS towing (t_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "towing_name TEXT," +
+            "towing_address TEXT," +
+            "towing_latlong TEXT," +
+            "towing_contact TEXT)";
+
     SQLiteDatabase db;
 
 
@@ -71,15 +78,16 @@ public class DBHandler extends SQLiteOpenHelper {
         Log.i("TAG", ContactQuery);
         Log.i("TAG", GroupQuery);
 
-
         sqLiteDatabase.execSQL(GroupQuery);
         sqLiteDatabase.execSQL(ContactQuery);
+        sqLiteDatabase.execSQL(TowingQuery);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CREATE_GROUP);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS towing");
         onCreate(sqLiteDatabase);
     }
 
@@ -321,5 +329,66 @@ public class DBHandler extends SQLiteOpenHelper {
 
         db.delete(TABLE_CONTACTS, COLUMN_CONTACTNUM + " = '" + num + "' AND " + FK_COLUMN_GROUPID + " = 1", null);
         db.close();
+    }
+
+    public boolean checkTowingifEmpty(){
+        if (!db.isOpen())
+            db = getReadableDatabase();
+
+        Cursor cursor = null;
+
+        try {
+            String sql = "SELECT * FROM towing";
+            cursor = db.rawQuery(sql, null);
+
+            return (cursor.getCount() > 0);
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+    }
+
+    public void AddTowingServices(TowingServicesModel tsm){
+
+        if (!db.isOpen())
+            db = getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("towing_name", tsm.getName());
+        contentValues.put("towing_address", tsm.getAddress());
+        contentValues.put("towing_latlong", tsm.getLatlng());
+        contentValues.put("towing_contact", tsm.getContactNumber());
+
+        db.insert("towing", null, contentValues);
+        db.close();
+
+    }
+
+    public ArrayList<TowingServicesModel> getServices(){
+
+        if (!db.isOpen())
+            db = getReadableDatabase();
+
+        String query = "SELECT * FROM towing" ;
+        Cursor c = db.rawQuery(query, null);
+
+        ArrayList<TowingServicesModel> tsmList = new ArrayList<>();
+        TowingServicesModel tsm;
+
+        while (c.moveToNext()) {
+
+            tsm = new TowingServicesModel();
+            tsm.setName(c.getString(1));
+            tsm.setAddress(c.getString(2));
+            tsm.setLatlng(c.getString(3));
+            tsm.setContactNumber(c.getString(4));
+
+            tsmList.add(tsm);
+        }
+        c.close();
+        db.close();
+
+        return tsmList;
+
     }
 }

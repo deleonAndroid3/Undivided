@@ -35,9 +35,6 @@
         android:theme="@style/AppTheme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
-        <service android:name=".NavigationMode.DistanceTraveledService"
-            android:enabled="true"
-            android:exported="false"/>
 
         <activity android:name=".SplashScreenActivity">
             <intent-filter>

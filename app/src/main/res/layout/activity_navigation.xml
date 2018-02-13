@@ -126,7 +126,6 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@drawable/speedometer"
-        android:backgroundTint="@color/colorPrimary"
         android:elevation="10dp"
         android:orientation="vertical"
         android:weightSum="2"
@@ -168,7 +167,7 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+    <ImageButton
         android:id="@+id/btnStartDriving"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -176,28 +175,17 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@drawable/speedometer"
-        android:backgroundTint="@color/colorPrimary"
         android:elevation="10dp"
-        android:focusable="false"
-        android:orientation="vertical"
-        android:weightSum="2"
+        android:src="@drawable/ic_navigation"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/ic_navigation"
         tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintRight_creator="1">
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:foregroundGravity="center"
-            android:src="@drawable/ic_navigation"
-            app:srcCompat="@drawable/ic_navigation" />
-
-    </RelativeLayout>
+        tools:layout_constraintRight_creator="1" />
 
     <Button
         android:id="@+id/btnChangeRoute"
@@ -234,6 +222,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:requiresFadingEdge="none"
         app:background_color="@color/colorWhiteBackground"
         app:layout_constraintBottom_toTopOf="@+id/btnStartDriving"
         app:layout_constraintEnd_toEndOf="parent"

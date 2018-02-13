@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,6 +30,7 @@ import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.NavigationMode.Navigation;
+import com.training.android.undivided.NavigationMode.TowingServicesModel;
 import com.txusballesteros.bubbles.BubbleLayout;
 import com.txusballesteros.bubbles.BubblesManager;
 
@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private BubblesManager bubblesManager;
     private DBHandler dbHandler;
+
+    private ArrayList<TowingServicesModel> tsmList = null;
     private boolean flag = false;
 
 //    /*@Override
@@ -72,8 +74,10 @@ public class MainActivity extends AppCompatActivity {
 
         Stetho.initializeWithDefaults(this);
         initializeBubblesManager();
+
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();
+
 
         message = dbHandler.getMessage("Emergency").getGroupMessage();
 
@@ -114,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        AddTowing();
     }
 
     @Override
@@ -364,6 +369,37 @@ public class MainActivity extends AppCompatActivity {
         mAlertDialog = builder.create();
         mAlertDialog.show();
 
+    }
+
+    public void AddTowing() {
+
+        tsmList = new ArrayList<>();
+
+        tsmList.add(new TowingServicesModel("Tri-J Service Center", "Sangi, Cebu City, 6046 Cebu", "10.248783,123.802212", "(032) 272 8975"));
+
+        tsmList.add(new TowingServicesModel("Camel Towing Services", "Codoy Hernan Cortez, NS Cabahug St, Mandaue City, 6014 Cebu", "10.346091, 123.926189", "(032) 513 8180"));
+
+        tsmList.add(new TowingServicesModel("A Plus Towing Services", "304 V Rama Ave, Cebu City, Cebu", "10.295458, 123.892519", "(032) 261 5050"));
+
+        tsmList.add(new TowingServicesModel("Unocarshop", "6th Street, North Road, Cebu City, 6000 Cebu", "10.310610, 123.915508", "(032) 479 9601"));
+
+        tsmList.add(new TowingServicesModel("JLM Towing Services", "Spolarium street Duljo Fatima, Cebu City, 6000 Cebu", "10.291477, 123.883772", "(032) 417 4790"));
+
+        tsmList.add(new TowingServicesModel("Cinco Auto Care And Towing Service", "B.Suico, Mandaue City, Cebu", "10.357462, 123.935024", "0923 717 6572"));
+
+        tsmList.add(new TowingServicesModel("Road Warriors Towing and Motors Services", "F. Jaca, Cebu City, 6000 Cebu", "10.275429,123.856725", " (032) 272 5575"));
+
+        tsmList.add(new TowingServicesModel("KM Ace Towing", "L.Jaime, Mandaue City", "10.333875, 123.938365", "3437177"));
+
+        tsmList.add(new TowingServicesModel("Tri-J Marketing, Inc.", "Guadalquiver, 380 N. Bacalso Ave Cebu South Road, Basak San, Cebu City, 6000 Cebu", "10.289422,123.869364", "(032) 418 3888"));
+
+        tsmList.add(new TowingServicesModel("Tri J", "G. K Chua Bldg, M. J. Cuenco Ave, Cebu City, 6000 Cebu", "10.295697, 123.905560", "(032) 416 8884"));
+
+        if (!dbHandler.checkTowingifEmpty()) {
+            for (int i = 0; i < tsmList.size(); i++) {
+                dbHandler.AddTowingServices(tsmList.get(i));
+            }
+        }
     }
 }
 
