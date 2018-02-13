@@ -90,6 +90,9 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void addGroup(GroupModel groupModel) {
+        if (!db.isOpen())
+            db = getWritableDatabase();
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_GROUPNAME, groupModel.getGroupName());
         contentValues.put(COLUMN_GROUPDESC, groupModel.getGroupDesc());
