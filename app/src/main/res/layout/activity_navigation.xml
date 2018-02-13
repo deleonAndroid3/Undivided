@@ -243,7 +243,6 @@
         app:layout_constraintVertical_bias="1.0"
         custom:color="@color/colorPrimaryDark"
         custom:options_color="@color/colorPrimaryDark"
-        custom:options_menu="@menu/fam_menu"
-        custom:src="@drawable/ic_menu_search" />
+        custom:options_menu="@menu/fam_menu" />
 
 </android.support.constraint.ConstraintLayout>

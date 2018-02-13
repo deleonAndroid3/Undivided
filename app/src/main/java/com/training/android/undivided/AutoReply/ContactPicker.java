@@ -178,7 +178,7 @@ public class ContactPicker extends AppCompatActivity {
 //import android.widget.ArrayAdapter;
 //import android.widget.ListView;
 //
-//import com.training.android.undivided.Group.Database.DBHandler;
+//import com.training.android.undivided.Database.DBHandler;
 //import com.training.android.undivided.Group.Model.ContactsModel;
 //import com.training.android.undivided.R;
 //

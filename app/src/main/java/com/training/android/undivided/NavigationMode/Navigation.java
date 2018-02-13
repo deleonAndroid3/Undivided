@@ -2,8 +2,11 @@ package com.training.android.undivided.NavigationMode;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -69,10 +73,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
+import com.training.android.undivided.Speaker;
 
 import org.json.JSONObject;
 
@@ -82,6 +87,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,19 +98,39 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    protected static final int REQUEST_CHECK_SETTINGS = 2;
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final int REQUEST_CHECK_SETTINGS = 2;
+    private static final int PROXIMITY_RADIUS = 10000;
+    private static final int CHECK_CODE = 3;
+
     ArrayList<LatLng> mPathPolygonPoints = null;
     ArrayList<ContactsModel> cmodel;
     Polyline polyline;
     boolean start = false;
     String type = "";
     Handler handler = new Handler();
-    private int PROXIMITY_RADIUS = 10000;
+    DecimalFormat form = new DecimalFormat("0.00");
+    DistanceTraveledService mDistanceTraveledService;
+    boolean bound = false;
+    ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            DistanceTraveledService.DistanceTravelBinder distanceTravelBinder = (DistanceTraveledService.DistanceTravelBinder) service;
+            mDistanceTraveledService = distanceTravelBinder.getBinder();
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            bound = false;
+        }
+    };
+    private double tdistance, dremaining;
     private int routeCounter = -1;
     private GoogleApiClient mGoogleApiClient;
     private LatLng mLastLatLng, mNextLatLng, DestLatlng;
+    private Location mLastLocation;
     private Marker mCurrLocationMarker, DestMarker, SpotsMarker;
     private LocationRequest mLocationRequest;
     private GoogleMap mMap;
@@ -115,6 +141,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private OptionsFabLayout famServices;
     private ArrayList<Marker> mMarkers = new ArrayList<>();
     private DBHandler dbHandler;
+    private Speaker speaker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,8 +149,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();
+
         final String message = dbHandler.getMessage("Emergency").getGroupMessage();
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
         setContentView(R.layout.activity_navigation);
         showSearch();
@@ -143,6 +170,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         mtvDestination = findViewById(R.id.tvDestination);
         mtvPlace = findViewById(R.id.tvPlaceName);
         famServices = findViewById(R.id.fab_services);
+
+        checkTTS();
 
         mbtnSetMarker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,13 +321,14 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public void onConnected(Bundle bundle) {
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(1500);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         settingsRequest();
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         }
 
     }
@@ -329,28 +359,33 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 CameraPosition cameraPosition = new CameraPosition.Builder().
                         target(mNextLatLng).
                         zoom(17).
-                        bearing(location.getBearing()).
+                        bearing((float) bearingBetweenLocations(mLastLatLng, mNextLatLng)).
                         build();
 
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            }
 
-            if (mCurrLocationMarker == null) {
-                mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
-                        .position(mNextLatLng)
-                        .title("Current Location")
-                        .anchor(0.5f, 1f)
-                        .icon(getBitmapDescriptor(R.drawable.ic_navigation)));
-            } else {
-                animateMarker(mLastLatLng, mNextLatLng, false);
 
+                if (mCurrLocationMarker == null) {
+                    mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
+                            .position(mNextLatLng)
+                            .title("Current Location")
+                            .anchor(0.5f, 1f)
+                            .icon(getBitmapDescriptor(R.drawable.ic_navigation)));
+                } else {
+                    animateMarker(mLastLatLng, mNextLatLng, false);
+                    displayDistance();
+                }
             }
             mLastLatLng = mNextLatLng;
 
+
             if (DestLatlng != null && mLastLatLng != null) {
                 if (SphericalUtil.computeDistanceBetween(DestLatlng, mLastLatLng) < 50) {
-                    Toast.makeText(this, "You have arrived!!!", Toast.LENGTH_SHORT).show();
                     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                    speaker.allow(true);
+                    speaker.speak("You have arrived at your destination");
+
+
                 }
             }
         }
@@ -394,7 +429,9 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 switch (resultCode) {
                     case RESULT_OK:
 
-                        if (mLastLatLng != null) {
+                        if (mLastLocation != null) {
+                            mLastLocation.setLatitude(mLastLocation.getLatitude());
+                            mLastLocation.setLongitude(mLastLocation.getLongitude());
                             Place place = PlaceAutocomplete.getPlace(this, data);
                             DestLatlng = place.getLatLng();
 
@@ -464,9 +501,17 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         break;
                 }
                 break;
+
+            case CHECK_CODE:
+                if (resultCode == android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                    speaker = new Speaker(this);
+                } else {
+                    Intent install = new Intent();
+                    install.setAction(android.speech.tts.TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+                    startActivity(install);
+                }
+                break;
         }
-
-
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -582,6 +627,12 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     /**
      * Map Navigation
      */
+
+    private void checkTTS() {
+        Intent check = new Intent();
+        check.setAction(android.speech.tts.TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+        startActivityForResult(check, CHECK_CODE);
+    }
 
     private void getServiceMarkers(String stype) {
         Log.d("onClick", "Button is Clicked");
@@ -749,6 +800,29 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    private void displayDistance() {
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                double distance = 0;
+                if (mDistanceTraveledService != null) {
+                    distance = mDistanceTraveledService.getDistanceTraveled();
+                    dremaining = tdistance - distance;
+                    if (dremaining < 1000)
+                        mtvTotalDistance.setText(form.format(dremaining) + " m");
+                    else
+                        mtvTotalDistance.setText(form.format(dremaining) + " Km");
+
+                    if (dremaining < 0)
+                        mtvTotalDistance.setText("0 m");
+                }
+
+                handler.postDelayed(this, 1000);
+            }
+        });
+    }
+
 //    private void locationUpdate(Location location) {
 //        LatLng latLng = new LatLng((location.getLatitude()), (location.getLongitude()));
 //        MarkerOptions markerOptions = new MarkerOptions();
@@ -901,9 +975,17 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 //        }
 //    }
 
+
     /**
      * Activity Lifecycle
      */
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, DistanceTraveledService.class);
+        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
+    }
 
     @Override
     protected void onResume() {
@@ -919,11 +1001,16 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     protected void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
+        if (bound) {
+            unbindService(mServiceConnection);
+            bound = false;
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     /**
@@ -1082,8 +1169,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             mBtnChangeRoute.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String distance = "";
-
 
                     routeCounter++;
                     mPathPolygonPoints = new ArrayList<>();
@@ -1101,7 +1186,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                             HashMap<String, String> point = path.get(j);
 
                             if (j == 0) {    // Get distance from the list
-                                distance = (String) point.get("distance");
+                                tdistance = Double.valueOf(point.get("distance"));
                                 continue;
                             }
 //
@@ -1139,7 +1224,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                             .clickable(true)
                             .color(Color.GREEN));
 
-                    mtvTotalDistance.setText(distance);
+                    mtvTotalDistance.setText(tdistance / 1000 + " Km");
 
                     if (routeCounter + 1 == result.size()) {
                         routeCounter = -1;

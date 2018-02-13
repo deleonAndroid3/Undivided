@@ -14,13 +14,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.R;
 
 public class AddGroup extends AppCompatActivity {
 
     DBHandler dbHandler;
+    AlertDialog ModeDialog;
     private EditText mEtGroupName;
     private EditText mEtGroupDescription;
     private EditText mEtGroupMessage;
@@ -125,13 +126,13 @@ public class AddGroup extends AppCompatActivity {
 
     public void showAlert() {
 
-        AlertDialog.Builder builder;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
-        } else {
-            builder = new AlertDialog.Builder(this);
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);;
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+//        } else {
+//
+//        }
 
         builder.setTitle("Create Group")
                 .setMessage("Are you sure you want to create this group?")
@@ -160,7 +161,5 @@ public class AddGroup extends AppCompatActivity {
                     }
                 })
                 .show();
-
     }
-
 }

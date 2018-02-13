@@ -40,7 +40,7 @@ public class DirectionsJSONParser {
                     /** Getting distance from the json data */
                     jDistance = ((JSONObject) jLegs.get(j)).getJSONObject("distance");
                     HashMap<String, String> hmDistance = new HashMap<String, String>();
-                    hmDistance.put("distance", jDistance.getString("text"));
+                    hmDistance.put("distance", jDistance.getString("value"));
 
                     /** Adding distance object to the path */
                     path.add(hmDistance);
