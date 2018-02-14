@@ -108,7 +108,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     Handler handler = new Handler();
     DecimalFormat form = new DecimalFormat("0.00");
     float mindist;
-    private boolean start = false, near = false;
+    private boolean start = false, near = false, miss = false;
     private double tdistance, dremaining, dtravelled, distance = 0;
     private int routeCounter = -1, pos = 0;
     private GoogleApiClient mGoogleApiClient;
@@ -332,13 +332,19 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         if (location != null) {
             mNextLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-            if (mPathPolygonPoints != null)
+            if (mPathPolygonPoints != null) {
                 near = PolyUtil.isLocationOnPath(mNextLatLng, mPathPolygonPoints, true, 100);
-
+                miss = PolyUtil.isLocationOnPath(mNextLatLng, mPathPolygonPoints, true, 5);
+            }
             getSpeed(location);
 
             if (near) {
                 if (mNextLatLng != null && mLastLatLng != null && start) {
+
+                    if (!miss) {
+                        mNextLatLng = findNearestPoint(mNextLatLng, mPathPolygonPoints);
+                    }
+
                     CameraPosition cameraPosition = new CameraPosition.Builder().
                             target(mNextLatLng).
                             zoom(17).
@@ -372,7 +378,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     }
                 }
             } else {
-
                 if (polyline != null && mCurrLocationMarker != null) {
                     polyline.remove();
                     String url = getDirectionsUrl(mCurrLocationMarker.getPosition(), DestMarker.getPosition());
@@ -845,6 +850,25 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         });
 
 
+    }
+
+    private LatLng findNearestPoint(LatLng current, ArrayList<LatLng> points) {
+
+        float[] distance = new float[1];
+
+        for (int i = 0; i < points.size(); i++) {
+            if (current != null) {
+                Location.distanceBetween(current.latitude, current.longitude, points.get(i).latitude, points.get(i).longitude, distance);
+
+                if (i == 0) mindist = distance[0];
+                else if (mindist > distance[0]) {
+                    mindist = distance[0];
+                    pos = i;
+                }
+            }
+        }
+
+        return new LatLng(points.get(pos).latitude, points.get(pos).longitude);
     }
 
 //    private void locationUpdate(Location location) {
