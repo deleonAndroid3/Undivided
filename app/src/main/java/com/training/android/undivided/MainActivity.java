@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private BubblesManager bubblesManager;
+    private BubbleLayout bubbleView;
     private DBHandler dbHandler;
 
     private ArrayList<TowingServicesModel> tsmList = null;
@@ -234,7 +236,10 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         Toast.makeText(MainActivity.this, "Passenger Mode Selected", Toast.LENGTH_SHORT).show();
-                        addNewBubble();
+                        if (bubbleView == null) {
+                            addNewBubble();
+                        }
+
                         break;
                 }
 
@@ -270,14 +275,15 @@ public class MainActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(false);
+
                 switch (menuItem.getItemId()) {
-                    case R.id.drawer_profile:
-                        break;
+
                     case R.id.drawer_view_group:
+                        menuItem.setChecked(false);
                         startActivity(new Intent(MainActivity.this, ViewGroup.class));
                         break;
                     case R.id.drawer_history:
+                        menuItem.setChecked(false);
                         Intent callLog = new Intent(MainActivity.this, CallLogActivity.class);
                         startActivity(callLog);
                         break;
@@ -290,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addNewBubble() {
-        BubbleLayout bubbleView = (BubbleLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.bubble_layout, null);
+        bubbleView = (BubbleLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.bubble_layout, null);
 
         bubbleView.setOnBubbleRemoveListener(new BubbleLayout.OnBubbleRemoveListener() {
             @Override
@@ -367,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         mAlertDialog = builder.create();
+        mAlertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         mAlertDialog.show();
 
     }

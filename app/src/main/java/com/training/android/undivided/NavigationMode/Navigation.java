@@ -68,6 +68,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
@@ -99,17 +100,17 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private static final int REQUEST_CHECK_SETTINGS = 2;
     private static final int PROXIMITY_RADIUS = 10000;
     private static final int CHECK_CODE = 3;
-
+    private static final int TIME_INTERVAL = 2000; // # milliseconds, desired time passed between two back presses.
     ArrayList<LatLng> mPathPolygonPoints = null;
     ArrayList<ContactsModel> cmodel;
     Polyline polyline;
-    boolean start = false;
     String type = "";
     Handler handler = new Handler();
     DecimalFormat form = new DecimalFormat("0.00");
-
+    float mindist;
+    private boolean start = false, near = false;
     private double tdistance, dremaining, dtravelled, distance = 0;
-    private int routeCounter = -1;
+    private int routeCounter = -1, pos = 0;
     private GoogleApiClient mGoogleApiClient;
     private LatLng mLastLatLng, mNextLatLng, DestLatlng;
     private Location mLastLocation;
@@ -124,6 +125,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private ArrayList<Marker> mMarkers = new ArrayList<>();
     private DBHandler dbHandler;
     private Speaker speaker;
+    private long mBackPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -328,43 +330,54 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public void onLocationChanged(Location location) {
 
         if (location != null) {
-
             mNextLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+            if (mPathPolygonPoints != null)
+                near = PolyUtil.isLocationOnPath(mNextLatLng, mPathPolygonPoints, true, 100);
 
             getSpeed(location);
 
-            if (mNextLatLng != null && mLastLatLng != null && start) {
-                CameraPosition cameraPosition = new CameraPosition.Builder().
-                        target(mNextLatLng).
-                        zoom(17).
-                        bearing((float) bearingBetweenLocations(mLastLatLng, mNextLatLng)).
-                        build();
+            if (near) {
+                if (mNextLatLng != null && mLastLatLng != null && start) {
+                    CameraPosition cameraPosition = new CameraPosition.Builder().
+                            target(mNextLatLng).
+                            zoom(17).
+                            bearing((float) bearingBetweenLocations(mLastLatLng, mNextLatLng)).
+                            build();
 
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                    if (mCurrLocationMarker == null) {
+                        mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
+                                .position(mNextLatLng)
+                                .title("Current Location")
+                                .anchor(0.5f, 1f)
+                                .icon(getBitmapDescriptor(R.drawable.ic_navigation)));
+                    } else {
+                        animateMarker(mLastLatLng, mNextLatLng, false);
+
+                        distance = location.distanceTo(mLastLocation);
+                        dtravelled += distance;
+                        dremaining = tdistance - dtravelled;
 
 
-                if (mCurrLocationMarker == null) {
-                    mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
-                            .position(mNextLatLng)
-                            .title("Current Location")
-                            .anchor(0.5f, 1f)
-                            .icon(getBitmapDescriptor(R.drawable.ic_navigation)));
-                } else {
-                    animateMarker(mLastLatLng, mNextLatLng, false);
+                        if (dremaining < 1000)
+                            mtvTotalDistance.setText(form.format(dremaining) + " m");
+                        else
+                            mtvTotalDistance.setText(form.format(dremaining / 1000) + " Km");
 
-                    distance = location.distanceTo(mLastLocation);
-                    dtravelled += distance;
-                    dremaining = tdistance - dtravelled;
+                        if (dremaining < 0)
+                            mtvTotalDistance.setText("0 m");
 
+                    }
+                }
+            } else {
 
-                    if (dremaining < 1000)
-                        mtvTotalDistance.setText(form.format(dremaining) + " m");
-                    else
-                        mtvTotalDistance.setText(form.format(dremaining/1000) + " Km");
-
-                    if (dremaining < 0)
-                        mtvTotalDistance.setText("0 m");
-
+                if (polyline != null && mCurrLocationMarker != null) {
+                    polyline.remove();
+                    String url = getDirectionsUrl(mCurrLocationMarker.getPosition(), DestMarker.getPosition());
+                    DownloadTask downloadTask = new DownloadTask();
+                    downloadTask.execute(url);
                 }
             }
             mLastLatLng = mNextLatLng;
@@ -659,7 +672,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         circleOptions.visible(false);
 
         // Radius of the circle
-        circleOptions.radius(50);
+        circleOptions.radius(5);
 
         // Adding the circle to the GoogleMap
         mMap.addCircle(circleOptions);
@@ -1024,6 +1037,19 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
+    @Override
+    public void onBackPressed() {
+
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
+            super.onBackPressed();
+            return;
+        } else {
+            Toast.makeText(getBaseContext(), "Tap back button in order to exit", Toast.LENGTH_SHORT).show();
+        }
+
+        mBackPressed = System.currentTimeMillis();
+    }
+
     /**
      * JSON ROUTE PARSING
      */
@@ -1216,12 +1242,12 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 //                        mMap.addMarker(new MarkerOptions().
 //                                position(sPos).
 //                                title(sDist));
-
                             double lat = Double.parseDouble(point.get("lat"));
                             double lng = Double.parseDouble(point.get("lng"));
                             LatLng position = new LatLng(lat, lng);
 
                             mPathPolygonPoints.add(position);
+
                         }
                     } catch (IndexOutOfBoundsException e) {
                         Log.e("Route", "Route", e.getCause());
@@ -1235,7 +1261,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                             .clickable(true)
                             .color(Color.GREEN));
 
-                    mtvTotalDistance.setText(form.format(tdistance / 1000 ) + " Km");
+
+                    mtvTotalDistance.setText(form.format(tdistance / 1000) + " Km");
 
                     if (routeCounter + 1 == result.size()) {
                         routeCounter = -1;
@@ -1307,7 +1334,26 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 }
 
                 mMarkers.add(SpotsMarker);
+
+                float[] distance = new float[1];
+                if (mCurrLocationMarker != null) {
+                    Location.distanceBetween(mCurrLocationMarker.getPosition().latitude, mCurrLocationMarker.getPosition().longitude
+                            , lat, lng, distance);
+                } else
+                    Location.distanceBetween(mLastLatLng.latitude, mLastLatLng.longitude, lat, lng, distance);
+
+                if (i == 0) mindist = distance[0];
+                else if (mindist > distance[0]) {
+                    mindist = distance[0];
+                    pos = i;
+                }
             }
+
+            if (mCurrLocationMarker != null) {
+                LatlngBounds(mCurrLocationMarker.getPosition(), mMarkers.get(pos).getPosition());
+            } else
+                LatlngBounds(mLastLatLng, mMarkers.get(pos).getPosition());
+
         }
     }
 }
