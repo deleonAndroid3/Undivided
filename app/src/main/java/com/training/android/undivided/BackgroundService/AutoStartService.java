@@ -19,6 +19,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by Maouusama on 9/24/2017.
@@ -32,6 +33,8 @@ public class AutoStartService extends Service implements GoogleApiClient.Connect
     private static final long FASTEST_INTERVAL = 1000*2;
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
+    private LatLng mLastLatLng;
+    private LatLng mNextLatLng;
     Location mCurrentLocation,lStart, lEnd;
 
     private final IBinder mBinder = new LocalBinder();
@@ -78,15 +81,24 @@ public class AutoStartService extends Service implements GoogleApiClient.Connect
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = location;
-        if(lStart == null)
-        {
-            lStart = lEnd = mCurrentLocation;
-        }
-        else
-            lEnd = mCurrentLocation;
-    }
+        if (location != null) {
 
+            mNextLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+            /*
+              GET SPEED
+              */
+            getSpeed(location);
+
+            mLastLatLng = mNextLatLng;
+        }
+    }
+    public void getSpeed(Location location) {
+        double currentSpeed = location.getSpeed() * 3.6;
+        if(currentSpeed>10){
+
+        }
+    }
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
 

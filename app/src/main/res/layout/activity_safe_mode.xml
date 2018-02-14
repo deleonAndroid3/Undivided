@@ -31,5 +31,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/undivided_drivemode_logo_red" />
 
+    <Button
+        android:id="@+id/btnTTS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Button"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.DrawerLayout>

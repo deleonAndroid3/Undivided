@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -21,6 +22,8 @@ import  com.training.android.undivided.AutoReply.Database.DatabaseManager;
 import  com.training.android.undivided.AutoReply.Objects.Rule;
 import  com.training.android.undivided.AutoReply.Objects.SMS;
 import  com.training.android.undivided.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Hillary Briones on 8/3/2017.
@@ -44,6 +47,19 @@ public class CallReceiver extends BroadcastReceiver {
 
         TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
+        SharedPreferences thresholdPrefs = context.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
+        SharedPreferences thresholdCounterPrefs = context.getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE);
+        if(!(thresholdPrefs.getString("threshold", String.valueOf(0)).equals(thresholdCounterPrefs.getString("thresholdCounter"
+                , String.valueOf(0))))) {
+            SharedPreferences.Editor threshold_editor = context.getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE).edit();
+            threshold_editor.putString("thresholdCounter", String.valueOf(thresholdCounterPrefs.getString("thresholdCounter",
+                    String.valueOf(0)) + 1));
+            threshold_editor.commit();
+            Log.i(logTag, "COUNTING" + thresholdCounterPrefs.getString("thresholdCounter", String.valueOf(0)));
+        }
+        else {
+            Log.i(logTag,"MESSAGE ME!");
+        }
         if (phoneListener == null) {
             dbManager = new DatabaseManager(context);
             phoneListener = new MPhoneStateListener(context);
@@ -51,7 +67,7 @@ public class CallReceiver extends BroadcastReceiver {
             aManager = (AudioManager) context
                     .getSystemService(Context.AUDIO_SERVICE);
             //Get the applications shared preferences
-            sharedPref = context.getSharedPreferences(context.getString(R.string.shared_preferences_key),Context.MODE_PRIVATE);
+            sharedPref = context.getSharedPreferences(context.getString(R.string.shared_preferences_key), MODE_PRIVATE);
             // Get mute delay array
             muteDelayArray = context.getResources().getIntArray(R.array.mute_array_int);
             telephony.listen(phoneListener, PhoneStateListener.LISTEN_CALL_STATE);

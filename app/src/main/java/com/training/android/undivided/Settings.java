@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +26,7 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -35,12 +38,30 @@ import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.training.android.undivided.BackgroundService.BackgroundService;
 import com.training.android.undivided.Group.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
+import com.training.android.undivided.NavigationMode.Navigation;
 
-public class Settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+    public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    protected static final int REQUEST_CHECK_SETTINGS = 2;
+
 
     private DBHandler dbHandler;
     private EditText mEtThreshold;
@@ -49,6 +70,8 @@ public class Settings extends AppCompatActivity {
     BackgroundService myService;
     static boolean status;
     LocationManager locationManager;
+    private LocationRequest mLocationRequest;
+    private GoogleApiClient mGoogleApiClient;
     public static long startTime, endTime;
     public static int p=0;
     Spinner spinner;
@@ -74,11 +97,14 @@ public class Settings extends AppCompatActivity {
     }
 
     private void unbindService() {
-        if (status == false)
+        SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
+        if(sharedPrefs.getBoolean("status",true) == false)
             return;
         Intent i = new Intent(getApplicationContext(), LocationServices.class);
         unbindService(sc);
         status=false;
+
+        Log.i("SERVICE BINDER","SERVICE UNBINDED.");
     }
 
     @Override
@@ -105,6 +131,16 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            checkLocationPermission();
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                buildGoogleApiClient();
+            }
+        } else {
+            buildGoogleApiClient();
+        }
 
         // SET SPINNER
         SharedPreferences thresholdPrefs = getSharedPreferences("com.example.threshold", MODE_PRIVATE);
@@ -184,6 +220,32 @@ public class Settings extends AppCompatActivity {
 //        });
     }
 
+    public boolean checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Asking user if explanation is needed
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+                //Prompt the user once explanation has been shown
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     public void onClickListeners() {
         /**
@@ -197,23 +259,24 @@ public class Settings extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if (b) {
-                        checkGPS();
-                        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-                            return;
+
+//                        checkGPS();
+//                        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+//                        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+//                            return;
 
                         SharedPreferences.Editor editor = getSharedPreferences("com.example.xyz", MODE_PRIVATE).edit();
                         editor.putBoolean("status", true);
                         editor.commit();
 
-                        if(status == false)
+
                         bindService();
                     } else {
                         SharedPreferences.Editor editor = getSharedPreferences("com.example.xyz", MODE_PRIVATE).edit();
                         editor.putBoolean("status", false);
                         editor.commit();
 
-                        if(status == true)
+
                         unbindService();
 
 
@@ -262,14 +325,87 @@ public class Settings extends AppCompatActivity {
         alert.show();
     }
 
+    public void settingsRequest() {
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+        builder.setAlwaysShow(true);
+
+        final PendingResult<LocationSettingsResult> pendingResult =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient, builder.build());
+        pendingResult.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+                final Status status = locationSettingsResult.getStatus();
+
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can initialize location
+                        // requests here.
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied. But could be fixed by showing the user
+                        // a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(Settings.this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way to fix the
+                        // settings so we won't show the dialog.
+                        break;
+                }
+            }
+        });
+    }
+
     private void bindService() {
-        if(status == true)
-            return;
+        SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
+        if(sharedPrefs.getBoolean("status",true) == true)
+            return ;
+
         Intent i = new Intent(getApplicationContext(),BackgroundService.class);
         bindService(i,sc,BIND_AUTO_CREATE);
-        status= true;
-        startTime = System.currentTimeMillis();
+
+
+        Log.i("SERVICE BINDER","SERVICE BINDED.");
     }
+
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        settingsRequest();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
     public void getData() {
         GroupModel gm = new GroupModel();
         gm.setGroupName(mEtThreshold.getText().toString());
@@ -280,6 +416,16 @@ public class Settings extends AppCompatActivity {
 
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
 }
