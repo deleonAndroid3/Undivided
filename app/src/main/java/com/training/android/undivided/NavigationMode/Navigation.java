@@ -2,11 +2,8 @@ package com.training.android.undivided.NavigationMode;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -20,7 +17,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -34,8 +30,8 @@ import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +68,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
@@ -103,31 +100,17 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private static final int REQUEST_CHECK_SETTINGS = 2;
     private static final int PROXIMITY_RADIUS = 10000;
     private static final int CHECK_CODE = 3;
-
+    private static final int TIME_INTERVAL = 2000; // # milliseconds, desired time passed between two back presses.
     ArrayList<LatLng> mPathPolygonPoints = null;
     ArrayList<ContactsModel> cmodel;
     Polyline polyline;
-    boolean start = false;
     String type = "";
     Handler handler = new Handler();
     DecimalFormat form = new DecimalFormat("0.00");
-    DistanceTraveledService mDistanceTraveledService;
-    boolean bound = false;
-    ServiceConnection mServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            DistanceTraveledService.DistanceTravelBinder distanceTravelBinder = (DistanceTraveledService.DistanceTravelBinder) service;
-            mDistanceTraveledService = distanceTravelBinder.getBinder();
-            bound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            bound = false;
-        }
-    };
-    private double tdistance, dremaining;
-    private int routeCounter = -1;
+    float mindist;
+    private boolean start = false, near = false, miss = false;
+    private double tdistance, dremaining, dtravelled, distance = 0;
+    private int routeCounter = -1, pos = 0;
     private GoogleApiClient mGoogleApiClient;
     private LatLng mLastLatLng, mNextLatLng, DestLatlng;
     private Location mLastLocation;
@@ -135,13 +118,14 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private LocationRequest mLocationRequest;
     private GoogleMap mMap;
     private Button mBtnChangeRoute, mbtnSetMarker;
-    private RelativeLayout mBtnStartDriving;
+    private ImageButton mBtnStartDriving;
     private LinearLayout mSpeedometer;
     private TextView mtvSpeed, mtvTotalDistance, mtvDestination, mtvPlace;
     private OptionsFabLayout famServices;
     private ArrayList<Marker> mMarkers = new ArrayList<>();
     private DBHandler dbHandler;
     private Speaker speaker;
+    private long mBackPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,8 +254,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         Toast.makeText(Navigation.this, "Nearby Car Repair Shops", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.mTowing:
-                        String Towing = "towing";
-                        getServiceMarkers(Towing);
+                        addTowingMarkers();
                         famServices.closeOptionsMenu();
                         Toast.makeText(Navigation.this, "Nearby Towing Services", Toast.LENGTH_LONG).show();
                         break;
@@ -347,37 +330,63 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public void onLocationChanged(Location location) {
 
         if (location != null) {
-
             mNextLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-            /*
-              GET SPEED
-              */
+            if (mPathPolygonPoints != null) {
+                near = PolyUtil.isLocationOnPath(mNextLatLng, mPathPolygonPoints, true, 100);
+                miss = PolyUtil.isLocationOnPath(mNextLatLng, mPathPolygonPoints, true, 5);
+            }
             getSpeed(location);
 
-            if (mNextLatLng != null && mLastLatLng != null && start) {
-                CameraPosition cameraPosition = new CameraPosition.Builder().
-                        target(mNextLatLng).
-                        zoom(17).
-                        bearing((float) bearingBetweenLocations(mLastLatLng, mNextLatLng)).
-                        build();
+            if (near) {
+                if (mNextLatLng != null && mLastLatLng != null && start) {
 
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    if (!miss) {
+                        mNextLatLng = findNearestPoint(mNextLatLng, mPathPolygonPoints);
+                    }
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder().
+                            target(mNextLatLng).
+                            zoom(17).
+                            bearing((float) bearingBetweenLocations(mLastLatLng, mNextLatLng)).
+                            build();
+
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                    if (mCurrLocationMarker == null) {
+                        mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
+                                .position(mNextLatLng)
+                                .title("Current Location")
+                                .anchor(0.5f, 1f)
+                                .icon(getBitmapDescriptor(R.drawable.ic_navigation)));
+                    } else {
+                        animateMarker(mLastLatLng, mNextLatLng, false);
+
+                        distance = location.distanceTo(mLastLocation);
+                        dtravelled += distance;
+                        dremaining = tdistance - dtravelled;
 
 
-                if (mCurrLocationMarker == null) {
-                    mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
-                            .position(mNextLatLng)
-                            .title("Current Location")
-                            .anchor(0.5f, 1f)
-                            .icon(getBitmapDescriptor(R.drawable.ic_navigation)));
-                } else {
-                    animateMarker(mLastLatLng, mNextLatLng, false);
-                    displayDistance();
+                        if (dremaining < 1000)
+                            mtvTotalDistance.setText(form.format(dremaining) + " m");
+                        else
+                            mtvTotalDistance.setText(form.format(dremaining / 1000) + " Km");
+
+                        if (dremaining < 0)
+                            mtvTotalDistance.setText("0 m");
+
+                    }
+                }
+            } else {
+                if (polyline != null && mCurrLocationMarker != null) {
+                    polyline.remove();
+                    String url = getDirectionsUrl(mCurrLocationMarker.getPosition(), DestMarker.getPosition());
+                    DownloadTask downloadTask = new DownloadTask();
+                    downloadTask.execute(url);
                 }
             }
             mLastLatLng = mNextLatLng;
-
+            mLastLocation = location;
 
             if (DestLatlng != null && mLastLatLng != null) {
                 if (SphericalUtil.computeDistanceBetween(DestLatlng, mLastLatLng) < 50) {
@@ -432,6 +441,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         if (mLastLocation != null) {
                             mLastLocation.setLatitude(mLastLocation.getLatitude());
                             mLastLocation.setLongitude(mLastLocation.getLongitude());
+
                             Place place = PlaceAutocomplete.getPlace(this, data);
                             DestLatlng = place.getLatLng();
 
@@ -637,10 +647,16 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private void getServiceMarkers(String stype) {
         Log.d("onClick", "Button is Clicked");
 
+        String url;
+
         if (mMarkers != null && SpotsMarker != null) {
             removeMarkers();
         }
-        String url = getUrl(DestLatlng.latitude, DestLatlng.longitude, stype);
+        if (mCurrLocationMarker != null) {
+            url = getUrl(mCurrLocationMarker.getPosition().latitude, mCurrLocationMarker.getPosition().longitude, stype);
+        } else
+            url = getUrl(mLastLocation.getLatitude(), mLastLocation.getLongitude(), stype);
+
         Object[] DataTransfer = new Object[2];
         DataTransfer[0] = mMap;
         DataTransfer[1] = url;
@@ -661,7 +677,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         circleOptions.visible(false);
 
         // Radius of the circle
-        circleOptions.radius(50);
+        circleOptions.radius(5);
 
         // Adding the circle to the GoogleMap
         mMap.addCircle(circleOptions);
@@ -800,27 +816,59 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
-    private void displayDistance() {
-        final Handler handler = new Handler();
-        handler.post(new Runnable() {
+    private void addTowingMarkers() {
+
+        if (mMarkers != null && SpotsMarker != null) {
+            removeMarkers();
+        }
+
+        LatLng latLng;
+
+        for (TowingServicesModel tsm : dbHandler.getServices()) {
+
+            String[] latlong = tsm.getLatlng().split(",");
+            double lat = Double.parseDouble(latlong[0]);
+            double lng = Double.parseDouble(latlong[1]);
+            latLng = new LatLng(lat, lng);
+
+            SpotsMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(tsm.getName())
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                    .snippet(tsm.getAddress()));
+
+            mMarkers.add(SpotsMarker);
+        }
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public void run() {
-                double distance = 0;
-                if (mDistanceTraveledService != null) {
-                    distance = mDistanceTraveledService.getDistanceTraveled();
-                    dremaining = tdistance - distance;
-                    if (dremaining < 1000)
-                        mtvTotalDistance.setText(form.format(dremaining) + " m");
-                    else
-                        mtvTotalDistance.setText(form.format(dremaining) + " Km");
+            public boolean onMarkerClick(Marker marker) {
 
-                    if (dremaining < 0)
-                        mtvTotalDistance.setText("0 m");
-                }
 
-                handler.postDelayed(this, 1000);
+                return false;
             }
         });
+
+
+    }
+
+    private LatLng findNearestPoint(LatLng current, ArrayList<LatLng> points) {
+
+        float[] distance = new float[1];
+
+        for (int i = 0; i < points.size(); i++) {
+            if (current != null) {
+                Location.distanceBetween(current.latitude, current.longitude, points.get(i).latitude, points.get(i).longitude, distance);
+
+                if (i == 0) mindist = distance[0];
+                else if (mindist > distance[0]) {
+                    mindist = distance[0];
+                    pos = i;
+                }
+            }
+        }
+
+        return new LatLng(points.get(pos).latitude, points.get(pos).longitude);
     }
 
 //    private void locationUpdate(Location location) {
@@ -983,13 +1031,17 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, DistanceTraveledService.class);
-        bindService(intent, mServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        buildGoogleApiClient();
     }
 
     @Override
@@ -1001,16 +1053,25 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     protected void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
-        if (bound) {
-            unbindService(mServiceConnection);
-            bound = false;
-        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
+            super.onBackPressed();
+            return;
+        } else {
+            Toast.makeText(getBaseContext(), "Tap back button in order to exit", Toast.LENGTH_SHORT).show();
+        }
+
+        mBackPressed = System.currentTimeMillis();
     }
 
     /**
@@ -1205,12 +1266,12 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 //                        mMap.addMarker(new MarkerOptions().
 //                                position(sPos).
 //                                title(sDist));
-
                             double lat = Double.parseDouble(point.get("lat"));
                             double lng = Double.parseDouble(point.get("lng"));
                             LatLng position = new LatLng(lat, lng);
 
                             mPathPolygonPoints.add(position);
+
                         }
                     } catch (IndexOutOfBoundsException e) {
                         Log.e("Route", "Route", e.getCause());
@@ -1224,7 +1285,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                             .clickable(true)
                             .color(Color.GREEN));
 
-                    mtvTotalDistance.setText(tdistance / 1000 + " Km");
+
+                    mtvTotalDistance.setText(form.format(tdistance / 1000) + " Km");
 
                     if (routeCounter + 1 == result.size()) {
                         routeCounter = -1;
@@ -1296,7 +1358,26 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 }
 
                 mMarkers.add(SpotsMarker);
+
+                float[] distance = new float[1];
+                if (mCurrLocationMarker != null) {
+                    Location.distanceBetween(mCurrLocationMarker.getPosition().latitude, mCurrLocationMarker.getPosition().longitude
+                            , lat, lng, distance);
+                } else
+                    Location.distanceBetween(mLastLatLng.latitude, mLastLatLng.longitude, lat, lng, distance);
+
+                if (i == 0) mindist = distance[0];
+                else if (mindist > distance[0]) {
+                    mindist = distance[0];
+                    pos = i;
+                }
             }
+
+            if (mCurrLocationMarker != null) {
+                LatlngBounds(mCurrLocationMarker.getPosition(), mMarkers.get(pos).getPosition());
+            } else
+                LatlngBounds(mLastLatLng, mMarkers.get(pos).getPosition());
+
         }
     }
 }

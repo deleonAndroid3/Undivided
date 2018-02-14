@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.BIND_VOICE_INTERACTION" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -40,9 +41,6 @@
         android:theme="@style/AppTheme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
-        <service android:name=".NavigationMode.DistanceTraveledService"
-            android:enabled="true"
-            android:exported="false"/>
 
         <activity android:name=".SplashScreenActivity">
             <intent-filter>
@@ -169,7 +167,7 @@
         <activity
             android:name=".GroupSender.Module.Send_Message.SendMessageActivity"
             android:label="@string/send_message"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
 
         <!-- Intro Package -->
         <activity
@@ -187,9 +185,6 @@
         <activity
             android:name=".SafeMode"
             android:theme="@style/AppTheme.NoActionBarRed" />
-
-        <!-- Call Log Package -->
-        <activity android:name=".CallLog.CallLogActivity" />
 
         <!-- Call Log Package -->
         <activity android:name=".CallLog.CallLogActivity" />
