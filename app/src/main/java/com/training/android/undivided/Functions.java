@@ -9,7 +9,9 @@ import android.widget.Button;
 import com.training.android.undivided.AutoReply.AutoReplyActivity;
 import com.training.android.undivided.CallLog.CallLogActivity;
 
-import com.training.android.undivided.GroupSender.Module.GroupSenderActivity;
+
+import com.training.android.undivided.LivetoText.LivetoText;
+import com.training.android.undivided.SmsGroup.Activity.SmsGroupActivity;
 
 public class Functions extends AppCompatActivity {
 
@@ -20,6 +22,7 @@ public class Functions extends AppCompatActivity {
     Button mbtnDAS;
     Button mbtnCallLog;
     Button mbtnCreateGroup;
+    Button mbtnLivetoText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class Functions extends AppCompatActivity {
         mbtnDAS = (Button) findViewById(R.id.btnDisableAppSwitch);
         mbtnCallLog = findViewById(R.id.btnCallLog);
         mbtnCreateGroup=findViewById(R.id.btnCreateGroup);
+        mbtnLivetoText=findViewById(R.id.btnLivetoText);
 
         mbtnCallLog.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,8 +85,15 @@ public class Functions extends AppCompatActivity {
         mbtnCreateGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent GS = new Intent(Functions.this, GroupSenderActivity.class);
+                Intent GS = new Intent(Functions.this, SmsGroupActivity.class);
                 startActivity(GS);
+            }
+        });
+        mbtnLivetoText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent LTT = new Intent(Functions.this, LivetoText.class);
+                startActivity(LTT);
             }
         });
 

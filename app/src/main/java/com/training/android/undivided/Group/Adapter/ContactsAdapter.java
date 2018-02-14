@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.R;
 
@@ -44,7 +44,6 @@ public class ContactsAdapter extends ArrayAdapter<ContactsModel> {
         convertView = inflater.inflate(R.layout.contacts_listview, parent, false);
         viewHolder.mtvName = convertView.findViewById(R.id.tvName);
         viewHolder.mtvContactNo = convertView.findViewById(R.id.tvContactNumber);
-        viewHolder.imv = convertView.findViewById(R.id.ivDelete);
 
 
         if (viewHolder != null && cModel != null) {
@@ -52,20 +51,10 @@ public class ContactsAdapter extends ArrayAdapter<ContactsModel> {
             viewHolder.mtvContactNo.setText(cModel.getContactNumber());
         }
 
-        viewHolder.imv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(mcontext, "Delete Button CLicked", Toast.LENGTH_SHORT).show();
-
-                //TODO: delete contact from group
-            }
-        });
-
         return convertView;
     }
 
     private static class ViewHolder {
         TextView mtvName, mtvContactNo;
-        ImageView imv;
     }
 }

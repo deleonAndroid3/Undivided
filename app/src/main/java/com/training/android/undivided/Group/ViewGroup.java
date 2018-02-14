@@ -12,10 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.training.android.undivided.Group.Adapter.GroupAdapter;
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.R;
 
 public class ViewGroup extends AppCompatActivity {

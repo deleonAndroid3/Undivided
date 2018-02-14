@@ -38,9 +38,9 @@ public class TextToSpeech extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text_to_speech);
-        toggle = (ToggleButton)findViewById(R.id.speechToggle);
-        smsText = (TextView)findViewById(R.id.sms_text);
-        smsSender = (TextView)findViewById(R.id.sms_sender);
+        toggle = findViewById(R.id.speechToggle);
+        smsText = findViewById(R.id.sms_text);
+        smsSender = findViewById(R.id.sms_sender);
 
         toggleListener = new CompoundButton.OnCheckedChangeListener() {
             @Override

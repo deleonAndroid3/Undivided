@@ -20,6 +20,7 @@ import com.training.android.undivided.AutoReply.Database.DatabaseManager;
 import  com.training.android.undivided.AutoReply.Objects.Rule;
 import com.training.android.undivided.AutoReply.Widget.RuleWidgetProvider;
 import com.training.android.undivided.R;
+import com.training.android.undivided.Settings;
 
 import java.util.ArrayList;
 
@@ -124,8 +125,10 @@ public class AutoReplyActivity extends AppCompatActivity {
                 launchAddEditRuleActivity(null); //launch addEdit rule in add mode
                 return true;
             case R.id.action_outbox:
-              //  startActivity(new Intent(this, Outbox.class));
+                startActivity(new Intent(this, Outbox.class));
                 return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, AutoReplySettings.class));
 
             default:
                 return super.onOptionsItemSelected(item);

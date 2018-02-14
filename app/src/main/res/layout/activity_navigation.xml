@@ -1,5 +1,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -66,29 +67,6 @@
             app:layout_constraintVertical_bias="1.0" />
 
         <TextView
-            android:id="@+id/tvTotalDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:text="1 hr"
-            android:textAlignment="viewStart"
-            android:textColor="@android:color/white"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/tvPlaceName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.12"
-            app:layout_constraintStart_toEndOf="@+id/tvTotalDistance"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <TextView
             android:id="@+id/tvPlaceName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,12 +76,12 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="75dp"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:text="Seaside SM"
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:ellipsize="end"
-            android:singleLine="true"
             app:layout_constraintBottom_toTopOf="@+id/tvDestination"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -121,14 +99,14 @@
             android:layout_marginRight="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:ellipsize="end"
             android:gravity="start"
+            android:singleLine="true"
             android:text="Cebu South Coastal Rd, Cebu City, Cebu, Philippines"
             android:textAlignment="textStart"
             android:textColor="@android:color/white"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:ellipsize="end"
-            android:singleLine="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -144,12 +122,10 @@
         android:id="@+id/Speedometer"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="68dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@drawable/speedometer"
         android:elevation="10dp"
         android:orientation="vertical"
         android:weightSum="2"
@@ -157,8 +133,6 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.864"
         tools:layout_constraintBottom_creator="1"
         tools:layout_constraintRight_creator="1">
 
@@ -168,6 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:padding="8dp"
             android:text="30"
             android:textColor="@android:color/white"
             android:textSize="30sp"
@@ -178,6 +153,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="center"
@@ -190,37 +167,25 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+    <ImageButton
         android:id="@+id/btnStartDriving"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="68dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/circle"
-        android:backgroundTint="@color/colorPrimary"
+        android:background="@drawable/speedometer"
         android:elevation="10dp"
-        android:orientation="vertical"
-        android:weightSum="2"
+        android:src="@drawable/ic_navigation"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.864"
+        app:srcCompat="@drawable/ic_navigation"
         tools:layout_constraintBottom_creator="1"
-        tools:layout_constraintRight_creator="1">
-
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:foregroundGravity="center"
-            android:src="@drawable/compass" />
-
-    </RelativeLayout>
+        tools:layout_constraintRight_creator="1" />
 
     <Button
         android:id="@+id/btnChangeRoute"
@@ -236,5 +201,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/btnSetMarker"
+        android:layout_width="130dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Set Marker"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.github.ag.floatingactionmenu.OptionsFabLayout
+        android:id="@+id/fab_services"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:requiresFadingEdge="none"
+        app:background_color="@color/colorWhiteBackground"
+        app:layout_constraintBottom_toTopOf="@+id/btnStartDriving"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        custom:color="@color/colorPrimaryDark"
+        custom:options_color="@color/colorPrimaryDark"
+        custom:options_menu="@menu/fam_menu" />
 
 </android.support.constraint.ConstraintLayout>

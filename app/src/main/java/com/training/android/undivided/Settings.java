@@ -1,6 +1,5 @@
 package com.training.android.undivided;
 
-import android.*;
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.DialogInterface;
@@ -9,10 +8,7 @@ import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
-import android.media.audiofx.BassBoost;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -22,11 +18,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+<<<<<<< HEAD
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+=======
+>>>>>>> 6f81ebde00bac73b6589a4eb19244362e8dc1d95
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
+<<<<<<< HEAD
 import java.lang.reflect.Method;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -45,12 +44,14 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+=======
+>>>>>>> 6f81ebde00bac73b6589a4eb19244362e8dc1d95
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.training.android.undivided.BackgroundService.BackgroundService;
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.NavigationMode.Navigation;
 
@@ -220,6 +221,7 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
 //        });
     }
 
+<<<<<<< HEAD
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -247,6 +249,8 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         }
     }
 
+=======
+>>>>>>> 6f81ebde00bac73b6589a4eb19244362e8dc1d95
     public void onClickListeners() {
         /**
          * BACKGROUND FUNCTION WITH AUTO START ( INCLUDING ON DESTROY )
@@ -400,12 +404,15 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         mGoogleApiClient.connect();
     }
 
+<<<<<<< HEAD
 
     @Override
     public void onConnectionSuspended(int i) {
 
     }
 
+=======
+>>>>>>> 6f81ebde00bac73b6589a4eb19244362e8dc1d95
     public void getData() {
         GroupModel gm = new GroupModel();
         gm.setGroupName(mEtThreshold.getText().toString());
