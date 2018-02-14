@@ -14,13 +14,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.R;
 
 public class AddGroup extends AppCompatActivity {
 
     DBHandler dbHandler;
+    AlertDialog ModeDialog;
     private EditText mEtGroupName;
     private EditText mEtGroupDescription;
     private EditText mEtGroupMessage;
@@ -42,15 +43,15 @@ public class AddGroup extends AppCompatActivity {
 
         dbHandler = new DBHandler(this);
 
-        mEtGroupName = (EditText) findViewById(R.id.etGroupName);
-        mEtGroupDescription = (EditText) findViewById(R.id.etGroupDesc);
-        mEtGroupMessage = (EditText) findViewById(R.id.etGroupMessage);
-        cbRule1 = (CheckBox) findViewById(R.id.declinecall);
-        cbRule2 = (CheckBox) findViewById(R.id.autoreplysms);
-        cbRule3 = (CheckBox) findViewById(R.id.autoreplycall);
-        cbRule4 = (CheckBox) findViewById(R.id.replysms);
-        cbRule5 = (CheckBox) findViewById(R.id.readsms);
-        cbRule6 = (CheckBox) findViewById(R.id.answercall);
+        mEtGroupName = findViewById(R.id.etGroupName);
+        mEtGroupDescription = findViewById(R.id.etGroupDesc);
+        mEtGroupMessage = findViewById(R.id.etGroupMessage);
+        cbRule1 = findViewById(R.id.declinecall);
+        cbRule2 = findViewById(R.id.autoreplysms);
+        cbRule3 = findViewById(R.id.autoreplycall);
+        cbRule4 = findViewById(R.id.replysms);
+        cbRule5 = findViewById(R.id.readsms);
+        cbRule6 = findViewById(R.id.answercall);
 
         mEtGroupDescription.setMaxLines(Integer.MAX_VALUE);
         mEtGroupDescription.setHorizontallyScrolling(false);
@@ -125,13 +126,13 @@ public class AddGroup extends AppCompatActivity {
 
     public void showAlert() {
 
-        AlertDialog.Builder builder;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
-        } else {
-            builder = new AlertDialog.Builder(this);
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);;
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+//        } else {
+//
+//        }
 
         builder.setTitle("Create Group")
                 .setMessage("Are you sure you want to create this group?")
@@ -160,8 +161,5 @@ public class AddGroup extends AppCompatActivity {
                     }
                 })
                 .show();
-
     }
-
-
 }

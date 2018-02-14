@@ -14,22 +14,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.R;
 
 import java.util.ArrayList;
-
-/***\
- *  Created by Hillary Briones
- *  */
 
 public class GroupContactPicker extends AppCompatActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 11;
     public static final String logTag = "GroupContactPicker";
     private static String incomingExtraTag = "selected_contacts";
-
+    String gname;
     private ListView listView;
     private ArrayList<String> phoneNos; //array holding phone nos, from which the selected ones go into selectedContacts
     private ArrayList<String> contactNames;
@@ -46,7 +42,7 @@ public class GroupContactPicker extends AppCompatActivity {
         // Set result the canceled incase user bails
         setResult(RESULT_CANCELED);
 
-        listView = (ListView) findViewById(R.id.contactpicker_contactsList);
+        listView = findViewById(R.id.contactpicker_contactsList);
 
         name = getIntent();
         db = new DBHandler(this);
@@ -58,6 +54,12 @@ public class GroupContactPicker extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, listContacts);
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+        if (name.hasExtra("mode"))
+            if (name.getExtras().getString("mode").equals("edit")) {
+                gname = name.getExtras().getString("name");
+                checkContactsifExists(gname);
+            }
 
     }
 
@@ -97,7 +99,9 @@ public class GroupContactPicker extends AppCompatActivity {
      */
     private void doneSelected() {
         checked = listView.getCheckedItemPositions();
+
         ContactsModel cm = new ContactsModel();
+
         if (checked.size() == 0) {
             Toast.makeText(this, "Group must at least have 1 contact", Toast.LENGTH_SHORT).show();
         } else {
@@ -106,26 +110,46 @@ public class GroupContactPicker extends AppCompatActivity {
                 if (checked.get(i)) {
                     cm.setContactName(contactNames.get(i));
                     cm.setContactNumber(phoneNos.get(i));
-                    if (db.numberExists(phoneNos.get(i))) {
-                        //TODO: create an alert dialog if a number exists in another group (DONE)
+
+                    if (db.numberExists(phoneNos.get(i)) && !gname.equals("Emergency")) {
+
                         Toast.makeText(this, "Phone Number " + phoneNos.get(i) + " already exists in another group and won't be added to this group", Toast.LENGTH_SHORT).show();
+
                     } else {
-                        db.addContact(cm, name.getStringExtra("groupname"));
+                        if (name.hasExtra("mode")) {
+                            if (name.getExtras().getString("mode").equals("edit")) {
+                                String gname = name.getExtras().getString("name");
+                                db.addContact(cm, gname);
+                            }
+                        } else
+                            db.addContact(cm, name.getStringExtra("groupname"));
                     }
                 }
 
             }
 
-
             Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent gotoViewGroup = new Intent(GroupContactPicker.this, ViewGroup.class);
-                    startActivity(gotoViewGroup);
-                    finish();
+
+            if (name.hasExtra("mode")) {
+                if (name.getExtras().getString("mode").equals("edit")) {
+
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            onBackPressed();
+                        }
+                    }, 1500);
                 }
-            }, 1500);
+            } else {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent gotoViewGroup = new Intent(GroupContactPicker.this, ViewGroup.class);
+                        startActivity(gotoViewGroup);
+                        finish();
+                    }
+                }, 1500);
+            }
         }
     }
 
@@ -153,5 +177,28 @@ public class GroupContactPicker extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
 
+    }
+
+    private void checkContactsifExists(String n) {
+
+        for (ContactsModel cm : db.getContactsofGroup(n)) {
+            for (int i = 0; i < phoneNos.size(); i++) {
+                if (phoneNos.get(i).equals(cm.getContactNumber())) {
+                    listView.setItemChecked(i + 0, true);
+                }
+            }
+
+            //TODO: DELETE CONTACTS
+
+            if (n.equals("Emergency")) {
+                Toast.makeText(this, n + "", Toast.LENGTH_SHORT).show();
+                db.DeleteContactsifEmergency(cm.getContactNumber());
+            } else {
+                if (db.numberExists(cm.getContactNumber())) {
+                    Toast.makeText(this, n + "", Toast.LENGTH_SHORT).show();
+                    db.DeleteContacts(cm.getContactNumber());
+                }
+            }
+        }
     }
 }

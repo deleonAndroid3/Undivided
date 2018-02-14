@@ -1,12 +1,11 @@
 package com.training.android.undivided;
 
 import android.Manifest;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -15,26 +14,40 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 import com.training.android.undivided.BackgroundService.BackgroundService;
 import com.training.android.undivided.CallLog.CallLogActivity;
+import com.training.android.undivided.Database.DBHandler;
+import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.NavigationMode.Navigation;
+import com.txusballesteros.bubbles.BubbleLayout;
+import com.txusballesteros.bubbles.BubblesManager;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 11;
-    AlertDialog ModeDialog;
+    AlertDialog ModeDialog, mAlertDialog;
+    ArrayList<ContactsModel> cmodel;
+    String message = "";
     private ImageView mIvStart;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private boolean flag=false;
+    private BubblesManager bubblesManager;
+    private DBHandler dbHandler;
+    private boolean flag = false;
 
 //    /*@Override
 //    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -58,10 +71,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Stetho.initializeWithDefaults(this);
+        initializeBubblesManager();
+        dbHandler = new DBHandler(this);
+        cmodel = new ArrayList<>();
+
+        message = dbHandler.getMessage("Emergency").getGroupMessage();
 
         Intent i = getIntent();
-        if(i.getFlags()==Intent.FLAG_ACTIVITY_NEW_TASK)
-        stopService(i);
+        if (i.getFlags() == Intent.FLAG_ACTIVITY_NEW_TASK)
+            stopService(i);
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE,
                         Manifest.permission.READ_CONTACTS},
@@ -76,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
 //                    Manifest.permission.ACCESS_FINE_LOCATION
 //            },1000);
 //        }
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mIvStart = (ImageView) findViewById(R.id.ivDriveStart);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        mIvStart = findViewById(R.id.ivDriveStart);
 
         drawerLayout.getBackground().setAlpha(80);
 
@@ -88,15 +106,20 @@ public class MainActivity extends AppCompatActivity {
         mIvStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chooseMode();
+                if (ModeDialog != null && ModeDialog.isShowing()) {
+                    Log.d("TAG", "Choose mode");
+                } else {
+                    chooseMode();
+                }
             }
         });
 
     }
+
     @Override
     public void onBackPressed() {
-        if(!flag)
-        super.onBackPressed();
+        if (!flag)
+            super.onBackPressed();
     }
 
     @Override
@@ -104,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, BackgroundService.class);
         startService(intent);
         super.onDestroy();
-
 
     }
 
@@ -207,6 +229,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         Toast.makeText(MainActivity.this, "Passenger Mode Selected", Toast.LENGTH_SHORT).show();
+                        addNewBubble();
                         break;
                 }
 
@@ -219,13 +242,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.setCancelable(false);
+
         ModeDialog = builder.create();
         ModeDialog.show();
-
     }
 
     private void initToolbar() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
 
@@ -236,15 +259,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDrawerLayout() {
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(false);
                 switch (menuItem.getItemId()) {
-                    case R.id.drawer_profile :
+                    case R.id.drawer_profile:
                         break;
                     case R.id.drawer_view_group:
                         startActivity(new Intent(MainActivity.this, ViewGroup.class));
@@ -261,5 +284,86 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void addNewBubble() {
+        BubbleLayout bubbleView = (BubbleLayout) LayoutInflater.from(MainActivity.this).inflate(R.layout.bubble_layout, null);
+
+        bubbleView.setOnBubbleRemoveListener(new BubbleLayout.OnBubbleRemoveListener() {
+            @Override
+            public void onBubbleRemoved(BubbleLayout bubble) {
+
+            }
+        });
+
+        bubbleView.setOnBubbleClickListener(new BubbleLayout.OnBubbleClickListener() {
+            @Override
+            public void onBubbleClick(BubbleLayout bubble) {
+                if (mAlertDialog != null && mAlertDialog.isShowing()) {
+                    Log.e("TAG", "onBubbleClick: ");
+                } else {
+                    showAlertSOS();
+                }
+            }
+        });
+
+        bubbleView.setShouldStickToWall(true);
+        bubblesManager.addBubble(bubbleView, 60, 20);
+    }
+
+    private void initializeBubblesManager() {
+        bubblesManager = new BubblesManager.Builder(this)
+                .setTrashLayout(R.layout.bubble_trash_layout)
+                .build();
+        bubblesManager.initialize();
+    }
+
+    public void showAlertSOS() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Emergency SOS")
+                .setMessage("Do you want to send Emergency SMS and call ERUF")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                cmodel = dbHandler.getEmergencyContacts();
+
+                                int i = 0;
+
+                                while (i != cmodel.size()) {
+                                    try {
+                                        SmsManager smsManager = SmsManager.getDefault();
+                                        smsManager.sendTextMessage(cmodel.get(i).getContactNumber(), null, message, null, null);
+
+                                        Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_SHORT).show();
+                                    } catch (Exception e) {
+                                        Toast.makeText(getApplicationContext(), "Failed.", Toast.LENGTH_SHORT).show();
+                                    }
+                                    i++;
+                                }
+
+                                String phone = "+639234152360";
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                                startActivity(intent);
+
+                                finish();
+                            }
+                        }, 1000);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                    }
+                });
+
+        mAlertDialog = builder.create();
+        mAlertDialog.show();
+
+    }
 }
 

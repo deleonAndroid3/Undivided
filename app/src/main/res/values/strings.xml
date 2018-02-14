@@ -117,11 +117,6 @@
     <string name="desc_firebase_ui">Use the FirebaseUI-Android library to authenticate with Firebase.</string>
 
 
-
-
-
-
-
     <string name="hint_user_id">User ID</string>
     <string name="get_custom_token">Get Token</string>
     <string name="sign_in">Sign In</string>
@@ -208,9 +203,8 @@
     <!--SMS GROUP-->
 
 
-
     <string name="menu_title_open_source_components">open source components</string>
-    <string name="rate_app_title" >rate this app</string>
+    <string name="rate_app_title">rate this app</string>
     <string name="menu_title_about">about</string>
     <string name="menu_title_save">save</string>
     <string name="menu_title_delete">delete</string>
@@ -233,5 +227,9 @@
     <string name="menu_title_add_group">add group</string>
     <string name="menu_title_add">add message</string>
     <string name="share_menu_title">share message list</string>
+
+    <string name="edit_message">Edit Message</string>
+    <string name="send_message">Send Message</string>
+
 
 </resources>

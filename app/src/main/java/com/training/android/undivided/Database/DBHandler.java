@@ -1,4 +1,4 @@
-package com.training.android.undivided.Group.Database;
+package com.training.android.undivided.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -90,6 +90,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void addGroup(GroupModel groupModel) {
+
         if (!db.isOpen())
             db = getWritableDatabase();
 
@@ -116,6 +117,33 @@ public class DBHandler extends SQLiteOpenHelper {
                 COLUMN_GROUPID + " FROM " + TABLE_CREATE_GROUP +
                 " WHERE " + COLUMN_GROUPNAME + " = '" + name + "'));"
         );
+
+    }
+
+    public void deleteGroup(String name) {
+
+        SQLiteDatabase dbd = getWritableDatabase();
+        dbd.delete(TABLE_CREATE_GROUP, COLUMN_GROUPNAME + " = '" + name + "'", null);
+        dbd.close();
+    }
+
+    public void UpdateGroup(String name, GroupModel gm) {
+
+        if (!db.isOpen())
+            db = getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_GROUPNAME, gm.getGroupName());
+        cv.put(COLUMN_GROUPDESC, gm.getGroupDesc());
+        cv.put(COLUMN_GROUPMESSAGE, gm.getGroupMessage());
+        cv.put(COLUMN_DECLINECALL, gm.getRule1());
+        cv.put(COLUMN_AUTOREPLYSMS, gm.getRule2());
+        cv.put(COLUMN_AUTOREPYCALLS, gm.getRule3());
+        cv.put(COLUMN_REPLYSMS, gm.getRule4());
+        cv.put(COLUMN_READSMS, gm.getRule5());
+        cv.put(COLUMN_NOTIFYIFCALL, gm.getRule6());
+
+        db.update(TABLE_CREATE_GROUP, cv, COLUMN_GROUPNAME + " = '" + name + "'", null);
 
     }
 
@@ -147,6 +175,53 @@ public class DBHandler extends SQLiteOpenHelper {
         return list;
     }
 
+    public ArrayList<ContactsModel> getContactsofGroup(String name) {
+
+        SQLiteDatabase rdb = getReadableDatabase();
+        Cursor c = rdb.rawQuery("SELECT * FROM " + TABLE_CONTACTS + " WHERE " + FK_COLUMN_GROUPID
+                + " IN (SELECT " + COLUMN_GROUPID + " FROM " + TABLE_CREATE_GROUP + " WHERE " + COLUMN_GROUPNAME + " = '" + name + "')", null);
+        ArrayList<ContactsModel> cm = new ArrayList<>();
+        ContactsModel cModel;
+
+        while (c.moveToNext()) {
+
+            cModel = new ContactsModel();
+            cModel.setContactName(c.getString(2));
+            cModel.setContactNumber(c.getString(1));
+
+            cm.add(cModel);
+        }
+
+        c.close();
+        rdb.close();
+
+        return cm;
+    }
+
+    public ArrayList<ContactsModel> getEmergencyContacts() {
+        if (!db.isOpen())
+            db = getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_CONTACTS + " WHERE " + FK_COLUMN_GROUPID + " = 1";
+        Cursor c = db.rawQuery(query, null);
+
+        ArrayList<ContactsModel> cm = new ArrayList<>();
+        ContactsModel cModel;
+
+        while (c.moveToNext()) {
+
+            cModel = new ContactsModel();
+            cModel.setContactName(c.getString(2));
+            cModel.setContactNumber(c.getString(1));
+
+            cm.add(cModel);
+        }
+        c.close();
+        db.close();
+
+        return cm;
+    }
+
     public boolean EmergencyGroupExists() {
 
         Cursor cursor = null;
@@ -165,10 +240,13 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public boolean numberExists(String Phonenum) {
 
+        if (!db.isOpen())
+            db = getReadableDatabase();
+
         Cursor cursor = null;
 
         try {
-            String sql = "SELECT contactid FROM " + TABLE_CONTACTS + " WHERE contactnum = '" + Phonenum + "' AND NOT group_id = 1 ";
+            String sql = "SELECT contactid FROM " + TABLE_CONTACTS + " WHERE contactnum = '" + Phonenum + "' AND "+ FK_COLUMN_GROUPID + " != 1 ";
             cursor = db.rawQuery(sql, null);
 
             return (cursor.getCount() > 0);
@@ -198,60 +276,50 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<ContactsModel> getContactsofGroup(String name) {
+    public GroupModel getMessage(String name) {
 
-        SQLiteDatabase rdb = getReadableDatabase();
-        Cursor c = rdb.rawQuery("SELECT * FROM " + TABLE_CONTACTS + " WHERE " + FK_COLUMN_GROUPID
-                + " IN (SELECT " + COLUMN_GROUPID + " FROM " + TABLE_CREATE_GROUP + " WHERE " + COLUMN_GROUPNAME + " = '" + name + "')", null);
-        ArrayList<ContactsModel> cm = new ArrayList<>();
-        ContactsModel cModel;
+        if (!db.isOpen())
+            db = getReadableDatabase();
 
-        while (c.moveToNext()) {
+        String query = "SELECT * FROM " + TABLE_CREATE_GROUP + " WHERE " + COLUMN_GROUPNAME + " = '" + name + "'";
 
-            cModel = new ContactsModel();
-            cModel.setContactName(c.getString(2));
-            cModel.setContactNumber(c.getString(1));
+        Cursor c = db.rawQuery(query, null);
+        GroupModel groupModel = new GroupModel();
 
-            cm.add(cModel);
+        try {
+            if (c != null && c.moveToFirst()) {
+                groupModel.setGroupName(c.getString(1));
+                groupModel.setGroupDesc(c.getString(2));
+                groupModel.setGroupMessage(c.getString(3));
+                groupModel.setRule1(Integer.parseInt(c.getString(4)));
+                groupModel.setRule2(Integer.parseInt(c.getString(5)));
+                groupModel.setRule3(Integer.parseInt(c.getString(6)));
+                groupModel.setRule4(Integer.parseInt(c.getString(7)));
+                groupModel.setRule5(Integer.parseInt(c.getString(8)));
+                groupModel.setRule6(Integer.parseInt(c.getString(9)));
+            }
+        } finally {
+            c.close();
+            db.close();
         }
 
-        c.close();
-        rdb.close();
 
-        return cm;
+        return groupModel;
     }
 
-    public void deleteGroup(String name) {
-
-        SQLiteDatabase dbd = getWritableDatabase();
-        dbd.delete(TABLE_CREATE_GROUP, COLUMN_GROUPNAME + " = '" + name + "'", null);
-        dbd.close();
-    }
-
-    public void UpdateGroup(String name, GroupModel gm) {
-
+    public void DeleteContacts(String  num) {
         if (!db.isOpen())
             db = getWritableDatabase();
 
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_GROUPNAME, gm.getGroupName());
-        cv.put(COLUMN_GROUPDESC, gm.getGroupDesc());
-        cv.put(COLUMN_GROUPMESSAGE, gm.getGroupMessage());
-        cv.put(COLUMN_DECLINECALL, gm.getRule1());
-        cv.put(COLUMN_AUTOREPLYSMS, gm.getRule2());
-        cv.put(COLUMN_AUTOREPYCALLS, gm.getRule3());
-        cv.put(COLUMN_REPLYSMS, gm.getRule4());
-        cv.put(COLUMN_READSMS, gm.getRule5());
-        cv.put(COLUMN_NOTIFYIFCALL, gm.getRule6());
-
-        db.update(TABLE_CREATE_GROUP, cv, COLUMN_GROUPNAME + " = '" + name + "'", null);
-
+        db.delete(TABLE_CONTACTS, COLUMN_CONTACTNUM + " = '" + num + "' AND " + FK_COLUMN_GROUPID + " != 1", null);
+        db.close();
     }
 
-    public void DeleteContacts(int num) {
+    public void DeleteContactsifEmergency(String num) {
         if (!db.isOpen())
             db = getWritableDatabase();
-        db.delete(TABLE_CONTACTS, COLUMN_CONTACTNUM + " = '" + num + "'", null);
+
+        db.delete(TABLE_CONTACTS, COLUMN_CONTACTNUM + " = '" + num + "' AND " + FK_COLUMN_GROUPID + " = 1", null);
         db.close();
     }
 }

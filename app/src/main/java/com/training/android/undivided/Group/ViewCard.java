@@ -1,8 +1,7 @@
 package com.training.android.undivided.Group;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,16 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.training.android.undivided.Group.Adapter.ContactsAdapter;
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.R;
@@ -42,7 +39,7 @@ public class ViewCard extends AppCompatActivity {
     private CheckBox cbRule4;
     private CheckBox cbRule5;
     private CheckBox cbRule6;
-    private ImageView imageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +58,14 @@ public class ViewCard extends AppCompatActivity {
             toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch (menuItem.getItemId()){
+                        case R.id.update_contacts:
+                            Intent intent = new Intent(ViewCard.this, GroupContactPicker.class);
+                            intent.putExtra("mode", "edit");
+                            intent.putExtra("name", mEtGroupName.getText().toString());
+                            startActivity(intent);
+                            break;
+                    }
                     return true;
                 }
             });
@@ -105,11 +110,9 @@ public class ViewCard extends AppCompatActivity {
                 cbRule6.setChecked(true);
 
             adapter = new ContactsAdapter(this, R.layout.contacts_listview, dbHandler.getContactsofGroup(b.getString("name")));
+            adapter.notifyDataSetChanged();
             mContactsList.setAdapter(adapter);
         }
-
-
-
     }
 
     @Override
@@ -184,6 +187,12 @@ public class ViewCard extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        recreate();
+    }
+
     public void update() {
 
         mEtGroupName.setFocusable(true);
@@ -200,13 +209,13 @@ public class ViewCard extends AppCompatActivity {
         cbRule6.setClickable(true);
 
         if (mEtGroupDescription.getText().toString().equals("Emergency")) {
-            mEtGroupName.setFocusable(false);
-            cbRule1.setClickable(false);
-            cbRule2.setClickable(false);
-            cbRule3.setClickable(false);
-            cbRule4.setClickable(false);
-            cbRule5.setClickable(false);
-            cbRule6.setClickable(false);
+            mEtGroupName.setEnabled(false);
+            cbRule1.setEnabled(false);
+            cbRule2.setEnabled(false);
+            cbRule3.setEnabled(false);
+            cbRule4.setEnabled(false);
+            cbRule5.setEnabled(false);
+            cbRule6.setEnabled(false);
         }
 
     }
@@ -223,14 +232,7 @@ public class ViewCard extends AppCompatActivity {
         cbRule6.setClickable(false);
 
     }
-
-    public void deleteContact(int pos) {
-
-        ContactsModel cm = (ContactsModel) mContactsList.getItemAtPosition(pos);
-
-        dbHandler.DeleteContacts(Integer.parseInt(cm.getContactNumber()));
-    }
-
+    
     public GroupModel getData() {
         GroupModel gm = new GroupModel();
         gm.setGroupName(mEtGroupName.getText().toString());

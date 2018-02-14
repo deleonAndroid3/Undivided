@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mHospital"
+        android:icon="@drawable/hospital"
+        android:title="Hospital"/>
+    <item
+        android:id="@+id/mPolice"
+        android:icon="@drawable/police_station"
+        android:title="Police Stations"/>
+    <item
+        android:id="@+id/mRepair"
+        android:icon="@drawable/repair"
+        android:title="Car Repair Shops"/>
+    <item
+        android:id="@+id/mTowing"
+        android:icon="@drawable/tow_truck"
+        android:title="Towing Services"/>
+
+</menu>

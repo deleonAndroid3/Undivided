@@ -36,7 +36,6 @@ public class GroupFragment extends ListFragmentAbstr implements IFragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

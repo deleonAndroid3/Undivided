@@ -28,14 +28,4 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/ivDelete"
-        android:layout_width="75dp"
-        android:layout_height="match_parent"
-        android:layout_weight=".3"
-        android:background="@color/gray"
-        android:contentDescription="delete"
-        android:src="@drawable/ic_delete" />
-
-
 </LinearLayout>

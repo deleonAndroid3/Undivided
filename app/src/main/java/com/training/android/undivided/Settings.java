@@ -1,6 +1,5 @@
 package com.training.android.undivided;
 
-import android.*;
 import android.Manifest;
 import android.content.ComponentName;
 import android.content.DialogInterface;
@@ -8,10 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.location.LocationManager;
-import android.media.audiofx.BassBoost;
-import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -20,10 +16,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,11 +26,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import java.lang.reflect.Method;
-
 import com.google.android.gms.location.LocationServices;
 import com.training.android.undivided.BackgroundService.BackgroundService;
-import com.training.android.undivided.Group.Database.DBHandler;
+import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
 
 public class Settings extends AppCompatActivity {
@@ -184,7 +175,6 @@ public class Settings extends AppCompatActivity {
 //        });
     }
 
-
     public void onClickListeners() {
         /**
          * BACKGROUND FUNCTION WITH AUTO START ( INCLUDING ON DESTROY )
@@ -270,6 +260,7 @@ public class Settings extends AppCompatActivity {
         status= true;
         startTime = System.currentTimeMillis();
     }
+
     public void getData() {
         GroupModel gm = new GroupModel();
         gm.setGroupName(mEtThreshold.getText().toString());
