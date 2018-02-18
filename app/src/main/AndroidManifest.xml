@@ -184,7 +184,7 @@
         <activity android:name=".Profile" />
         <activity android:name=".LivetoText.LivetoText" />
         <activity
-            android:name=".SafeMode"
+            android:name=".SafeMode.SafeMode"
             android:theme="@style/AppTheme.NoActionBarRed" />
 
         <!-- Call Log Package -->

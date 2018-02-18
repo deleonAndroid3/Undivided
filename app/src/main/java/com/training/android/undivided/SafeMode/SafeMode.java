@@ -1,4 +1,4 @@
-package com.training.android.undivided;
+package com.training.android.undivided.SafeMode;
 
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
@@ -19,14 +19,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.training.android.undivided.AutoReply.Widget.RuleWidgetProvider;
+import com.training.android.undivided.Database.DBHandler;
+import com.training.android.undivided.Emergency;
+import com.training.android.undivided.Group.Model.GroupModel;
+import com.training.android.undivided.MainActivity;
+import com.training.android.undivided.R;
+import com.training.android.undivided.SafeMode.Model.DriveModel;
+import com.training.android.undivided.Speaker;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import static java.lang.Thread.sleep;
@@ -39,11 +46,14 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
     private TextToSpeech myTTS;
 
     private Button button;
+    DBHandler dbHandler;
 
     private Speaker speaker;
 
     DrawerLayout drawerLayout;
     ImageView imgView;
+    private String start_time="0";
+    private String end_time="0";
 
     private static LayoutInflater inflater=null;
     private boolean speaker_flag = false;
@@ -55,6 +65,11 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_safe_mode);
+
+        dbHandler = new DBHandler(this);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+       start_time  = dateFormat.format(new Date());
 
         myTTS = new TextToSpeech(this, this);
         speaker = new Speaker(this);
@@ -114,14 +129,14 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
 
 
 
-//        new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent updateWidgetIntent = new Intent(getApplicationContext(), RuleWidgetProvider.class);
-//                updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{0} ).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-//                getApplicationContext().sendBroadcast(updateWidgetIntent);
-//            }
-//        }.run();
+        new Runnable() {
+            @Override
+            public void run() {
+                Intent updateWidgetIntent = new Intent(getApplicationContext(), RuleWidgetProvider.class);
+                updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{0} ).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                getApplicationContext().sendBroadcast(updateWidgetIntent);
+            }
+        }.run();
 
         imgView = findViewById(R.id.ivDriveStop);
         drawerLayout = findViewById(R.id.drawer_layout);
@@ -129,31 +144,35 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         drawerLayout.getBackground().setAlpha(80);
 
         Toast.makeText(SafeMode.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
-//        ComponentName mDeviceAdmin;
-//        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-//        mDeviceAdmin = new ComponentName(SafeMode.this, MainActivity.class);
-//
-//        if (myDevicePolicyManager.isDeviceOwnerApp(SafeMode.this.getPackageName())) {
-//            // Device owner
-//            String[] packages = {SafeMode.this.getPackageName()};
-//            myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
-//        } else {
-//            Log.d("INFO","IS NOT APP OWNER");
-//        }
-//
-//        if (myDevicePolicyManager.isLockTaskPermitted(SafeMode.this.getPackageName())) {
-//            // Lock allowed
-//            // NOTE: locking device also disables notification
-//            startLockTask();
-//        } else {
-//            Log.d("INFO","lock not permitted");
-//            startLockTask();
-//        }
+        ComponentName mDeviceAdmin;
+        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        mDeviceAdmin = new ComponentName(SafeMode.this, MainActivity.class);
+
+        if (myDevicePolicyManager.isDeviceOwnerApp(SafeMode.this.getPackageName())) {
+            // Device owner
+            String[] packages = {SafeMode.this.getPackageName()};
+            myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
+        } else {
+            Log.d("INFO","IS NOT APP OWNER");
+        }
+
+        if (myDevicePolicyManager.isLockTaskPermitted(SafeMode.this.getPackageName())) {
+            // Lock allowed
+            // NOTE: locking device also disables notification
+            startLockTask();
+        } else {
+            Log.d("INFO","lock not permitted");
+            startLockTask();
+        }
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                stopLockTask();
 //                speakerStop();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                end_time  = dateFormat.format(new Date());
+
+                addHistory(start_time,end_time);
                 Intent i = new Intent (SafeMode.this, MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
@@ -285,6 +304,16 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
 
             }
         };
+    }
+
+    public void addHistory(String start, String end){
+
+        DriveModel dm = new DriveModel();
+        dm.setDriveType("SafeMode");
+        dm.setStart_time(start);
+        dm.setEnd_time(end);
+
+        dbHandler.addDrive(dm);
     }
 
     @Override

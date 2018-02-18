@@ -10,6 +10,7 @@ import android.util.Log;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.NavigationMode.TowingServicesModel;
+import com.training.android.undivided.SafeMode.Model.DriveModel;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,12 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_REPLYSMS = "replysms";
     public static final String COLUMN_READSMS = "readsms";
     public static final String COLUMN_NOTIFYIFCALL = "notifyifcallrecieved";
+
+    public static final String DRIVE_HISTORY = "drivehistory";
+    public static final String DRIVE_ID = "driveid";
+    public static final String DRIVE_TYPE = "drivetype";
+    public static final String DRIVE_START = "starttime";
+    public static final String DRIVE_END = "endtime";
 
     public static final String TABLE_CONTACTS = "contacts";
     public static final String COLUMN_CONTACTID = "contactid";
@@ -65,6 +72,12 @@ public class DBHandler extends SQLiteOpenHelper {
             "towing_latlong TEXT," +
             "towing_contact TEXT)";
 
+    String DriveQuery = "CREATE TABLE IF NOT EXISTS "+ DRIVE_HISTORY +
+            " (" + DRIVE_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            DRIVE_TYPE +" TEXT, " +
+             DRIVE_START +" TEXT, " +
+            DRIVE_END +" TEXT)";
+
     SQLiteDatabase db;
 
 
@@ -81,6 +94,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(GroupQuery);
         sqLiteDatabase.execSQL(ContactQuery);
         sqLiteDatabase.execSQL(TowingQuery);
+        sqLiteDatabase.execSQL(DriveQuery);
     }
 
     @Override
@@ -95,6 +109,21 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
         db.execSQL("PRAGMA foreign_keys = 1");
+    }
+
+    public void addDrive(DriveModel driveModel) {
+
+        if(!db.isOpen()){
+            db = getWritableDatabase();
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DRIVE_TYPE, driveModel.getDriveType());
+            contentValues.put(DRIVE_START, driveModel.getStart_time());
+            contentValues.put(DRIVE_END, driveModel.getEnd_time());
+
+            db.insert(DRIVE_HISTORY, null, contentValues);
+            db.close();
+        }
     }
 
     public void addGroup(GroupModel groupModel) {
