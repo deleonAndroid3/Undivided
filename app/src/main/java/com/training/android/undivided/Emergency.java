@@ -18,7 +18,7 @@ public class Emergency extends AppCompatActivity {
         setContentView(R.layout.activity_emergency);
 
         int i = 0;
-        String[] contact = {"09053274403", "09952635512"};
+        String[] contact = {"09053274403", "09053274403"};
         String message = "EMERGENCY SOS HELP";
         while (i != contact.length) {
             try {
@@ -34,12 +34,16 @@ public class Emergency extends AppCompatActivity {
             i++;
         }
 
-       /* Intent callIntent = new Intent(Intent.ACTION_CALL);                                                                                   jjyuio;;
+    }
+
+
+    public void sendEmergencyCall(){
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:09053274403"));
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "No Permission.", Toast.LENGTH_SHORT).show();
             return;
         }
-        startActivity(callIntent);*/
+        startActivity(callIntent);
     }
 }

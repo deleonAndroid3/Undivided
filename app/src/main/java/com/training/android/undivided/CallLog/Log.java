@@ -13,13 +13,23 @@ public class Log {
     String date;
     Date time;
     String duration;
+    String name;
 
-    public Log(String num, String type, String date, Date time, String duration) {
+    public Log(String num, String type, String date, Date time, String duration, String name) {
         this.num = num;
         this.type = type;
         this.date = date;
         this.time = time;
         this.duration = duration;
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getNum() {

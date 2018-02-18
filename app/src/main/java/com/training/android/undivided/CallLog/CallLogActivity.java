@@ -46,6 +46,7 @@ public class CallLogActivity extends AppCompatActivity {
         int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
         int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
         int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
+        int name = (managedCursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
 //        sb.append("Call Details :");
         while (managedCursor.moveToNext()) {
 
@@ -75,9 +76,18 @@ public class CallLogActivity extends AppCompatActivity {
 //                        + dir + " \nCall Date: " + callDayTime
 //                        + " \nCall duration in sec : " + callDuration);
 //                sb.append("\n----------------------------------");
-                dataModels.add(new Log(managedCursor.getString(number),managedCursor.getString(type),
-                        managedCursor.getString(date), new Date(Long.valueOf(managedCursor.getString(date))),
-                        managedCursor.getString(duration)));
+
+//                if(managedCursor.getString(name).equals(" ")) {
+//                    dataModels.add(new Log(managedCursor.getString(number),managedCursor.getString(type),
+//                            managedCursor.getString(date), new Date(Long.valueOf(managedCursor.getString(date))),
+//                            managedCursor.getString(duration), "Unknown Number"));
+//
+//                }   else {
+
+                    dataModels.add(new Log(managedCursor.getString(number), managedCursor.getString(type),
+                            managedCursor.getString(date), new Date(Long.valueOf(managedCursor.getString(date))),
+                            managedCursor.getString(duration), managedCursor.getString(name)));
+//                }
             }
         }
 //        managedCursor.close();

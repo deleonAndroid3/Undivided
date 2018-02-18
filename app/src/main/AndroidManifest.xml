@@ -177,7 +177,8 @@
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".History" />
-        <activity android:name=".Emergency" />
+        <activity android:name=".Emergency"
+            android:theme="@style/AppTheme.NoActionBarRed"/>
         <activity android:name=".Functions" />
         <activity android:name=".DisableAppSwitch" />
         <activity android:name=".Profile" />
@@ -187,7 +188,8 @@
             android:theme="@style/AppTheme.NoActionBarRed" />
 
         <!-- Call Log Package -->
-        <activity android:name=".CallLog.CallLogActivity" />
+        <activity android:name=".CallLog.CallLogActivity"
+            android:theme="@style/AppTheme"/>
 
         <!-- GROUP SENDER PACKAGE -->
         <activity
@@ -268,7 +270,6 @@
             android:label="ReadOutAndSignal"
             >
         </service>
-
 
     </application>
 
