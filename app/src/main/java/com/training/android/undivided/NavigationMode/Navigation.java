@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ag.floatingactionmenu.OptionsFabLayout;
+import com.github.ppamorim.dragger.DraggerPosition;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -220,7 +221,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         famServices.setMiniFabsColors(R.color.colorPrimaryDark,
                 R.color.colorPrimaryDark,
                 R.color.colorPrimaryDark,
-                R.color.colorPrimaryDark);
+                R.color.colorPrimaryDark
+                , R.color.colorPrimaryDark);
 
         famServices.setMainFabOnClickListener(new View.OnClickListener() {
             @Override
@@ -258,6 +260,12 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         famServices.closeOptionsMenu();
                         Toast.makeText(Navigation.this, "Nearby Towing Services", Toast.LENGTH_LONG).show();
                         break;
+                    case R.id.mCall:
+                        Intent intent = new Intent(Navigation.this, EmergencyContactsList.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.putExtra("Drag", DraggerPosition.TOP);
+                        startActivity(intent);
+
                 }
             }
         });

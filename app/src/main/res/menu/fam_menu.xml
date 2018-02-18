@@ -17,4 +17,9 @@
         android:icon="@drawable/tow_truck"
         android:title="Towing Services"/>
 
+    <item
+        android:id="@+id/mCall"
+        android:icon="@drawable/call"
+        android:title="Emergency Contacts"/>
+
 </menu>
