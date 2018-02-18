@@ -1,11 +1,13 @@
 package com.training.android.undivided.LivetoText;
 
 import android.app.Activity;
+import android.app.*;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.*;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
  * Created by Hillary Briones on 2/13/2018.
  */
 
-public class DictateandSend extends AppCompatActivity {
+public class DictateandSend extends Activity {
     private static final int REQUEST_CODE = 1234;
     private BroadcastReceiver check;
     IntentFilter filtercheck= new IntentFilter("android.intent.action.check");

@@ -209,7 +209,7 @@
 
         <!--Live to text -->
         <activity
-            android:name="com.training.android.undivided.LivetoText.DictateAndSend"
+            android:name="com.training.android.undivided.LivetoText.DictateandSend"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -228,7 +228,7 @@ public class LivetoText extends AppCompatActivity {
                     sendSMSMessage(MyApp.number,prefs.getString("text", "default"));
                 }
                 else if (userValue.equals("2") ){
-                    //ari balik hillary
+
                     startActivity(new Intent(this,DictateandSend.class).putExtra("number",MyApp.number));
                 }
             }else{

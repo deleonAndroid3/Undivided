@@ -3,6 +3,8 @@ package com.training.android.undivided.LivetoText;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.*;
+import android.app.*;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.widget.Toast;
@@ -58,9 +60,9 @@ public class ReadOut extends Service implements TextToSpeech.OnInitListener {
             if (result == TextToSpeech.LANG_MISSING_DATA ||
                     result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.d(TAG, "Language is not available.");
-                Toast.makeText(getApplicationContext(), "Bhai nahi ho paega", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "No response", Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(getApplicationContext(), str+ " ye hai", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), str+ " Start speaking", Toast.LENGTH_LONG).show();
                 sayHello(str);
                 try{
                     //Toast.makeText(getApplicationContext(), "Delay dena hai 6 sec ka", Toast.LENGTH_LONG).show();
