@@ -71,6 +71,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.SphericalUtil;
 import com.training.android.undivided.Database.DBHandler;
+import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
@@ -85,7 +86,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -108,6 +111,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     Handler handler = new Handler();
     DecimalFormat form = new DecimalFormat("0.00");
     float mindist;
+    private String start_time, end_time;
     private boolean start = false, near = false, miss = false;
     private double tdistance, dremaining, dtravelled, distance = 0;
     private int routeCounter = -1, pos = 0;
@@ -170,6 +174,9 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 String url = getDirectionsUrl(mLastLatLng, DestMarker.getPosition());
                 DownloadTask downloadTask = new DownloadTask();
                 downloadTask.execute(url);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                start_time  = dateFormat.format(new Date());
             }
         });
 
@@ -1066,10 +1073,23 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
             super.onBackPressed();
+
             return;
         } else {
             Toast.makeText(getBaseContext(), "Tap back button in order to exit", Toast.LENGTH_SHORT).show();
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            end_time  = dateFormat.format(new Date());
+
+            DriveModel dm = new DriveModel();
+            dm.setDriveType("Navigation Mode");
+            dm.setStart_time(start_time);
+            dm.setEnd_time(end_time);
+
+            dbHandler.addDrive(dm);
         }
+
+
 
         mBackPressed = System.currentTimeMillis();
     }

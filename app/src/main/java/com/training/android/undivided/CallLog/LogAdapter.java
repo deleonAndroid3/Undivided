@@ -2,6 +2,7 @@ package com.training.android.undivided.CallLog;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.provider.CallLog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.training.android.undivided.R;
@@ -32,6 +34,7 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
         TextView txtTime;
         TextView txtDuration;
         TextView txtName;
+        ImageView ivCallDisp;
     }
 
     public LogAdapter(ArrayList<Log> data, Context context) {
@@ -69,6 +72,7 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
             viewHolder.txtTime = (TextView) convertView.findViewById(R.id.tvTime);
             viewHolder.txtDuration = (TextView) convertView.findViewById(R.id.tvDuration);
             viewHolder.txtName = convertView.findViewById(R.id.tvName);
+            viewHolder.ivCallDisp = convertView.findViewById(R.id.ivCallType);
 
             result=convertView;
 
@@ -82,6 +86,13 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
             Animation animation = AnimationUtils.loadAnimation(mContext, /*(position > lastPosition) ? R.anim.up_from_bottom :*/ R.anim.down_from_top);
             result.startAnimation(animation);
             lastPosition = position;
+        }
+
+        if(viewHolder.txtType.toString() == "INCOMING"){
+            viewHolder.ivCallDisp.setImageResource(R.drawable.ic_call_end_black_24dp);
+        }
+        else if(viewHolder.txtType.toString() == "MISSED"){
+            viewHolder.ivCallDisp.setImageResource(R.drawable.ic_phone_missed_black_24dp);
         }
         viewHolder.txtNum.setText(dataModel.getNum());
         viewHolder.txtNum.setTextColor(R.color.bb_darkBackgroundColor);

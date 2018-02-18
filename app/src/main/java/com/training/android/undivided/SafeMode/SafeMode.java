@@ -26,10 +26,9 @@ import android.widget.Toast;
 import com.training.android.undivided.AutoReply.Widget.RuleWidgetProvider;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Emergency;
-import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
-import com.training.android.undivided.SafeMode.Model.DriveModel;
+import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Speaker;
 
 import java.text.SimpleDateFormat;
@@ -167,12 +166,18 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                stopLockTask();
+                stopLockTask();
 //                speakerStop();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 end_time  = dateFormat.format(new Date());
 
-                addHistory(start_time,end_time);
+                DriveModel dm = new DriveModel();
+                dm.setDriveType("SafeMode");
+                dm.setStart_time(start_time);
+                dm.setEnd_time(end_time);
+
+                dbHandler.addDrive(dm);
+
                 Intent i = new Intent (SafeMode.this, MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
@@ -306,15 +311,15 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         };
     }
 
-    public void addHistory(String start, String end){
-
-        DriveModel dm = new DriveModel();
-        dm.setDriveType("SafeMode");
-        dm.setStart_time(start);
-        dm.setEnd_time(end);
-
-        dbHandler.addDrive(dm);
-    }
+//    public void addHistory(String start, String end){
+//
+//        DriveModel dm = new DriveModel();
+//        dm.setDriveType("SafeMode");
+//        dm.setStart_time(start);
+//        dm.setEnd_time(end);
+//
+//        dbHandler.addDrive(dm);
+//    }
 
     @Override
     public void onBackPressed() {

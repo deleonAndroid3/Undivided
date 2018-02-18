@@ -10,7 +10,7 @@ import android.util.Log;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.NavigationMode.TowingServicesModel;
-import com.training.android.undivided.SafeMode.Model.DriveModel;
+import com.training.android.undivided.DriveHistory.Model.DriveModel;
 
 import java.util.ArrayList;
 
@@ -102,6 +102,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CREATE_GROUP);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS towing");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DRIVE_HISTORY);
         onCreate(sqLiteDatabase);
     }
 
@@ -113,7 +114,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public void addDrive(DriveModel driveModel) {
 
-        if(!db.isOpen()){
+        if(!db.isOpen())
             db = getWritableDatabase();
 
             ContentValues contentValues = new ContentValues();
@@ -123,7 +124,29 @@ public class DBHandler extends SQLiteOpenHelper {
 
             db.insert(DRIVE_HISTORY, null, contentValues);
             db.close();
+
+    }
+
+    public ArrayList<DriveModel> getDriveHistory() {
+        SQLiteDatabase rdb = getReadableDatabase();
+        Cursor c = rdb.rawQuery("SELECT * FROM " + DRIVE_HISTORY, null);
+        ArrayList<DriveModel> list = new ArrayList<>();
+        DriveModel dm;
+
+
+        while (c.moveToNext()) {
+            dm = new DriveModel();
+            dm.setDriveType(c.getString(1));
+            dm.setStart_time(c.getString(2));
+            dm.setEnd_time(c.getString(3));
+
+            list.add(dm);
         }
+
+        c.close();
+        rdb.close();
+
+        return list;
     }
 
     public void addGroup(GroupModel groupModel) {
@@ -144,6 +167,8 @@ public class DBHandler extends SQLiteOpenHelper {
 
         db.insert(TABLE_CREATE_GROUP, null, contentValues);
         db.close();
+
+
     }
 
     public void addContact(ContactsModel contactsModel, String name) {

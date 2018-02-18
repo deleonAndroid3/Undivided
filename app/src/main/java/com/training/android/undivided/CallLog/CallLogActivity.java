@@ -84,7 +84,7 @@ public class CallLogActivity extends AppCompatActivity {
 //
 //                }   else {
 
-                    dataModels.add(new Log(managedCursor.getString(number), managedCursor.getString(type),
+                    dataModels.add(new Log(managedCursor.getString(number), dir,
                             managedCursor.getString(date), new Date(Long.valueOf(managedCursor.getString(date))),
                             managedCursor.getString(duration), managedCursor.getString(name)));
 //                }

@@ -1,4 +1,4 @@
-package com.training.android.undivided.SafeMode.Model;
+package com.training.android.undivided.DriveHistory.Model;
 
 /**
  * Created by Maouusama on 2/18/2018.

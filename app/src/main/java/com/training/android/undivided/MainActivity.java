@@ -28,6 +28,7 @@ import com.facebook.stetho.Stetho;
 import com.training.android.undivided.BackgroundService.BackgroundService;
 import com.training.android.undivided.CallLog.CallLogActivity;
 import com.training.android.undivided.Database.DBHandler;
+import com.training.android.undivided.DriveHistory.DriveHistory;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.NavigationMode.Navigation;
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Stetho.initializeWithDefaults(this);
-        initializeBubblesManager();
+//        initializeBubblesManager();
 
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();
@@ -287,6 +288,11 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(false);
                         Intent callLog = new Intent(MainActivity.this, CallLogActivity.class);
                         startActivity(callLog);
+                        break;
+
+                    case R.id.drawer_drive_history:
+                        menuItem.setChecked(false);
+                        startActivity(new Intent(MainActivity.this, DriveHistory.class));
                         break;
                 }
 
