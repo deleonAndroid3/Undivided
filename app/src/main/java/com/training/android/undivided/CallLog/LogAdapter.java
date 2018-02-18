@@ -1,5 +1,6 @@
 package com.training.android.undivided.CallLog;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -30,6 +31,7 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
         TextView txtDate;
         TextView txtTime;
         TextView txtDuration;
+        TextView txtName;
     }
 
     public LogAdapter(ArrayList<Log> data, Context context) {
@@ -46,6 +48,7 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
 
     private int lastPosition = -1;
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
@@ -62,9 +65,10 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
             convertView = inflater.inflate(R.layout.log_row, parent, false);
             viewHolder.txtNum = (TextView) convertView.findViewById(R.id.tvNum);
             viewHolder.txtType = (TextView) convertView.findViewById(R.id.tvType);
-            viewHolder.txtDate = (TextView) convertView.findViewById(R.id.tvDate);
+//            viewHolder.txtDate = (TextView) convertView.findViewById(R.id.tvDate);
             viewHolder.txtTime = (TextView) convertView.findViewById(R.id.tvTime);
             viewHolder.txtDuration = (TextView) convertView.findViewById(R.id.tvDuration);
+            viewHolder.txtName = convertView.findViewById(R.id.tvName);
 
             result=convertView;
 
@@ -80,10 +84,16 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
             lastPosition = position;
         }
         viewHolder.txtNum.setText(dataModel.getNum());
+        viewHolder.txtNum.setTextColor(R.color.bb_darkBackgroundColor);
         viewHolder.txtType.setText(dataModel.getType());
-        viewHolder.txtDate.setText(dataModel.getDate());
+        viewHolder.txtType.setTextColor(R.color.bb_darkBackgroundColor);
+//        viewHolder.txtDate.setText(dataModel.getDate());
         viewHolder.txtTime.setText(dataModel.getTime().toString());
+        viewHolder.txtTime.setTextColor(R.color.bb_darkBackgroundColor);
         viewHolder.txtDuration.setText(dataModel.getDuration());
+        viewHolder.txtDuration.setTextColor(R.color.bb_darkBackgroundColor);
+        viewHolder.txtName.setText(dataModel.getName());
+        viewHolder.txtName.setTextColor(R.color.bb_darkBackgroundColor);
         // Return the completed view to render on screen
         return convertView;
     }

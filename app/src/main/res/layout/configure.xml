@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+   >
+    <PreferenceCategory
+        android:summary="Set your Preferences"
+        android:title="Preferences">
+    <CheckBoxPreference
+        android:key="call"
+        android:defaultValue="true"
+        android:summary="Reply Calls with Default Message"
+        android:title="Call"
+        />
+    <CheckBoxPreference
+        android:key="sms"
+        android:summary="Reply to SMS"
+        android:title="SMS"
+        android:defaultValue="true"
+
+        />
+
+        <ListPreference
+            android:title="SMS Response"
+            android:key="listPref"
+            android:defaultValue="1"
+            android:entries="@array/listArray"
+            android:entryValues="@array/listValues" />
+
+        <EditTextPreference
+            android:key="text"
+            android:summary="Your default sms content"
+            android:title="Default SMS Content"
+            />
+
+        <CheckBoxPreference
+            android:key="noti"
+            android:summary="Read out Notification"
+            android:title="Notifications"
+            android:defaultValue="true"
+
+            />
+    </PreferenceCategory>
+
+</PreferenceScreen>
