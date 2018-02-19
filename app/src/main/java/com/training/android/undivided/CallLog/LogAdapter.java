@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.training.android.undivided.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by Maouusama on 12/18/2017.
@@ -88,10 +89,11 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
             lastPosition = position;
         }
 
-        if(viewHolder.txtType.toString() == "INCOMING"){
+        String type = dataModel.getType();
+        if(type.equals("INCOMING")){
             viewHolder.ivCallDisp.setImageResource(R.drawable.ic_call_end_black_24dp);
         }
-        else if(viewHolder.txtType.toString() == "MISSED"){
+        else if(type.equals("MISSED")){
             viewHolder.ivCallDisp.setImageResource(R.drawable.ic_phone_missed_black_24dp);
         }
         viewHolder.txtNum.setText(dataModel.getNum());
@@ -103,7 +105,8 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
         viewHolder.txtTime.setTextColor(R.color.bb_darkBackgroundColor);
         viewHolder.txtDuration.setText(dataModel.getDuration());
         viewHolder.txtDuration.setTextColor(R.color.bb_darkBackgroundColor);
-        viewHolder.txtName.setText(dataModel.getName());
+        viewHolder.txtName.setText(dataModel != null ? dataModel.getName() : "Unknown Number");
+
         viewHolder.txtName.setTextColor(R.color.bb_darkBackgroundColor);
         // Return the completed view to render on screen
         return convertView;

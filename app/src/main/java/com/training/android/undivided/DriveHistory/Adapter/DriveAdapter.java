@@ -135,8 +135,9 @@ private static class ViewHolder {
             lastPosition = position;
         }
 
-        if(viewHolder.txtType.toString() == "Navigation Mode") {
-            viewHolder.ivDisp.setImageResource(R.drawable.ic_compass);
+        String type = dataModel.getDriveType();
+        if(type.equals("Navigation Mode")) {
+            viewHolder.ivDisp.setImageResource(R.drawable.ic_map_black_24dp);
         }
         viewHolder.txtType.setText(dataModel != null ? dataModel.getDriveType() : "Unknown Type");
         viewHolder.txtType.setTextColor(R.color.bb_darkBackgroundColor);

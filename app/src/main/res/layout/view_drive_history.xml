@@ -76,6 +76,6 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@mipmap/undivided_drivemode_logo" />
+        android:src="@drawable/ic_security_black_24dp" />
 
 </android.support.constraint.ConstraintLayout>
