@@ -28,7 +28,12 @@
         <item
             android:id="@+id/drawer_history"
             android:icon="@drawable/call"
-            android:title="History"/>
+            android:title="Call History"/>
+
+        <item
+            android:id="@+id/drawer_drive_history"
+            android:icon="@drawable/call"
+            android:title="Drive History"/>
 
     </group>
 </menu>

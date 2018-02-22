@@ -10,6 +10,8 @@ import android.util.Log;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.Models.TowingServicesModel;
+import com.training.android.undivided.Models.TowingServicesModel;
+import com.training.android.undivided.DriveHistory.Model.DriveModel;
 
 import java.util.ArrayList;
 
@@ -26,6 +28,12 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_REPLYSMS = "replysms";
     public static final String COLUMN_READSMS = "readsms";
     public static final String COLUMN_NOTIFYIFCALL = "notifyifcallrecieved";
+
+    public static final String DRIVE_HISTORY = "drivehistory";
+    public static final String DRIVE_ID = "driveid";
+    public static final String DRIVE_TYPE = "drivetype";
+    public static final String DRIVE_START = "starttime";
+    public static final String DRIVE_END = "endtime";
 
     public static final String TABLE_CONTACTS = "contacts";
     public static final String COLUMN_CONTACTID = "contactid";
@@ -70,6 +78,12 @@ public class DBHandler extends SQLiteOpenHelper {
             "emer_contact TEXT," +
             "emer_type TEXT)";
 
+    String DriveQuery = "CREATE TABLE IF NOT EXISTS "+ DRIVE_HISTORY +
+            " (" + DRIVE_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            DRIVE_TYPE +" TEXT, " +
+             DRIVE_START +" TEXT, " +
+            DRIVE_END +" TEXT)";
+
     SQLiteDatabase db;
 
 
@@ -87,6 +101,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(ContactQuery);
         sqLiteDatabase.execSQL(TowingQuery);
         sqLiteDatabase.execSQL(EmergencyQuery);
+        sqLiteDatabase.execSQL(DriveQuery);
     }
 
     @Override
@@ -95,6 +110,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS towing");
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS emergency_contacts");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + DRIVE_HISTORY);
         onCreate(sqLiteDatabase);
     }
 
@@ -102,6 +118,43 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onConfigure(SQLiteDatabase db) {
         super.onConfigure(db);
         db.execSQL("PRAGMA foreign_keys = 1");
+    }
+
+    public void addDrive(DriveModel driveModel) {
+
+        if(!db.isOpen())
+            db = getWritableDatabase();
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(DRIVE_TYPE, driveModel.getDriveType());
+            contentValues.put(DRIVE_START, driveModel.getStart_time());
+            contentValues.put(DRIVE_END, driveModel.getEnd_time());
+
+            db.insert(DRIVE_HISTORY, null, contentValues);
+            db.close();
+
+    }
+
+    public ArrayList<DriveModel> getDriveHistory() {
+        SQLiteDatabase rdb = getReadableDatabase();
+        Cursor c = rdb.rawQuery("SELECT * FROM " + DRIVE_HISTORY, null);
+        ArrayList<DriveModel> list = new ArrayList<>();
+        DriveModel dm;
+
+
+        while (c.moveToNext()) {
+            dm = new DriveModel();
+            dm.setDriveType(c.getString(1));
+            dm.setStart_time(c.getString(2));
+            dm.setEnd_time(c.getString(3));
+
+            list.add(dm);
+        }
+
+        c.close();
+        rdb.close();
+
+        return list;
     }
 
     public void addGroup(GroupModel groupModel) {
@@ -121,6 +174,8 @@ public class DBHandler extends SQLiteOpenHelper {
 
         db.insert(TABLE_CREATE_GROUP, null, contentValues);
         db.close();
+
+
     }
 
     public void addContact(ContactsModel contactsModel, String name) {

@@ -15,7 +15,6 @@ import java.util.Date;
 
 public class CallLogActivity extends AppCompatActivity {
 
-    private TextView mTvCallLog;
     ArrayList<Log> dataModels;
     ListView listView;
     private static LogAdapter adapter;
@@ -25,7 +24,6 @@ public class CallLogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_call_log);
 
         listView=(ListView)findViewById(R.id.lvCallLog);
-        mTvCallLog = findViewById(R.id.tvCallLog);
 
 
 //        mTvCallLog.setText(getCallDetails());
@@ -84,7 +82,7 @@ public class CallLogActivity extends AppCompatActivity {
 //
 //                }   else {
 
-                    dataModels.add(new Log(managedCursor.getString(number), managedCursor.getString(type),
+                    dataModels.add(new Log(managedCursor.getString(number), dir,
                             managedCursor.getString(date), new Date(Long.valueOf(managedCursor.getString(date))),
                             managedCursor.getString(duration), managedCursor.getString(name)));
 //                }

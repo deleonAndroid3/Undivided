@@ -2,6 +2,7 @@ package com.training.android.undivided.CallLog;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.provider.CallLog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -10,11 +11,13 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.training.android.undivided.R;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by Maouusama on 12/18/2017.
@@ -32,6 +35,7 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
         TextView txtTime;
         TextView txtDuration;
         TextView txtName;
+        ImageView ivCallDisp;
     }
 
     public LogAdapter(ArrayList<Log> data, Context context) {
@@ -69,6 +73,7 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
             viewHolder.txtTime = (TextView) convertView.findViewById(R.id.tvTime);
             viewHolder.txtDuration = (TextView) convertView.findViewById(R.id.tvDuration);
             viewHolder.txtName = convertView.findViewById(R.id.tvName);
+            viewHolder.ivCallDisp = convertView.findViewById(R.id.ivCallType);
 
             result=convertView;
 
@@ -83,6 +88,14 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
             result.startAnimation(animation);
             lastPosition = position;
         }
+
+        String type = dataModel.getType();
+        if(type.equals("INCOMING")){
+            viewHolder.ivCallDisp.setImageResource(R.drawable.ic_call_end_black_24dp);
+        }
+        else if(type.equals("MISSED")){
+            viewHolder.ivCallDisp.setImageResource(R.drawable.ic_phone_missed_black_24dp);
+        }
         viewHolder.txtNum.setText(dataModel.getNum());
         viewHolder.txtNum.setTextColor(R.color.bb_darkBackgroundColor);
         viewHolder.txtType.setText(dataModel.getType());
@@ -92,7 +105,8 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
         viewHolder.txtTime.setTextColor(R.color.bb_darkBackgroundColor);
         viewHolder.txtDuration.setText(dataModel.getDuration());
         viewHolder.txtDuration.setTextColor(R.color.bb_darkBackgroundColor);
-        viewHolder.txtName.setText(dataModel.getName());
+        viewHolder.txtName.setText(dataModel != null ? dataModel.getName() : "Unknown Number");
+
         viewHolder.txtName.setTextColor(R.color.bb_darkBackgroundColor);
         // Return the completed view to render on screen
         return convertView;

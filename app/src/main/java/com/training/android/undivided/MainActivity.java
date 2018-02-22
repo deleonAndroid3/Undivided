@@ -28,12 +28,15 @@ import com.facebook.stetho.Stetho;
 import com.training.android.undivided.BackgroundService.BackgroundService;
 import com.training.android.undivided.CallLog.CallLogActivity;
 import com.training.android.undivided.Database.DBHandler;
+import com.training.android.undivided.DriveHistory.DriveHistory;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.Models.EmergencyContactsModel;
 import com.training.android.undivided.NavigationMode.Navigation;
 import com.training.android.undivided.Models.TowingServicesModel;
 import com.training.android.undivided.NavigationMode.SearchDestination;
+import com.training.android.undivided.Models.TowingServicesModel;
+import com.training.android.undivided.SafeMode.SafeMode;
 import com.txusballesteros.bubbles.BubbleLayout;
 import com.txusballesteros.bubbles.BubblesManager;
 
@@ -242,7 +245,6 @@ public class MainActivity extends AppCompatActivity {
                         if (bubbleView == null) {
                             addNewBubble();
                         }
-
                         break;
                 }
 
@@ -289,6 +291,11 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(false);
                         Intent callLog = new Intent(MainActivity.this, CallLogActivity.class);
                         startActivity(callLog);
+                        break;
+
+                    case R.id.drawer_drive_history:
+                        menuItem.setChecked(false);
+                        startActivity(new Intent(MainActivity.this, DriveHistory.class));
                         break;
                 }
 

@@ -29,7 +29,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
     <application
@@ -179,19 +179,21 @@
         <activity android:name=".SpeechToText" />
         <activity android:name=".TextToSpeech" />
         <activity android:name=".History" />
-        <activity android:name=".Emergency"
-            android:theme="@style/AppTheme.NoActionBarRed"/>
+        <activity
+            android:name=".Emergency"
+            android:theme="@style/AppTheme.NoActionBarRed" />
         <activity android:name=".Functions" />
         <activity android:name=".DisableAppSwitch" />
         <activity android:name=".Profile" />
         <activity android:name=".LivetoText.LivetoText" />
         <activity
-            android:name=".SafeMode"
+            android:name=".SafeMode.SafeMode"
             android:theme="@style/AppTheme.NoActionBarRed" />
 
         <!-- Call Log Package -->
-        <activity android:name=".CallLog.CallLogActivity"
-            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".CallLog.CallLogActivity"
+            android:theme="@style/AppTheme" />
 
         <!-- GROUP SENDER PACKAGE -->
         <activity
@@ -216,8 +218,8 @@
 
         <!--Live to text -->
         <activity
-            android:name="com.training.android.undivided.LivetoText.DictateandSend"
-            android:label="@string/app_name" >
+            android:name=".LivetoText.DictateandSend"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -225,8 +227,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.training.android.undivided.LivetoText.ConfigureScreen"
-            android:label="@string/app_name" >
+            android:name=".LivetoText.ConfigureScreen"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -234,17 +236,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.training.android.undivided.LivetoText.IncomingCall"
-            android:label="@string/app_name" >
+            android:name=".LivetoText.IncomingCall"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <service
-            android:name="com.training.android.undivided.LivetoText.NotiListener"
-
+            android:name=".LivetoText.NotiListener"
             android:label="NotiListener"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
@@ -252,30 +254,19 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.training.android.undivided.LivetoText.SmsListener"
-
-            android:label="SmsListener"
-            >
-        </service>
+            android:name=".LivetoText.SmsListener"
+            android:label="SmsListener"></service>
         <service
-            android:name="com.training.android.undivided.LivetoText.seperatereadout"
-
-            android:label="SmsListener"
-            >
-        </service>
+            android:name=".LivetoText.seperatereadout"
+            android:label="SmsListener"></service>
         <service
-            android:name="com.training.android.undivided.LivetoText.ReadOut"
-
-            android:label="ReadOut"
-            >
-        </service>
+            android:name=".LivetoText.ReadOut"
+            android:label="ReadOut"></service>
         <service
-            android:name="com.training.android.undivided.LivetoText.ReadOutAndSignal"
+            android:name=".LivetoText.ReadOutAndSignal"
+            android:label="ReadOutAndSignal"></service>
 
-            android:label="ReadOutAndSignal"
-            >
-        </service>
-
+        <activity android:name=".DriveHistory.DriveHistory"></activity>
     </application>
 
 </manifest>
