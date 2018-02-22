@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
 import com.training.android.undivided.BackgroundService.BackgroundService;
+import com.training.android.undivided.BroadcastReceiver.Call_Receiver;
 import com.training.android.undivided.CallLog.CallLogActivity;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.DriveHistory.DriveHistory;
@@ -86,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();
 
-
         message = dbHandler.getMessage("Emergency").getGroupMessage();
 
         Intent i = getIntent();
@@ -94,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
             stopService(i);
 
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE,
-                        Manifest.permission.READ_CONTACTS},
+                        Manifest.permission.READ_CONTACTS, Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS, Manifest.permission.RECEIVE_SMS},
                 MY_PERMISSIONS_REQUEST_CALL_PHONE);
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
 //                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||

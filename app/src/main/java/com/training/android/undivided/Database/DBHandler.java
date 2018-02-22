@@ -135,28 +135,6 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-    public ArrayList<DriveModel> getDriveHistory() {
-        SQLiteDatabase rdb = getReadableDatabase();
-        Cursor c = rdb.rawQuery("SELECT * FROM " + DRIVE_HISTORY, null);
-        ArrayList<DriveModel> list = new ArrayList<>();
-        DriveModel dm;
-
-
-        while (c.moveToNext()) {
-            dm = new DriveModel();
-            dm.setDriveType(c.getString(1));
-            dm.setStart_time(c.getString(2));
-            dm.setEnd_time(c.getString(3));
-
-            list.add(dm);
-        }
-
-        c.close();
-        rdb.close();
-
-        return list;
-    }
-
     public void addGroup(GroupModel groupModel) {
 
         if (!db.isOpen())
@@ -189,11 +167,43 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
+    public void AddTowingServices(TowingServicesModel tsm){
+
+        if (!db.isOpen())
+            db = getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("towing_name", tsm.getName());
+        contentValues.put("towing_address", tsm.getAddress());
+        contentValues.put("towing_latlong", tsm.getLatlng());
+        contentValues.put("towing_contact", tsm.getContactNumber());
+
+        db.insert("towing", null, contentValues);
+        db.close();
+
+    }
+
     public void deleteGroup(String name) {
 
         SQLiteDatabase dbd = getWritableDatabase();
         dbd.delete(TABLE_CREATE_GROUP, COLUMN_GROUPNAME + " = '" + name + "'", null);
         dbd.close();
+    }
+
+    public void DeleteContacts(String  num) {
+        if (!db.isOpen())
+            db = getWritableDatabase();
+
+        db.delete(TABLE_CONTACTS, COLUMN_CONTACTNUM + " = '" + num + "' AND " + FK_COLUMN_GROUPID + " != 1", null);
+        db.close();
+    }
+
+    public void DeleteContactsifEmergency(String num) {
+        if (!db.isOpen())
+            db = getWritableDatabase();
+
+        db.delete(TABLE_CONTACTS, COLUMN_CONTACTNUM + " = '" + num + "' AND " + FK_COLUMN_GROUPID + " = 1", null);
+        db.close();
     }
 
     public void UpdateGroup(String name, GroupModel gm) {
@@ -213,6 +223,28 @@ public class DBHandler extends SQLiteOpenHelper {
 
         db.update(TABLE_CREATE_GROUP, cv, COLUMN_GROUPNAME + " = '" + name + "'", null);
 
+    }
+
+    public ArrayList<DriveModel> getDriveHistory() {
+        SQLiteDatabase rdb = getReadableDatabase();
+        Cursor c = rdb.rawQuery("SELECT * FROM " + DRIVE_HISTORY, null);
+        ArrayList<DriveModel> list = new ArrayList<>();
+        DriveModel dm;
+
+
+        while (c.moveToNext()) {
+            dm = new DriveModel();
+            dm.setDriveType(c.getString(1));
+            dm.setStart_time(c.getString(2));
+            dm.setEnd_time(c.getString(3));
+
+            list.add(dm);
+        }
+
+        c.close();
+        rdb.close();
+
+        return list;
     }
 
     public ArrayList<GroupModel> getAllGroups() {
@@ -290,6 +322,34 @@ public class DBHandler extends SQLiteOpenHelper {
         return cm;
     }
 
+    public ArrayList<TowingServicesModel> getServices(){
+
+        if (!db.isOpen())
+            db = getReadableDatabase();
+
+        String query = "SELECT * FROM towing" ;
+        Cursor c = db.rawQuery(query, null);
+
+        ArrayList<TowingServicesModel> tsmList = new ArrayList<>();
+        TowingServicesModel tsm;
+
+        while (c.moveToNext()) {
+
+            tsm = new TowingServicesModel();
+            tsm.setName(c.getString(1));
+            tsm.setAddress(c.getString(2));
+            tsm.setLatlng(c.getString(3));
+            tsm.setContactNumber(c.getString(4));
+
+            tsmList.add(tsm);
+        }
+        c.close();
+        db.close();
+
+        return tsmList;
+
+    }
+
     public boolean EmergencyGroupExists() {
 
         Cursor cursor = null;
@@ -344,6 +404,23 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public boolean checkTowingifEmpty(){
+        if (!db.isOpen())
+            db = getReadableDatabase();
+
+        Cursor cursor = null;
+
+        try {
+            String sql = "SELECT * FROM towing";
+            cursor = db.rawQuery(sql, null);
+
+            return (cursor.getCount() > 0);
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+    }
+
     public GroupModel getMessage(String name) {
 
         if (!db.isOpen())
@@ -375,80 +452,40 @@ public class DBHandler extends SQLiteOpenHelper {
         return groupModel;
     }
 
-    public void DeleteContacts(String  num) {
-        if (!db.isOpen())
-            db = getWritableDatabase();
+    public GroupModel getMessageContact(String contactnum) {
 
-        db.delete(TABLE_CONTACTS, COLUMN_CONTACTNUM + " = '" + num + "' AND " + FK_COLUMN_GROUPID + " != 1", null);
-        db.close();
-    }
-
-    public void DeleteContactsifEmergency(String num) {
-        if (!db.isOpen())
-            db = getWritableDatabase();
-
-        db.delete(TABLE_CONTACTS, COLUMN_CONTACTNUM + " = '" + num + "' AND " + FK_COLUMN_GROUPID + " = 1", null);
-        db.close();
-    }
-
-    public boolean checkTowingifEmpty(){
         if (!db.isOpen())
             db = getReadableDatabase();
 
-        Cursor cursor = null;
+        String query = "SELECT * FROM " + TABLE_CREATE_GROUP + " WHERE " + COLUMN_GROUPID + " = (SELECT "
+                + FK_COLUMN_GROUPID + " FROM "+ TABLE_CONTACTS +" WHERE " + COLUMN_CONTACTNUM + " = '" + contactnum +"' AND " + FK_COLUMN_GROUPID + " != '1') ";
+
+        String query2 = "SELECT * FROM " + TABLE_CREATE_GROUP + " INNER JOIN " + TABLE_CONTACTS + " ON "
+                +TABLE_CREATE_GROUP+"."+COLUMN_GROUPID+ " = " +TABLE_CONTACTS+"."+FK_COLUMN_GROUPID;
+
+        Cursor c = db.rawQuery(query, null);
+        GroupModel groupModel = new GroupModel();
 
         try {
-            String sql = "SELECT * FROM towing";
-            cursor = db.rawQuery(sql, null);
+            if (c != null && c.moveToFirst()) {
+                groupModel.setGroupName(c.getString(1));
+                groupModel.setGroupDesc(c.getString(2));
+                groupModel.setGroupMessage(c.getString(3));
+                groupModel.setRule1(Integer.parseInt(c.getString(4)));
+                groupModel.setRule2(Integer.parseInt(c.getString(5)));
+                groupModel.setRule3(Integer.parseInt(c.getString(6)));
+                groupModel.setRule4(Integer.parseInt(c.getString(7)));
+                groupModel.setRule5(Integer.parseInt(c.getString(8)));
 
-            return (cursor.getCount() > 0);
+            }
         } finally {
-            if (cursor != null)
-                cursor.close();
+            c.close();
+            db.close();
         }
+
+
+        return groupModel;
     }
 
-    public void AddTowingServices(TowingServicesModel tsm){
 
-        if (!db.isOpen())
-            db = getWritableDatabase();
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("towing_name", tsm.getName());
-        contentValues.put("towing_address", tsm.getAddress());
-        contentValues.put("towing_latlong", tsm.getLatlng());
-        contentValues.put("towing_contact", tsm.getContactNumber());
-
-        db.insert("towing", null, contentValues);
-        db.close();
-
-    }
-
-    public ArrayList<TowingServicesModel> getServices(){
-
-        if (!db.isOpen())
-            db = getReadableDatabase();
-
-        String query = "SELECT * FROM towing" ;
-        Cursor c = db.rawQuery(query, null);
-
-        ArrayList<TowingServicesModel> tsmList = new ArrayList<>();
-        TowingServicesModel tsm;
-
-        while (c.moveToNext()) {
-
-            tsm = new TowingServicesModel();
-            tsm.setName(c.getString(1));
-            tsm.setAddress(c.getString(2));
-            tsm.setLatlng(c.getString(3));
-            tsm.setContactNumber(c.getString(4));
-
-            tsmList.add(tsm);
-        }
-        c.close();
-        db.close();
-
-        return tsmList;
-
-    }
 }
