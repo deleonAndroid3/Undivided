@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
-import com.training.android.undivided.NavigationMode.TowingServicesModel;
+import com.training.android.undivided.Models.TowingServicesModel;
 
 import java.util.ArrayList;
 
@@ -42,7 +42,6 @@ public class DBHandler extends SQLiteOpenHelper {
             COLUMN_GROUPNAME + " TEXT," +
             COLUMN_GROUPDESC + " TEXT," +
             COLUMN_GROUPMESSAGE + " TEXT," +
-            COLUMN_DECLINECALL + " INTEGER," +
             COLUMN_AUTOREPLYSMS + " INTEGER," +
             COLUMN_AUTOREPYCALLS + " INTEGER," +
             COLUMN_REPLYSMS + " INTEGER," +
@@ -65,6 +64,12 @@ public class DBHandler extends SQLiteOpenHelper {
             "towing_latlong TEXT," +
             "towing_contact TEXT)";
 
+    String EmergencyQuery = "CREATE TABLE IF NOT EXISTS emergency_contacts (t_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+            "emer_name TEXT," +
+            "emer_address TEXT," +
+            "emer_contact TEXT," +
+            "emer_type TEXT)";
+
     SQLiteDatabase db;
 
 
@@ -81,6 +86,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL(GroupQuery);
         sqLiteDatabase.execSQL(ContactQuery);
         sqLiteDatabase.execSQL(TowingQuery);
+        sqLiteDatabase.execSQL(EmergencyQuery);
     }
 
     @Override
@@ -88,6 +94,7 @@ public class DBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CREATE_GROUP);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS towing");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS emergency_contacts");
         onCreate(sqLiteDatabase);
     }
 
@@ -106,12 +113,11 @@ public class DBHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_GROUPNAME, groupModel.getGroupName());
         contentValues.put(COLUMN_GROUPDESC, groupModel.getGroupDesc());
         contentValues.put(COLUMN_GROUPMESSAGE, groupModel.getGroupMessage());
-        contentValues.put(COLUMN_DECLINECALL, groupModel.getRule1());
-        contentValues.put(COLUMN_AUTOREPLYSMS, groupModel.getRule2());
-        contentValues.put(COLUMN_AUTOREPYCALLS, groupModel.getRule3());
-        contentValues.put(COLUMN_REPLYSMS, groupModel.getRule4());
-        contentValues.put(COLUMN_READSMS, groupModel.getRule5());
-        contentValues.put(COLUMN_NOTIFYIFCALL, groupModel.getRule6());
+        contentValues.put(COLUMN_AUTOREPLYSMS, groupModel.getRule1());
+        contentValues.put(COLUMN_AUTOREPYCALLS, groupModel.getRule2());
+        contentValues.put(COLUMN_REPLYSMS, groupModel.getRule3());
+        contentValues.put(COLUMN_READSMS, groupModel.getRule4());
+        contentValues.put(COLUMN_NOTIFYIFCALL, groupModel.getRule5());
 
         db.insert(TABLE_CREATE_GROUP, null, contentValues);
         db.close();
@@ -144,12 +150,11 @@ public class DBHandler extends SQLiteOpenHelper {
         cv.put(COLUMN_GROUPNAME, gm.getGroupName());
         cv.put(COLUMN_GROUPDESC, gm.getGroupDesc());
         cv.put(COLUMN_GROUPMESSAGE, gm.getGroupMessage());
-        cv.put(COLUMN_DECLINECALL, gm.getRule1());
-        cv.put(COLUMN_AUTOREPLYSMS, gm.getRule2());
-        cv.put(COLUMN_AUTOREPYCALLS, gm.getRule3());
-        cv.put(COLUMN_REPLYSMS, gm.getRule4());
-        cv.put(COLUMN_READSMS, gm.getRule5());
-        cv.put(COLUMN_NOTIFYIFCALL, gm.getRule6());
+        cv.put(COLUMN_AUTOREPLYSMS, gm.getRule1());
+        cv.put(COLUMN_AUTOREPYCALLS, gm.getRule2());
+        cv.put(COLUMN_REPLYSMS, gm.getRule3());
+        cv.put(COLUMN_READSMS, gm.getRule4());
+        cv.put(COLUMN_NOTIFYIFCALL, gm.getRule5());
 
         db.update(TABLE_CREATE_GROUP, cv, COLUMN_GROUPNAME + " = '" + name + "'", null);
 
@@ -172,7 +177,7 @@ public class DBHandler extends SQLiteOpenHelper {
             gm.setRule3(Integer.parseInt(c.getString(6)));
             gm.setRule4(Integer.parseInt(c.getString(7)));
             gm.setRule5(Integer.parseInt(c.getString(8)));
-            gm.setRule6(Integer.parseInt(c.getString(9)));
+
 
             list.add(gm);
         }
@@ -304,7 +309,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 groupModel.setRule3(Integer.parseInt(c.getString(6)));
                 groupModel.setRule4(Integer.parseInt(c.getString(7)));
                 groupModel.setRule5(Integer.parseInt(c.getString(8)));
-                groupModel.setRule6(Integer.parseInt(c.getString(9)));
+
             }
         } finally {
             c.close();

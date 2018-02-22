@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.training.android.undivided"
     android:name=".MyApp">
 
@@ -38,7 +39,8 @@
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/undivided_logo_notext"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon,android:roundIcon,android:theme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
 

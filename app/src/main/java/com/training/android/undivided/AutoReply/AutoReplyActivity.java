@@ -147,6 +147,7 @@ public class AutoReplyActivity extends AppCompatActivity {
             startActivity(editIntent);
         }
     }
+
     public void onItemToggleClicked(final String name, int position, final boolean status) {
 
         Log.i(logTag, "onItemToggleClicked for " + name + " at " + position + ", setting status to " + status);

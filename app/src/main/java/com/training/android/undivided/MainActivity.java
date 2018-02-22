@@ -30,8 +30,10 @@ import com.training.android.undivided.CallLog.CallLogActivity;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.ViewGroup;
+import com.training.android.undivided.Models.EmergencyContactsModel;
 import com.training.android.undivided.NavigationMode.Navigation;
-import com.training.android.undivided.NavigationMode.TowingServicesModel;
+import com.training.android.undivided.Models.TowingServicesModel;
+import com.training.android.undivided.NavigationMode.SearchDestination;
 import com.txusballesteros.bubbles.BubbleLayout;
 import com.txusballesteros.bubbles.BubblesManager;
 
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private DBHandler dbHandler;
 
     private ArrayList<TowingServicesModel> tsmList = null;
+    private ArrayList<EmergencyContactsModel> emcList;
     private boolean flag = false;
 
 //    /*@Override
@@ -407,6 +410,13 @@ public class MainActivity extends AppCompatActivity {
                 dbHandler.AddTowingServices(tsmList.get(i));
             }
         }
+    }
+
+    public void AddEmergencyContacts(){
+
+        emcList = new ArrayList<>();
+
+        emcList.add(new EmergencyContactsModel("", "", "", ""));
     }
 }
 

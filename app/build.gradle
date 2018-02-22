@@ -69,6 +69,7 @@ dependencies {
     compile 'com.txusballesteros:bubbles:1.2.1'
     compile 'com.github.ksoichiro:android-observablescrollview:1.5.1'
     compile 'com.github.ppamorim:dragger:1.2'
+    compile 'com.github.aliumujib:Nibo:v1.02'
 
     //bottom bar lib
     compile 'com.roughike:bottom-bar:2.0.2'
