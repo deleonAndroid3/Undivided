@@ -27,7 +27,7 @@ public class SMS_Receiver extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();
 
         try {
-            if (bundle != null) {
+
                 Object[] pdusObj = (Object[]) bundle.get("pdus");
 
                 for (int i = 0; i < pdusObj.length; i++) {
@@ -36,11 +36,10 @@ public class SMS_Receiver extends BroadcastReceiver {
                     // Get sender phone number
                     String phoneNumber = sms.getDisplayOriginatingAddress();
 
-                    if (dbHandler.numberExists(phoneNumber)) {
+
                         replySMS(context, phoneNumber);
-                    }else
-                        Toast.makeText(context, "NOT FOUND", Toast.LENGTH_SHORT).show();
-                }
+
+
             }
         } catch (Exception e) {
             e.printStackTrace();
