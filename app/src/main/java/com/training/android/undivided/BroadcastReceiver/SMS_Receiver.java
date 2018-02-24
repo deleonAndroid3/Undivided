@@ -37,17 +37,17 @@ public class SMS_Receiver extends BroadcastReceiver {
                     String phoneNumber = sms.getDisplayOriginatingAddress();
                     gmodel = dbHandler.getMessageContact(phoneNumber);
 
-<<<<<<< HEAD
+
 
                         replySMS(context, phoneNumber);
 
 
-=======
+
                     if (gmodel.getRule1() == 1)
                         replySMS(context, phoneNumber);
 
                 }
->>>>>>> c23b75864e85302faa3afe8ab9d87d0130bd7ff1
+
             }
         } catch (Exception e) {
             e.printStackTrace();
