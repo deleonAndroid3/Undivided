@@ -74,6 +74,9 @@ public class Call_Receiver extends BroadcastReceiver {
         @Override
         public void onCallStateChanged(int state, String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
+
+
+            incomingNumber = incomingNumber.replace(" ", "");
             gmodel = dbHandler.getGroup(incomingNumber);
 
             switch (state) {

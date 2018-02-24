@@ -37,11 +37,10 @@ public class SMS_Receiver extends BroadcastReceiver {
 
                     phoneNumber = sms.getOriginatingAddress();
                     phoneNumber = "0"+phoneNumber.substring(3);
+                    phoneNumber = phoneNumber.replace(" ", "");
                     gmodel = dbHandler.getGroup(phoneNumber);
 
                 }
-                Toast.makeText(context, phoneNumber, Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, gmodel.getRule1() + "", Toast.LENGTH_SHORT).show();
 
                 if (gmodel.getRule1() == 1) {
                     replySMS(context, phoneNumber);

@@ -80,6 +80,9 @@ public class GroupContactPicker extends AppCompatActivity {
             do {
                 String phoneNo = cursor.getString(cursor
                         .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)); // get phone no in raw format
+                if (phoneNo.substring(0, 3).equals("+63"))
+                    phoneNo = "0" + phoneNo.substring(3);
+                phoneNo = phoneNo.replace(" ", "");
                 String contactname = cursor.getString(cursor
                         .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
 
