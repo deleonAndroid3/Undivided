@@ -1,8 +1,10 @@
 package com.training.android.undivided;
 
 import android.Manifest;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 import com.facebook.stetho.Stetho;
 import com.training.android.undivided.BackgroundService.BackgroundService;
 import com.training.android.undivided.BroadcastReceiver.Call_Receiver;
+import com.training.android.undivided.BroadcastReceiver.SMS_Receiver;
 import com.training.android.undivided.CallLog.CallLogActivity;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.DriveHistory.DriveHistory;
@@ -82,7 +85,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Stetho.initializeWithDefaults(this);
-        initializeBubblesManager();
+//        initializeBubblesManager();
+
+        disableCallBroadcastReceiver();
+        disableSMSBroadcastReceiver();
 
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();
@@ -425,6 +431,24 @@ public class MainActivity extends AppCompatActivity {
         emcList = new ArrayList<>();
 
         emcList.add(new EmergencyContactsModel("", "", "", ""));
+    }
+
+    public void disableCallBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, Call_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    public void disableSMSBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, SMS_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
     }
 }
 

@@ -33,13 +33,13 @@ public class SMS_Receiver extends BroadcastReceiver {
                 for (int i = 0; i < pdusObj.length; i++) {
                     // This will create an SmsMessage object from the received pdu
                     SmsMessage sms = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
-                    // Get sender phone number
-                    String phoneNumber = sms.getDisplayOriginatingAddress();
 
-                    if (dbHandler.numberExists(phoneNumber)) {
+                    String phoneNumber = sms.getDisplayOriginatingAddress();
+                    gmodel = dbHandler.getMessageContact(phoneNumber);
+
+                    if (gmodel.getRule1() == 1)
                         replySMS(context, phoneNumber);
-                    }else
-                        Toast.makeText(context, "NOT FOUND", Toast.LENGTH_SHORT).show();
+
                 }
             }
         } catch (Exception e) {
@@ -49,7 +49,6 @@ public class SMS_Receiver extends BroadcastReceiver {
 
     private void replySMS(Context context, String num) {
 
-        gmodel = dbHandler.getMessageContact(num);
         Toast.makeText(context, gmodel.getGroupMessage(), Toast.LENGTH_SHORT).show();
         try {
             SmsManager smsManager = SmsManager.getDefault();

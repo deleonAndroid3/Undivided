@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
 import com.training.android.undivided.Database.DBHandler;
-import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
 
 import java.lang.reflect.Method;
@@ -52,21 +51,18 @@ public class Call_Receiver extends BroadcastReceiver {
                 || intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
 
             String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
+            gmodel = dbHandler.getMessageContact(incomingNumber);
 
-            if (dbHandler.numberExists(incomingNumber)) {
-                Toast.makeText(context, "Call from:" + incomingNumber, Toast.LENGTH_LONG).show();
-
-                //TODO: AUTOREPLY CALLS
-                replySMS(context,incomingNumber);
-            } else
-                Toast.makeText(context, "NOT FOUND", Toast.LENGTH_SHORT).show();
+            //TODO: AUTOREPLY CALLS
+            if (gmodel.getRule2() == 1) {
+                replySMS(context, incomingNumber);
+            }
 
         }
     }
 
     private void replySMS(Context context, String num) {
 
-        gmodel = dbHandler.getMessageContact(num);
         Toast.makeText(context, gmodel.getGroupMessage(), Toast.LENGTH_SHORT).show();
         try {
             SmsManager smsManager = SmsManager.getDefault();
