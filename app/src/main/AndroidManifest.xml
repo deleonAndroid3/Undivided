@@ -30,6 +30,7 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
 
     <application
         android:allowBackup="true"
@@ -186,7 +187,14 @@
         <activity android:name=".LivetoText.LivetoText" />
         <activity
             android:name=".SafeMode.SafeMode"
-            android:theme="@style/AppTheme.NoActionBarRed" />
+            android:theme="@style/AppTheme.NoActionBarRed" >
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>-->
+        </activity>
 
         <!-- Call Log Package -->
         <activity

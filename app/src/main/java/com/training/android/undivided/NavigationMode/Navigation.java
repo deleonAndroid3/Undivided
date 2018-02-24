@@ -2,6 +2,9 @@ package com.training.android.undivided.NavigationMode;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -75,6 +78,7 @@ import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
+import com.training.android.undivided.SafeMode.SafeMode;
 import com.training.android.undivided.Speaker;
 
 import org.json.JSONObject;
@@ -142,7 +146,27 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
         setContentView(R.layout.activity_navigation);
         showSearch();
+        Toast.makeText(this, "Navigation Selected", Toast.LENGTH_SHORT).show();
+        ComponentName mDeviceAdmin;
+        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        mDeviceAdmin = new ComponentName(Navigation.this, MainActivity.class);
 
+        if (myDevicePolicyManager.isDeviceOwnerApp(Navigation.this.getPackageName())) {
+            // Device owner
+            String[] packages = {Navigation.this.getPackageName()};
+            myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
+        } else {
+            Log.d("INFO","IS NOT APP OWNER");
+        }
+
+        if (myDevicePolicyManager.isLockTaskPermitted(Navigation.this.getPackageName())) {
+            // Lock allowed
+            // NOTE: locking device also disables notification
+            startLockTask();
+        } else {
+            Log.d("INFO","lock not permitted");
+            startLockTask();
+        }
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -1072,6 +1096,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public void onBackPressed() {
 
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
+            stopLockTask();
             super.onBackPressed();
 
             return;

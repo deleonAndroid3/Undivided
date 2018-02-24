@@ -1,5 +1,6 @@
 package com.training.android.undivided.SafeMode;
 
+import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -16,8 +17,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.speech.tts.TextToSpeech;
@@ -143,26 +146,32 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         drawerLayout.getBackground().setAlpha(80);
 
         Toast.makeText(SafeMode.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
-        ComponentName mDeviceAdmin;
-        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        mDeviceAdmin = new ComponentName(SafeMode.this, MainActivity.class);
 
-        if (myDevicePolicyManager.isDeviceOwnerApp(SafeMode.this.getPackageName())) {
-            // Device owner
-            String[] packages = {SafeMode.this.getPackageName()};
-            myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
-        } else {
-            Log.d("INFO","IS NOT APP OWNER");
-        }
 
-        if (myDevicePolicyManager.isLockTaskPermitted(SafeMode.this.getPackageName())) {
-            // Lock allowed
-            // NOTE: locking device also disables notification
-            startLockTask();
-        } else {
-            Log.d("INFO","lock not permitted");
-            startLockTask();
-        }
+//        ComponentName mDeviceAdmin;
+//        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+//        mDeviceAdmin = new ComponentName(SafeMode.this, MainActivity.class);
+//
+//        if (myDevicePolicyManager.isDeviceOwnerApp(SafeMode.this.getPackageName())) {
+//            // Device owner
+//            String[] packages = {SafeMode.this.getPackageName()};
+//            myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
+//        } else {
+//            Log.d("INFO","IS NOT APP OWNER");
+//        }
+//
+//        if (myDevicePolicyManager.isLockTaskPermitted(SafeMode.this.getPackageName())) {
+//            // Lock allowed
+//            // NOTE: locking device also disables notification
+//            startLockTask();
+//        } else {
+//            Log.d("INFO","lock not permitted");
+//            startLockTask();
+//        }
+
+        // OLD DISABLE ATTACHTOWINDOW
+        onAttachedToWindow();
+
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -248,6 +257,35 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
     }
 
     @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+
+        if ( (event.getKeyCode() == KeyEvent.KEYCODE_HOME)) {
+            Toast.makeText(this, "You pressed home button", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        else
+            return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            Toast.makeText(this, "You pressed the back button!", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if ( (keyCode == KeyEvent.KEYCODE_HOME)) {
+            Toast.makeText(this, "You pressed the home button.", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if ((keyCode == KeyEvent.KEYCODE_MENU)) {
+            Toast.makeText(this, "You pressed the menu button.", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == CHECK_CODE){
             if(resultCode == android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS){
@@ -260,7 +298,22 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         }
     }
 
+    @Override
+    public void onAttachedToWindow()
+    {
 
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
+//            this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
+//            super.onAttachedToWindow();
+
+//            this.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION);
+//            super.onAttachedToWindow();
+
+    }
 
     private void initializeSMSReceiver(){
         smsReceiver = new BroadcastReceiver(){
