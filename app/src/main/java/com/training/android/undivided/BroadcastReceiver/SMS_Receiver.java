@@ -20,6 +20,7 @@ public class SMS_Receiver extends BroadcastReceiver {
 
     private DBHandler dbHandler;
     private GroupModel gmodel;
+    private String phoneNumber;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -34,13 +35,20 @@ public class SMS_Receiver extends BroadcastReceiver {
                     // This will create an SmsMessage object from the received pdu
                     SmsMessage sms = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
 
-                    String phoneNumber = sms.getDisplayOriginatingAddress();
-                    gmodel = dbHandler.getMessageContact(phoneNumber);
-
-                    if (gmodel.getRule1() == 1)
-                        replySMS(context, phoneNumber);
+                    phoneNumber = sms.getOriginatingAddress();
+                    phoneNumber = "0"+phoneNumber.substring(3);
+                    gmodel = dbHandler.getGroup(phoneNumber);
 
                 }
+                Toast.makeText(context, phoneNumber, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, gmodel.getRule1() + "", Toast.LENGTH_SHORT).show();
+
+                if (gmodel.getRule1() == 1) {
+                    replySMS(context, phoneNumber);
+                    Toast.makeText(context, "Send Reply to " + phoneNumber, Toast.LENGTH_SHORT).show();
+                }else
+                    Toast.makeText(context, "Not Replying", Toast.LENGTH_SHORT).show();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
