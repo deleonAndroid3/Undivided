@@ -8,53 +8,49 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.speech.tts.TextToSpeech;
 import android.widget.Toast;
 
 import com.training.android.undivided.AutoReply.Widget.RuleWidgetProvider;
+import com.training.android.undivided.BroadcastReceiver.Call_Receiver;
+import com.training.android.undivided.BroadcastReceiver.SMS_Receiver;
 import com.training.android.undivided.Database.DBHandler;
+import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Emergency;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
-import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Speaker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static java.lang.Thread.sleep;
-
 public class SafeMode extends AppCompatActivity implements android.speech.tts.TextToSpeech.OnInitListener {
+    private static LayoutInflater inflater = null;
     private final int CHECK_CODE = 0x1;
     private final int LONG_DURATION = 5000;
     private final int SHORT_DURATION = 1200;
-
-    private TextToSpeech myTTS;
-
-    private Button button;
     DBHandler dbHandler;
-
-    private Speaker speaker;
-
     DrawerLayout drawerLayout;
     ImageView imgView;
-    private String start_time="0";
-    private String end_time="0";
-
-    private static LayoutInflater inflater=null;
+    private TextToSpeech myTTS;
+    private Button button;
+    private Speaker speaker;
+    private String start_time = "0";
+    private String end_time = "0";
     private boolean speaker_flag = false;
     private boolean mBool = true;
 
@@ -68,7 +64,7 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         dbHandler = new DBHandler(this);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-       start_time  = dateFormat.format(new Date());
+        start_time = dateFormat.format(new Date());
 
         myTTS = new TextToSpeech(this, this);
         speaker = new Speaker(this);
@@ -127,12 +123,11 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         threshold_editor.commit();
 
 
-
         new Runnable() {
             @Override
             public void run() {
                 Intent updateWidgetIntent = new Intent(getApplicationContext(), RuleWidgetProvider.class);
-                updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{0} ).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                updateWidgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{0}).setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
                 getApplicationContext().sendBroadcast(updateWidgetIntent);
             }
         }.run();
@@ -152,7 +147,7 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
             String[] packages = {SafeMode.this.getPackageName()};
             myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
         } else {
-            Log.d("INFO","IS NOT APP OWNER");
+            Log.d("INFO", "IS NOT APP OWNER");
         }
 
         if (myDevicePolicyManager.isLockTaskPermitted(SafeMode.this.getPackageName())) {
@@ -160,16 +155,21 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
             // NOTE: locking device also disables notification
             startLockTask();
         } else {
-            Log.d("INFO","lock not permitted");
+            Log.d("INFO", "lock not permitted");
             startLockTask();
+            enableCallBroadcastReceiver();
+            enableSMSBroadcastReceiver();
         }
+
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 stopLockTask();
+                disableSMSBroadcastReceiver();
+                disableCallBroadcastReceiver();
 //                speakerStop();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                end_time  = dateFormat.format(new Date());
+                end_time = dateFormat.format(new Date());
 
                 DriveModel dm = new DriveModel();
                 dm.setDriveType("SafeMode");
@@ -178,7 +178,7 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
 
                 dbHandler.addDrive(dm);
 
-                Intent i = new Intent (SafeMode.this, MainActivity.class);
+                Intent i = new Intent(SafeMode.this, MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 finish();
@@ -241,7 +241,7 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
 //        }
 //    }
 
-    private void checkTTS(){
+    private void checkTTS() {
         Intent check = new Intent();
         check.setAction(android.speech.tts.TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
         startActivityForResult(check, CHECK_CODE);
@@ -249,10 +249,10 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == CHECK_CODE){
-            if(resultCode == android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS){
+        if (requestCode == CHECK_CODE) {
+            if (resultCode == android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 speaker = new Speaker(this);
-            }else {
+            } else {
                 Intent install = new Intent();
                 install.setAction(android.speech.tts.TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
                 startActivity(install);
@@ -260,19 +260,17 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         }
     }
 
-
-
-    private void initializeSMSReceiver(){
-        smsReceiver = new BroadcastReceiver(){
+    private void initializeSMSReceiver() {
+        smsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 //                speaker.allow(true);
 //                speaker.speak(getString(R.string.start_speaking));
                 Bundle bundle = intent.getExtras();
-                if(bundle!=null){
-                    Object[] pdus = (Object[])bundle.get("pdus");
-                    for(int i=0;i<pdus.length;i++){
-                        byte[] pdu = (byte[])pdus[i];
+                if (bundle != null) {
+                    Object[] pdus = (Object[]) bundle.get("pdus");
+                    for (int i = 0; i < pdus.length; i++) {
+                        byte[] pdu = (byte[]) pdus[i];
                         SmsMessage message = SmsMessage.createFromPdu(pdu);
                         String text = message.getDisplayMessageBody();
                         String sender = getContactName(message.getOriginatingAddress());
@@ -281,7 +279,7 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
                         speaker.speak("You have a new message from" + sender + "!");
                         speaker.pause(LONG_DURATION);
                         speaker.speak(text);
-                        speaker.speak("Do you want to reply to?"+sender+"!");
+                        speaker.speak("Do you want to reply to?" + sender + "!");
 
 
                         //Intent replyIntent = new Intent(TextToSpeech.this, SpeechToText.class);
@@ -323,23 +321,25 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
 
     @Override
     public void onBackPressed() {
-        Log.i("Back Pressed","Back button is disabled");
+        Log.i("Back Pressed", "Back button is disabled");
     }
 
-    private String getContactName(String phone){
+    private String getContactName(String phone) {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phone));
         String projection[] = new String[]{ContactsContract.Data.DISPLAY_NAME};
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if(cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             return cursor.getString(0);
-        }else {
+        } else {
             return "unknown number";
         }
     }
+
     private void registerSMSReceiver() {
         IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
         registerReceiver(smsReceiver, intentFilter);
     }
+
     @Override
     protected void onDestroy() {
         speaker.speak(getString(R.string.stop_speaking));
@@ -369,5 +369,44 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         } else {
             Log.e("TTS", "Initilization Failed");
         }
+    }
+
+
+    public void enableCallBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, Call_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    public void enableSMSBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, SMS_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    public void disableCallBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, Call_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    public void disableSMSBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, SMS_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+        
     }
 }
