@@ -1,4 +1,4 @@
-package com.training.android.undivided.NavigationMode;
+package com.training.android.undivided.Models;
 
 /**
  * Created by Dyste on 2/13/2018.

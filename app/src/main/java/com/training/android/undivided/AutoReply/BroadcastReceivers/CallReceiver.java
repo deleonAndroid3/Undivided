@@ -95,11 +95,13 @@ public class CallReceiver extends BroadcastReceiver {
                     handled = false;
                     Log.i(logTag, "Reset handled flag");
                     break;
+
                 case TelephonyManager.CALL_STATE_OFFHOOK:
                     Log.i(logTag, "OFFHOOK ");
                     handled = false;
                     Log.i(logTag, "Reset handled flag");
                     break;
+
                 case TelephonyManager.CALL_STATE_RINGING:
                     Log.i(logTag, "RINGING");
                     if (!handled) { // In order
@@ -126,6 +128,7 @@ public class CallReceiver extends BroadcastReceiver {
                     else
                         Log.i(logTag, "Call has been handled, will not try to invoke rules");
                     break;
+
             } //end of ringing case
         }
 

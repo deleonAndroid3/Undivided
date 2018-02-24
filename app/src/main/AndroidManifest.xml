@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:name=".MyApp"
     package="com.training.android.undivided">
 
@@ -39,7 +40,8 @@
         android:launchMode="singleTask"
         android:roundIcon="@mipmap/undivided_logo_notext"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon,android:roundIcon,android:theme">
         <service android:name=".BackgroundService.BackgroundIntentService" />
         <service android:name=".BackgroundService.BackgroundService" />
 
@@ -188,12 +190,10 @@
         <activity
             android:name=".SafeMode.SafeMode"
             android:theme="@style/AppTheme.NoActionBarRed" >
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
+            <intent-filter>
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
 
         <!-- Call Log Package -->
@@ -218,7 +218,12 @@
             </intent-filter>
         </receiver>
 
-        <!-- Live to text -->
+        <activity
+            android:name=".NavigationMode.EmergencyContactsList"
+            android:theme="@style/AppTheme.myTheme" />
+
+
+        <!--Live to text -->
         <activity
             android:name=".LivetoText.DictateandSend"
             android:label="@string/app_name">
@@ -269,6 +274,18 @@
             android:label="ReadOutAndSignal"></service>
 
         <activity android:name=".DriveHistory.DriveHistory"></activity>
+
+        <receiver android:name=".BroadcastReceiver.Call_Receiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".BroadcastReceiver.SMS_Receiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

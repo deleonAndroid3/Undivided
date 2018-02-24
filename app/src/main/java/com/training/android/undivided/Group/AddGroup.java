@@ -30,7 +30,7 @@ public class AddGroup extends AppCompatActivity {
     private CheckBox cbRule3;
     private CheckBox cbRule4;
     private CheckBox cbRule5;
-    private CheckBox cbRule6;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,12 +46,12 @@ public class AddGroup extends AppCompatActivity {
         mEtGroupName = findViewById(R.id.etGroupName);
         mEtGroupDescription = findViewById(R.id.etGroupDesc);
         mEtGroupMessage = findViewById(R.id.etGroupMessage);
-        cbRule1 = findViewById(R.id.declinecall);
-        cbRule2 = findViewById(R.id.autoreplysms);
-        cbRule3 = findViewById(R.id.autoreplycall);
-        cbRule4 = findViewById(R.id.replysms);
-        cbRule5 = findViewById(R.id.readsms);
-        cbRule6 = findViewById(R.id.answercall);
+
+        cbRule1 = findViewById(R.id.autoreplysms);
+        cbRule2 = findViewById(R.id.autoreplycall);
+        cbRule3 = findViewById(R.id.replysms);
+        cbRule4 = findViewById(R.id.readsms);
+        cbRule5 = findViewById(R.id.answercall);
 
         mEtGroupDescription.setMaxLines(Integer.MAX_VALUE);
         mEtGroupDescription.setHorizontallyScrolling(false);
@@ -69,7 +69,6 @@ public class AddGroup extends AppCompatActivity {
             cbRule3.setEnabled(false);
             cbRule4.setEnabled(false);
             cbRule5.setEnabled(false);
-            cbRule6.setEnabled(false);
         }
     }
 
@@ -119,7 +118,6 @@ public class AddGroup extends AppCompatActivity {
         gm.setRule3(cbRule3.isChecked() ? 1 : 0);
         gm.setRule4(cbRule4.isChecked() ? 1 : 0);
         gm.setRule5(cbRule5.isChecked() ? 1 : 0);
-        gm.setRule6(cbRule6.isChecked() ? 1 : 0);
         dbHandler.addGroup(gm);
 
     }

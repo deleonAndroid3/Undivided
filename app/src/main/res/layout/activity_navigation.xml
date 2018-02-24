@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:theme="@android:style/Theme.DeviceDefault.Light.NoActionBar.Fullscreen"
     tools:context="com.training.android.undivided.NavigationMode.Navigation">
 
@@ -23,6 +25,8 @@
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
+
+
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/relativeLayout"
@@ -54,7 +58,7 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_weight="1"
-            android:text="12 Km"
+            android:text=" - Km"
             android:textAlignment="viewStart"
             android:textColor="@android:color/white"
             android:textSize="26sp"

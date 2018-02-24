@@ -17,6 +17,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.github.ksoichiro.android.observablescrollview.ObservableListView;
+import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
+import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.training.android.undivided.Group.Adapter.ContactsAdapter;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.ContactsModel;
@@ -38,7 +41,7 @@ public class ViewCard extends AppCompatActivity {
     private CheckBox cbRule3;
     private CheckBox cbRule4;
     private CheckBox cbRule5;
-    private CheckBox cbRule6;
+
 
 
     @Override
@@ -76,12 +79,11 @@ public class ViewCard extends AppCompatActivity {
         mEtGroupName = findViewById(R.id.etGroupName);
         mEtGroupDescription = findViewById(R.id.etGroupDesc);
         mEtGroupMessage = findViewById(R.id.etGroupMessage);
-        cbRule1 = findViewById(R.id.declinecall);
-        cbRule2 = findViewById(R.id.autoreplysms);
-        cbRule3 = findViewById(R.id.autoreplycall);
-        cbRule4 = findViewById(R.id.replysms);
-        cbRule5 = findViewById(R.id.readsms);
-        cbRule6 = findViewById(R.id.answercall);
+        cbRule1 = findViewById(R.id.autoreplysms);
+        cbRule2 = findViewById(R.id.autoreplycall);
+        cbRule3 = findViewById(R.id.replysms);
+        cbRule4 = findViewById(R.id.readsms);
+        cbRule5 = findViewById(R.id.answercall);
         mContactsList = findViewById(R.id.lvContactsList);
 
         mEtGroupDescription.setMaxLines(Integer.MAX_VALUE);
@@ -106,8 +108,7 @@ public class ViewCard extends AppCompatActivity {
                 cbRule4.setChecked(true);
             if (b.getInt("5") == 1)
                 cbRule5.setChecked(true);
-            if (b.getInt("6") == 1)
-                cbRule6.setChecked(true);
+
 
             adapter = new ContactsAdapter(this, R.layout.contacts_listview, dbHandler.getContactsofGroup(b.getString("name")));
             adapter.notifyDataSetChanged();
@@ -206,7 +207,7 @@ public class ViewCard extends AppCompatActivity {
         cbRule3.setClickable(true);
         cbRule4.setClickable(true);
         cbRule5.setClickable(true);
-        cbRule6.setClickable(true);
+
 
         if (mEtGroupDescription.getText().toString().equals("Emergency")) {
             mEtGroupName.setEnabled(false);
@@ -215,7 +216,6 @@ public class ViewCard extends AppCompatActivity {
             cbRule3.setEnabled(false);
             cbRule4.setEnabled(false);
             cbRule5.setEnabled(false);
-            cbRule6.setEnabled(false);
         }
 
     }
@@ -229,7 +229,7 @@ public class ViewCard extends AppCompatActivity {
         cbRule3.setClickable(false);
         cbRule4.setClickable(false);
         cbRule5.setClickable(false);
-        cbRule6.setClickable(false);
+
 
     }
     
@@ -243,8 +243,10 @@ public class ViewCard extends AppCompatActivity {
         gm.setRule3(cbRule3.isChecked() ? 1 : 0);
         gm.setRule4(cbRule4.isChecked() ? 1 : 0);
         gm.setRule5(cbRule5.isChecked() ? 1 : 0);
-        gm.setRule6(cbRule6.isChecked() ? 1 : 0);
+
 
         return gm;
     }
+
+
 }

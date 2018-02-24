@@ -4,11 +4,15 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.training.android.undivided.BroadcastReceiver.Call_Receiver;
+import com.training.android.undivided.BroadcastReceiver.SMS_Receiver;
 
 public class DisableAppSwitch extends AppCompatActivity {
 
@@ -52,4 +56,5 @@ public class DisableAppSwitch extends AppCompatActivity {
 
 
     }
+
 }
