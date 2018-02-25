@@ -452,16 +452,13 @@ public class DBHandler extends SQLiteOpenHelper {
         return groupModel;
     }
 
-    public GroupModel getMessageContact(String contactnum) {
+    public GroupModel getGroup(String contactnum) {
 
         if (!db.isOpen())
             db = getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_CREATE_GROUP + " WHERE " + COLUMN_GROUPID + " = (SELECT "
                 + FK_COLUMN_GROUPID + " FROM "+ TABLE_CONTACTS +" WHERE " + COLUMN_CONTACTNUM + " = '" + contactnum +"' AND " + FK_COLUMN_GROUPID + " != '1') ";
-
-        String query2 = "SELECT * FROM " + TABLE_CREATE_GROUP + " INNER JOIN " + TABLE_CONTACTS + " ON "
-                +TABLE_CREATE_GROUP+"."+COLUMN_GROUPID+ " = " +TABLE_CONTACTS+"."+FK_COLUMN_GROUPID;
 
         Cursor c = db.rawQuery(query, null);
         GroupModel groupModel = new GroupModel();
@@ -482,7 +479,6 @@ public class DBHandler extends SQLiteOpenHelper {
             c.close();
             db.close();
         }
-
 
         return groupModel;
     }

@@ -87,8 +87,13 @@ public class MainActivity extends AppCompatActivity {
         Stetho.initializeWithDefaults(this);
 //        initializeBubblesManager();
 
+
       //  disableCallBroadcastReceiver();
         //disableSMSBroadcastReceiver();
+
+//        disableCallBroadcastReceiver();
+//        disableSMSBroadcastReceiver();
+
 
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();

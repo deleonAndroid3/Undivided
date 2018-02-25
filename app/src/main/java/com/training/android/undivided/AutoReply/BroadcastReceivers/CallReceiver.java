@@ -60,6 +60,7 @@ public class CallReceiver extends BroadcastReceiver {
         else {
             Log.i(logTag,"MESSAGE ME!");
         }
+
         if (phoneListener == null) {
             dbManager = new DatabaseManager(context);
             phoneListener = new MPhoneStateListener(context);
@@ -85,6 +86,7 @@ public class CallReceiver extends BroadcastReceiver {
         private MPhoneStateListener(Context c) {
             mContext = c;
         }
+
         @Override
         public void onCallStateChanged(int state,String incomingNumber){
             super.onCallStateChanged(state, incomingNumber);
