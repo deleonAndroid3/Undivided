@@ -62,21 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<EmergencyContactsModel> emcList;
     private boolean flag = false;
 
-//    /*@Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        switch(requestCode)
-//        {
-//            case 1000:
-//            {
-//                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-//                    Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
-//                else
-//                    Toast.makeText(this, "Denied", Toast.LENGTH_SHORT).show();
-//            }
-//            return;
-//        }
-//    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -443,7 +428,6 @@ public class MainActivity extends AppCompatActivity {
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
-
     }
 
     public void disableSMSBroadcastReceiver() {
