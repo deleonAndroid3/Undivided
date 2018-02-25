@@ -40,9 +40,6 @@ public class ViewCard extends AppCompatActivity {
     private CheckBox cbRule2;
     private CheckBox cbRule3;
     private CheckBox cbRule4;
-    private CheckBox cbRule5;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +78,8 @@ public class ViewCard extends AppCompatActivity {
         mEtGroupMessage = findViewById(R.id.etGroupMessage);
         cbRule1 = findViewById(R.id.autoreplysms);
         cbRule2 = findViewById(R.id.autoreplycall);
-        cbRule3 = findViewById(R.id.replysms);
-        cbRule4 = findViewById(R.id.readsms);
-        cbRule5 = findViewById(R.id.answercall);
+        cbRule3 = findViewById(R.id.readsms);
+        cbRule4 = findViewById(R.id.answercall);
         mContactsList = findViewById(R.id.lvContactsList);
 
         mEtGroupDescription.setMaxLines(Integer.MAX_VALUE);
@@ -106,9 +102,6 @@ public class ViewCard extends AppCompatActivity {
                 cbRule3.setChecked(true);
             if (b.getInt("4") == 1)
                 cbRule4.setChecked(true);
-            if (b.getInt("5") == 1)
-                cbRule5.setChecked(true);
-
 
             adapter = new ContactsAdapter(this, R.layout.contacts_listview, dbHandler.getContactsofGroup(b.getString("name")));
             adapter.notifyDataSetChanged();
@@ -206,7 +199,6 @@ public class ViewCard extends AppCompatActivity {
         cbRule2.setClickable(true);
         cbRule3.setClickable(true);
         cbRule4.setClickable(true);
-        cbRule5.setClickable(true);
 
 
         if (mEtGroupDescription.getText().toString().equals("Emergency")) {
@@ -215,7 +207,7 @@ public class ViewCard extends AppCompatActivity {
             cbRule2.setEnabled(false);
             cbRule3.setEnabled(false);
             cbRule4.setEnabled(false);
-            cbRule5.setEnabled(false);
+
         }
 
     }
@@ -228,10 +220,7 @@ public class ViewCard extends AppCompatActivity {
         cbRule2.setClickable(false);
         cbRule3.setClickable(false);
         cbRule4.setClickable(false);
-        cbRule5.setClickable(false);
-
-
-    }
+            }
     
     public GroupModel getData() {
         GroupModel gm = new GroupModel();
@@ -242,8 +231,6 @@ public class ViewCard extends AppCompatActivity {
         gm.setRule2(cbRule2.isChecked() ? 1 : 0);
         gm.setRule3(cbRule3.isChecked() ? 1 : 0);
         gm.setRule4(cbRule4.isChecked() ? 1 : 0);
-        gm.setRule5(cbRule5.isChecked() ? 1 : 0);
-
 
         return gm;
     }

@@ -36,11 +36,10 @@ import com.training.android.undivided.DriveHistory.DriveHistory;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.Models.EmergencyContactsModel;
+import com.training.android.undivided.Models.TowingServicesModel;
 import com.training.android.undivided.NavigationMode.Navigation;
-import com.training.android.undivided.Models.TowingServicesModel;
-import com.training.android.undivided.NavigationMode.SearchDestination;
-import com.training.android.undivided.Models.TowingServicesModel;
 import com.training.android.undivided.SafeMode.SafeMode;
+import com.training.android.undivided.SmsGroup.Activity.SmsGroupActivity;
 import com.txusballesteros.bubbles.BubbleLayout;
 import com.txusballesteros.bubbles.BubblesManager;
 
@@ -85,10 +84,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Stetho.initializeWithDefaults(this);
-//        initializeBubblesManager();
+        initializeBubblesManager();
 
-//        disableCallBroadcastReceiver();
-//        disableSMSBroadcastReceiver();
+        disableCallBroadcastReceiver();
+        disableSMSBroadcastReceiver();
 
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();
@@ -294,6 +293,11 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(false);
                         startActivity(new Intent(MainActivity.this, ViewGroup.class));
                         break;
+
+                    case R.id.drawer_group_sms:
+                        menuItem.setChecked(false);
+                        startActivity(new Intent(MainActivity.this, SmsGroupActivity.class));
+                        break;
                     case R.id.drawer_history:
                         menuItem.setChecked(false);
                         Intent callLog = new Intent(MainActivity.this, CallLogActivity.class);
@@ -426,7 +430,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void AddEmergencyContacts(){
+    public void AddEmergencyContacts() {
 
         emcList = new ArrayList<>();
 

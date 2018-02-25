@@ -13,10 +13,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,15 +30,21 @@ import com.training.android.undivided.BroadcastReceiver.SMS_Receiver;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Emergency;
+import com.training.android.undivided.LivetoText.DictateandSend;
+import com.training.android.undivided.LivetoText.MyApp;
+import com.training.android.undivided.LivetoText.ReadOutAndSignal;
+import com.training.android.undivided.LivetoText.SmsListener;
 import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.R;
 import com.training.android.undivided.Speaker;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
-public class SafeMode extends AppCompatActivity implements android.speech.tts.TextToSpeech.OnInitListener {
+public class SafeMode extends AppCompatActivity {
+
+    private static final int REQUEST_CODE = 1234;
     private static LayoutInflater inflater = null;
     private final int CHECK_CODE = 0x1;
     private final int LONG_DURATION = 5000;
@@ -66,9 +72,9 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         start_time = dateFormat.format(new Date());
 
-        myTTS = new TextToSpeech(this, this);
-        speaker = new Speaker(this);
-        button = findViewById(R.id.btnTTS);
+//        myTTS = new TextToSpeech(this, this);
+//        speaker = new Speaker(this);
+//        button = findViewById(R.id.btnTTS);
 
 //        Intent checkTTSIntent = new Intent();
 //
@@ -92,15 +98,15 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
 //        };
 //        logoTimer.start();
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                speaker.allow(true);
-                speaker.speak(getString(R.string.start_speaking));
-//                myTTS.speak("Hello, Good Morning!", TextToSpeech.QUEUE_FLUSH, null);
-                Log.d("SPEAKER SPOKE", "The speaker spoke.");
-            }
-        });
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                speaker.allow(true);
+//                speaker.speak(getString(R.string.start_speaking));
+////                myTTS.speak("Hello, Good Morning!", TextToSpeech.QUEUE_FLUSH, null);
+//                Log.d("SPEAKER SPOKE", "The speaker spoke.");
+//            }
+//        });
 
 //        toggleListener = new CompoundButton.OnCheckedChangeListener() {
 //            @Override
@@ -159,6 +165,7 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
             startLockTask();
             enableCallBroadcastReceiver();
             enableSMSBroadcastReceiver();
+            this.startService(new Intent(this, SmsListener.class));
         }
 
         imgView.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +174,7 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
                 stopLockTask();
                 disableSMSBroadcastReceiver();
                 disableCallBroadcastReceiver();
+
 //                speakerStop();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 end_time = dateFormat.format(new Date());
@@ -220,7 +228,6 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
 //        }
 //            }
 //      }.run();
-
     }
 
 //    private void speakerStart(){
@@ -258,56 +265,23 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
                 startActivity(install);
             }
         }
-    }
 
-    private void initializeSMSReceiver() {
-        smsReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-//                speaker.allow(true);
-//                speaker.speak(getString(R.string.start_speaking));
-                Bundle bundle = intent.getExtras();
-                if (bundle != null) {
-                    Object[] pdus = (Object[]) bundle.get("pdus");
-                    for (int i = 0; i < pdus.length; i++) {
-                        byte[] pdu = (byte[]) pdus[i];
-                        SmsMessage message = SmsMessage.createFromPdu(pdu);
-                        String text = message.getDisplayMessageBody();
-                        String sender = getContactName(message.getOriginatingAddress());
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
 
-                        speaker.pause(LONG_DURATION);
-                        speaker.speak("You have a new message from" + sender + "!");
-                        speaker.pause(LONG_DURATION);
-                        speaker.speak(text);
-                        speaker.speak("Do you want to reply to?" + sender + "!");
+            ArrayList<String> matches = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            //Toast.makeText(getApplicationContext(), matches.get(0), Toast.LENGTH_SHORT).show();
+            if (matches.get(0).toLowerCase().compareTo("yes") == 0) {
 
+                startActivity(new Intent(this, DictateandSend.class).putExtra("number", MyApp.number));
 
-                        //Intent replyIntent = new Intent(TextToSpeech.this, SpeechToText.class);
-//                        startActivity(replyIntent);
-
-                        // Intent reIntent = getIntent();
-
-                      /*  if( reIntent.getStringExtra("reply").equals("yes") ){
-                                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-                                        checkSMSPermission();
-                                        if (ContextCompat.checkSelfPermission(TextToSpeech.this, Manifest.permission.SEND_SMS)
-                                                == PackageManager.PERMISSION_GRANTED) {
-                                            SmsManager smsManager = SmsManager.getDefault();
-                                            smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
-                                        }
-                                    } else {
-                                        SmsManager smsManager = SmsManager.getDefault();
-                                        smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
-                                    }
-                        }*/
-
-                    }
-                }
-
+            } else {
             }
-        };
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
+
+
 
 //    public void addHistory(String start, String end){
 //
@@ -335,11 +309,6 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         }
     }
 
-    private void registerSMSReceiver() {
-        IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-        registerReceiver(smsReceiver, intentFilter);
-    }
-
     @Override
     protected void onDestroy() {
         speaker.speak(getString(R.string.stop_speaking));
@@ -349,28 +318,91 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         super.onDestroy();
     }
 
-    @Override
-    public void onInit(int i) {
-        if (i == android.speech.tts.TextToSpeech.SUCCESS) {
+//    @Override
+//    public void onInit(int i) {
+//        if (i == android.speech.tts.TextToSpeech.SUCCESS) {
+//
+//            int result = myTTS.setLanguage(Locale.US);
+//
+//            // tts.setPitch(5); // set pitch level
+//
+//            // tts.setSpeechRate(2); // set speech speed rate
+//
+//            if (result == android.speech.tts.TextToSpeech.LANG_MISSING_DATA
+//                    || result == android.speech.tts.TextToSpeech.LANG_NOT_SUPPORTED) {
+//                Log.e("TTS", "Language is not supported");
+//            } else {
+//                button.setEnabled(true);
+//            }
+//
+//        } else {
+//            Log.e("TTS", "Initilization Failed");
+//        }
+//    }
 
-            int result = myTTS.setLanguage(Locale.US);
+    private void initializeSMSReceiver() {
 
-            // tts.setPitch(5); // set pitch level
+        smsReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+//                speaker.allow(true);
+//                speaker.speak(getString(R.string.start_speaking));
+//                Bundle bundle = intent.getExtras();
+//                if (bundle != null) {
+//                    Object[] pdus = (Object[]) bundle.get("pdus");
+//                    for (int i = 0; i < pdus.length; i++) {
+//                        byte[] pdu = (byte[]) pdus[i];
+//                        SmsMessage message = SmsMessage.createFromPdu(pdu);
+//                        String text = message.getDisplayMessageBody();
+//                        String sender = getContactName(message.getOriginatingAddress());
+//
+//                        speaker.pause(LONG_DURATION);
+//                        speaker.speak("You have a new message from" + sender + "!");
+//                        speaker.pause(LONG_DURATION);
+//                        speaker.speak(text);
+//                        speaker.speak("Do you want to reply to?" + sender + "!");
+//
+//
+//                        Intent replyIntent = new Intent(TextToSpeech.this, SpeechToText.class);
+//                        startActivity(replyIntent);
+//
+//                         Intent reIntent = getIntent();
+//
+//                      if( reIntent.getStringExtra("reply").equals("yes") ){
+//                                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//
+//                                        checkSMSPermission();
+//                                        if (ContextCompat.checkSelfPermission(TextToSpeech.this, Manifest.permission.SEND_SMS)
+//                                                == PackageManager.PERMISSION_GRANTED) {
+//                                            SmsManager smsManager = SmsManager.getDefault();
+//                                            smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
+//                                        }
+//                                    } else {
+//                                        SmsManager smsManager = SmsManager.getDefault();
+//                                        smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
+//                                    }
+//                        }
+//
+//                    }
+//                }
 
-            // tts.setSpeechRate(2); // set speech speed rate
+                String msg_for_me = intent.getStringExtra("sms_event");
+                MyApp.number = intent.getStringExtra("com.training.android.undivided.LivetoText.number");
+                context.startService(new Intent(SafeMode.this, ReadOutAndSignal.class).putExtra("noti", msg_for_me));
 
-            if (result == android.speech.tts.TextToSpeech.LANG_MISSING_DATA
-                    || result == android.speech.tts.TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "Language is not supported");
-            } else {
-                button.setEnabled(true);
+                Intent intent2 = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent2.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent2.putExtra(RecognizerIntent.EXTRA_PROMPT, "Reply Back?");
+                startActivityForResult(intent2, REQUEST_CODE);
             }
-
-        } else {
-            Log.e("TTS", "Initilization Failed");
-        }
+        };
     }
 
+    private void registerSMSReceiver() {
+        IntentFilter intentFilter2 = new IntentFilter("android.intent.action.MAIN2");
+        registerReceiver(smsReceiver, intentFilter2);
+    }
 
     public void enableCallBroadcastReceiver() {
         ComponentName receiver = new ComponentName(this, Call_Receiver.class);
@@ -407,6 +439,6 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         pm.setComponentEnabledSetting(receiver,
                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
-        
+
     }
 }

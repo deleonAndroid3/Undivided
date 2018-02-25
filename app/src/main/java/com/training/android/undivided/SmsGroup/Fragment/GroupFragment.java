@@ -29,6 +29,7 @@ import com.training.android.undivided.SmsGroup.Interface.IViewHolderClickListene
 
 
 public class GroupFragment extends ListFragmentAbstr implements IFragment {
+
     private GroupItemFragment mFragment;
     protected FragmentActivity mActivity;
 
@@ -108,19 +109,6 @@ public class GroupFragment extends ListFragmentAbstr implements IFragment {
         });
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        setDeletionListener();
-        setTitle(getString(R.string.title_group));
-
-        getRootActivity().hideMenuButton();
-        getRootActivity().getToolbar().getMenu().findItem(R.id.button_add_group).setVisible(true);
-
-        mGroupList = ((BaseActivity) getActivity()).getGroupList();
-        mGroupAdapter.notifyDataSetChanged();
-    }
-
     private void setDeletionListener() {
         getRootActivity().setDeletionListener(new IDeletionListener() {
             @Override
@@ -162,6 +150,13 @@ public class GroupFragment extends ListFragmentAbstr implements IFragment {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (mFragment != null) {
+            mFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Activity) {
@@ -175,10 +170,16 @@ public class GroupFragment extends ListFragmentAbstr implements IFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        if (mFragment != null) {
-            mFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+    public void onResume() {
+        super.onResume();
+        setDeletionListener();
+        setTitle(getString(R.string.title_group));
+
+        getRootActivity().hideMenuButton();
+        getRootActivity().getToolbar().getMenu().findItem(R.id.button_add_group).setVisible(true);
+
+        mGroupList = ((BaseActivity) getActivity()).getGroupList();
+        mGroupAdapter.notifyDataSetChanged();
     }
+
 }

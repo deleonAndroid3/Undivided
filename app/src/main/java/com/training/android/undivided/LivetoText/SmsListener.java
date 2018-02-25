@@ -14,14 +14,20 @@ import android.provider.ContactsContract;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
 
+import com.training.android.undivided.Database.DBHandler;
+import com.training.android.undivided.Group.Model.GroupModel;
+
 /**
  * Created by Hillary Briones on 2/13/2018.
  */
 
 public class SmsListener extends Service {
 
-    private BroadcastReceiver SMSReceiver;
     IntentFilter intentFilter2 = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+    private BroadcastReceiver SMSReceiver;
+    private DBHandler dbHandler;
+    private GroupModel gmodel;
+    private String phoneNumber;
 
     public static String getContactName(Context context, String phoneNumber) {
         ContentResolver cr = context.getContentResolver();
@@ -31,11 +37,11 @@ public class SmsListener extends Service {
             return null;
         }
         String contactName = null;
-        if(cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             contactName = cursor.getString(cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
         }
 
-        if(cursor != null && !cursor.isClosed()) {
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
 
@@ -45,44 +51,52 @@ public class SmsListener extends Service {
     public void onCreate() {
         super.onCreate();
         Toast.makeText(getApplicationContext(), "SmsListnerService", Toast.LENGTH_LONG).show();
+
+        dbHandler = new DBHandler(getApplicationContext());
+
         SMSReceiver = new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent){
-                MyApp.smsflag=1;
+            public void onReceive(Context context, Intent intent) {
+                MyApp.smsflag = 1;
                 Bundle myBundle = intent.getExtras();
-                SmsMessage[] messages = null;
+                SmsMessage messages = null;
                 String strMessage = "";
 
-                if (myBundle != null)
-                {
-                    Object [] pdus = (Object[]) myBundle.get("pdus");
-                    messages = new SmsMessage[pdus.length];
+                if (myBundle != null) {
+                    Object[] pdus = (Object[]) myBundle.get("pdus");
 
-                    for (int i = 0; i < messages.length; i++)
-                    {
-                        messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                        String ew=new String();
-                        for(int h=3;h<messages[i].getOriginatingAddress().length();h++){
-                            ew=ew+messages[i].getOriginatingAddress().charAt(h)+" ";
+                    for (int i = 0; i < pdus.length; i++) {
+                        messages = SmsMessage.createFromPdu((byte[]) pdus[i]);
+
+                        phoneNumber = messages.getOriginatingAddress();
+                        phoneNumber = "0" + phoneNumber.substring(3);
+                        phoneNumber = phoneNumber.replace(" ", "");
+                        gmodel = dbHandler.getGroup(phoneNumber);
+
+                    }
+
+                    if (gmodel.getRule3() == 1) {
+                        String ew = "";
+                        for (int h = 3; h < messages.getOriginatingAddress().length(); h++) {
+                            ew = ew + messages.getOriginatingAddress().charAt(h) + " ";
                         }
-                        String send=getContactName(getApplicationContext(),messages[i].getOriginatingAddress());
-                        if(send==null){
+
+                        String send = getContactName(getApplicationContext(), messages.getOriginatingAddress());
+                        if (send == null) {
                             strMessage += "SMS From: " + ew;
-                        }
-                        else{
+                        } else {
                             strMessage += "SMS From: " + send;
                         }
                         strMessage += "It says";
                         strMessage += " : ";
-                        strMessage += messages[i].getMessageBody();
+                        strMessage += messages.getMessageBody();
                         strMessage += "\n";
                         strMessage += " Do you wish to reply?";
-                        Intent in = new Intent("android.intent.action.MAIN2").putExtra("sms_event", strMessage);
-                        in.putExtra("com.training.android.undivided.LivetoText.number", messages[i].getOriginatingAddress());
+                        Intent in = new Intent("android.intent.action.MAIN2");
+                        in.putExtra("sms_event", strMessage);
+                        in.putExtra("com.training.android.undivided.LivetoText.number", messages.getOriginatingAddress());
                         sendBroadcast(in);
-                    }
-
-
-                    //Toast.makeText(context, strMessage, Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show();
                 }
             }
         };

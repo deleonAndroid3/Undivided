@@ -26,6 +26,11 @@
             android:title="View Groups"/>
 
         <item
+            android:id="@+id/drawer_group_sms"
+            android:icon="@drawable/ic_textsms"
+            android:title="Group SMS"/>
+
+        <item
             android:id="@+id/drawer_history"
             android:icon="@drawable/call"
             android:title="Call History"/>
