@@ -28,31 +28,32 @@ public class SMS_Receiver extends BroadcastReceiver {
 
         try {
 
-                Object[] pdusObj = (Object[]) bundle.get("pdus");
+            Object[] pdusObj = (Object[]) bundle.get("pdus");
 
-                for (int i = 0; i < pdusObj.length; i++) {
-                    // This will create an SmsMessage object from the received pdu
-                    SmsMessage sms = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+            for (int i = 0; i < pdusObj.length; i++) {
+                // This will create an SmsMessage object from the received pdu
+                SmsMessage sms = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
 
-                    String phoneNumber = sms.getDisplayOriginatingAddress();
-                    gmodel = dbHandler.getMessageContact(phoneNumber);
-
-
-
-                        replySMS(context, phoneNumber);
+                String phoneNumber = sms.getDisplayOriginatingAddress();
+                gmodel = dbHandler.getMessageContact(phoneNumber);
 
 
+                replySMS(context, phoneNumber);
 
-                    if (gmodel.getRule1() == 1)
-                        replySMS(context, phoneNumber);
+
+                if (gmodel.getRule1() == 1) {
+                    replySMS(context, phoneNumber);
 
                 }
 
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+
+        {
             e.printStackTrace();
         }
     }
+
 
     private void replySMS(Context context, String num) {
 
