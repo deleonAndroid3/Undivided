@@ -93,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
         disableCallBroadcastReceiver();
         disableSMSBroadcastReceiver();
 
+//        disableCallBroadcastReceiver();
+//        disableSMSBroadcastReceiver();
+
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();
 

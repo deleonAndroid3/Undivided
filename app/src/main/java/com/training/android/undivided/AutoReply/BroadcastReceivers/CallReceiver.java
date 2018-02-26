@@ -41,6 +41,7 @@ public class CallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         Log.i(logTag, "Received call intent");
 
         // instantiate variables for the use of MPhoneStateListener
@@ -60,6 +61,7 @@ public class CallReceiver extends BroadcastReceiver {
         else {
             Log.i(logTag,"MESSAGE ME!");
         }
+
         if (phoneListener == null) {
             dbManager = new DatabaseManager(context);
             phoneListener = new MPhoneStateListener(context);
@@ -85,6 +87,7 @@ public class CallReceiver extends BroadcastReceiver {
         private MPhoneStateListener(Context c) {
             mContext = c;
         }
+
         @Override
         public void onCallStateChanged(int state,String incomingNumber){
             super.onCallStateChanged(state, incomingNumber);

@@ -170,29 +170,29 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         // OLD DISABLE ATTACHTOWINDOW
         onAttachedToWindow();
 
-        //Broadcast with smartlock
-//        ComponentName mDeviceAdmin;
-//        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-//        mDeviceAdmin = new ComponentName(SafeMode.this, MainActivity.class);
-//
-//        if (myDevicePolicyManager.isDeviceOwnerApp(SafeMode.this.getPackageName())) {
-//            // Device owner
-//            String[] packages = {SafeMode.this.getPackageName()};
-//            myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
-//        } else {
-//            Log.d("INFO", "IS NOT APP OWNER");
-//        }
-//
-//        if (myDevicePolicyManager.isLockTaskPermitted(SafeMode.this.getPackageName())) {
-//            // Lock allowed
-//            // NOTE: locking device also disables notification
-//            startLockTask();
-//        } else {
-//            Log.d("INFO", "lock not permitted");
-//            startLockTask();
-//            enableCallBroadcastReceiver();
-//            enableSMSBroadcastReceiver();
-//        }
+//        Broadcast with smartlock
+        ComponentName mDeviceAdmin;
+        DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        mDeviceAdmin = new ComponentName(SafeMode.this, MainActivity.class);
+
+        if (myDevicePolicyManager.isDeviceOwnerApp(SafeMode.this.getPackageName())) {
+            // Device owner
+            String[] packages = {SafeMode.this.getPackageName()};
+            myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
+        } else {
+            Log.d("INFO", "IS NOT APP OWNER");
+        }
+
+        if (myDevicePolicyManager.isLockTaskPermitted(SafeMode.this.getPackageName())) {
+            // Lock allowed
+            // NOTE: locking device also disables notification
+            startLockTask();
+        } else {
+            Log.d("INFO", "lock not permitted");
+            startLockTask();
+            enableCallBroadcastReceiver();
+            enableSMSBroadcastReceiver();
+        }
 
         imgView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -327,7 +327,6 @@ public class SafeMode extends AppCompatActivity implements android.speech.tts.Te
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
 
 //            this.getWindow().setType(WindowManager.LayoutParams.TYPE_KEYGUARD_DIALOG);
 //            super.onAttachedToWindow();
