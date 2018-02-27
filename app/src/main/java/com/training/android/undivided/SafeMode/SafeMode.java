@@ -281,8 +281,6 @@ public class SafeMode extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
-
 //    public void addHistory(String start, String end){
 //
 //        DriveModel dm = new DriveModel();
@@ -318,73 +316,11 @@ public class SafeMode extends AppCompatActivity {
         super.onDestroy();
     }
 
-//    @Override
-//    public void onInit(int i) {
-//        if (i == android.speech.tts.TextToSpeech.SUCCESS) {
-//
-//            int result = myTTS.setLanguage(Locale.US);
-//
-//            // tts.setPitch(5); // set pitch level
-//
-//            // tts.setSpeechRate(2); // set speech speed rate
-//
-//            if (result == android.speech.tts.TextToSpeech.LANG_MISSING_DATA
-//                    || result == android.speech.tts.TextToSpeech.LANG_NOT_SUPPORTED) {
-//                Log.e("TTS", "Language is not supported");
-//            } else {
-//                button.setEnabled(true);
-//            }
-//
-//        } else {
-//            Log.e("TTS", "Initilization Failed");
-//        }
-//    }
-
     private void initializeSMSReceiver() {
 
         smsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-//                speaker.allow(true);
-//                speaker.speak(getString(R.string.start_speaking));
-//                Bundle bundle = intent.getExtras();
-//                if (bundle != null) {
-//                    Object[] pdus = (Object[]) bundle.get("pdus");
-//                    for (int i = 0; i < pdus.length; i++) {
-//                        byte[] pdu = (byte[]) pdus[i];
-//                        SmsMessage message = SmsMessage.createFromPdu(pdu);
-//                        String text = message.getDisplayMessageBody();
-//                        String sender = getContactName(message.getOriginatingAddress());
-//
-//                        speaker.pause(LONG_DURATION);
-//                        speaker.speak("You have a new message from" + sender + "!");
-//                        speaker.pause(LONG_DURATION);
-//                        speaker.speak(text);
-//                        speaker.speak("Do you want to reply to?" + sender + "!");
-//
-//
-//                        Intent replyIntent = new Intent(TextToSpeech.this, SpeechToText.class);
-//                        startActivity(replyIntent);
-//
-//                         Intent reIntent = getIntent();
-//
-//                      if( reIntent.getStringExtra("reply").equals("yes") ){
-//                                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//
-//                                        checkSMSPermission();
-//                                        if (ContextCompat.checkSelfPermission(TextToSpeech.this, Manifest.permission.SEND_SMS)
-//                                                == PackageManager.PERMISSION_GRANTED) {
-//                                            SmsManager smsManager = SmsManager.getDefault();
-//                                            smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
-//                                        }
-//                                    } else {
-//                                        SmsManager smsManager = SmsManager.getDefault();
-//                                        smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
-//                                    }
-//                        }
-//
-//                    }
-//                }
 
                 String msg_for_me = intent.getStringExtra("sms_event");
                 MyApp.number = intent.getStringExtra("com.training.android.undivided.LivetoText.number");
