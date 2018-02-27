@@ -92,23 +92,30 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         super.onDestroy();
     }
 
-    private void unbindService() {
+    private void bindService() {
         SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
         if(sharedPrefs.getBoolean("status",true) == false)
+            return ;
+
+        Intent i = new Intent(getApplicationContext(),BackgroundService.class);
+        bindService(i,sc,BIND_AUTO_CREATE);
+
+        Log.i("SERVICE BINDER","SERVICE BINDED.");
+    }
+
+    private void unbindService() {
+        SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
+        if(sharedPrefs.getBoolean("status",true) == true)
             return;
-        Intent i = new Intent(getApplicationContext(), LocationServices.class);
-        unbindService(sc);
-        status=false;
+//        Intent i = new Intent(getApplicationContext(), BackgroundService.class);
+//        unbindService(sc);
 
         Log.i("SERVICE BINDER","SERVICE UNBINDED.");
     }
 
     @Override
     public void onBackPressed() {
-        if(status==false)
             super.onBackPressed();
-        else
-            moveTaskToBack(true);
     }
 
     public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -274,8 +281,6 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
 
 
                         unbindService();
-
-
                     }
 
 
@@ -358,19 +363,6 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             }
         });
     }
-
-    private void bindService() {
-        SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
-        if(sharedPrefs.getBoolean("status",true) == true)
-            return ;
-
-        Intent i = new Intent(getApplicationContext(),BackgroundService.class);
-        bindService(i,sc,BIND_AUTO_CREATE);
-
-
-        Log.i("SERVICE BINDER","SERVICE BINDED.");
-    }
-
 
     @Override
     public void onConnected(Bundle bundle) {

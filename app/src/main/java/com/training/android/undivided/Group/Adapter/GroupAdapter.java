@@ -67,7 +67,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
                 i.putExtra("2", listgm.get(position).getRule2());
                 i.putExtra("3", listgm.get(position).getRule3());
                 i.putExtra("4", listgm.get(position).getRule4());
-                i.putExtra("5", listgm.get(position).getRule5());
 
                 context.startActivity(i);
             }

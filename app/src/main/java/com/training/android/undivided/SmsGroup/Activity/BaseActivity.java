@@ -26,8 +26,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.roughike.bottombar.BottomBar;
-
-
 import com.training.android.undivided.R;
 import com.training.android.undivided.SmsGroup.Interface.IBaseActivity;
 import com.training.android.undivided.SmsGroup.Interface.IDeletionListener;
@@ -54,51 +52,23 @@ import java.util.concurrent.ScheduledExecutorService;
 public abstract class BaseActivity extends AppCompatActivity implements IBaseActivity {
 
     public final static String SMS_STATUS = "SMS_STATUS";
-
-    public List<SmsTask> mTaskQueue = new ArrayList<>();
-
-    protected Toolbar toolbar = null;
-
-
-    protected DrawerLayout mDrawer = null;
-
-
-    protected ActionBarDrawerToggle drawerToggle;
-
-
-    protected NavigationView nvDrawer;
-
-
-    private int layoutId;
-
-    private List<Group> mGroupList;
-
-    private List<Message> mMessageList;
-
-    private List<SendConfiguration> mConfigurationList;
-
-
-    protected Fragment mFragment;
-
-
-    protected void setLayout(int resId) {
-        layoutId = resId;
-    }
-
-    protected SharedPreferences mSharedPref;
-
-    protected IDeletionListener mDeletionListener;
-
-    private ScheduledExecutorService mExecutor;
-
-    private ISmsStatusListener mStatusListener;
-
-    protected BottomBar mBottombar;
-
     public static int REQUEST_CODE = 0;
-
+    public List<SmsTask> mTaskQueue = new ArrayList<>();
+    protected Toolbar toolbar = null;
+    protected DrawerLayout mDrawer = null;
+    protected ActionBarDrawerToggle drawerToggle;
+    protected NavigationView nvDrawer;
+    protected Fragment mFragment;
+    protected SharedPreferences mSharedPref;
+    protected IDeletionListener mDeletionListener;
+    protected BottomBar mBottombar;
     protected ShareActionProvider mShareActionProvider;
-
+    private int layoutId;
+    private List<Group> mGroupList;
+    private List<Message> mMessageList;
+    private List<SendConfiguration> mConfigurationList;
+    private ScheduledExecutorService mExecutor;
+    private ISmsStatusListener mStatusListener;
     private BroadcastReceiver mSmsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -132,6 +102,9 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         }
     };
 
+    protected void setLayout(int resId) {
+        layoutId = resId;
+    }
 
     private void updateSmsMap(String id, MessageStatus status) {
         for (SmsTask task : mTaskQueue) {
@@ -168,7 +141,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         mDrawer = findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
         mDrawer.setDrawerListener(drawerToggle);
-     //   nvDrawer = findViewById(R.id.nvView);
+        //   nvDrawer = findViewById(R.id.nvView);
 
 //         Setup drawer view
         //setupDrawerContent(nvDrawer);
@@ -280,7 +253,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         return super.onOptionsItemSelected(item);
     }
 
-//     Make sure this is the method with just `Bundle` as the signature
+    //     Make sure this is the method with just `Bundle` as the signature
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -321,7 +294,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
 
         if (item != null) {
             mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-        //setSharedIntent();
+            //setSharedIntent();
         }
 
         return super.onCreateOptionsMenu(menu);

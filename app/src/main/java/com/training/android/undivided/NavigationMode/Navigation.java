@@ -3,9 +3,11 @@ package com.training.android.undivided.NavigationMode;
 import android.Manifest;
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -73,10 +76,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
+import com.training.android.undivided.BroadcastReceiver.Call_Receiver;
+import com.training.android.undivided.BroadcastReceiver.SMS_Receiver;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.MainActivity;
+import com.training.android.undivided.LivetoText.DictateandSend;
+import com.training.android.undivided.LivetoText.MyApp;
+import com.training.android.undivided.LivetoText.ReadOutAndSignal;
 import com.training.android.undivided.Models.TowingServicesModel;
 import com.training.android.undivided.R;
 import com.training.android.undivided.SafeMode.SafeMode;
@@ -105,6 +113,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final int REQUEST_CODE = 1234;
     private static final int REQUEST_CHECK_SETTINGS = 2;
     private static final int PROXIMITY_RADIUS = 10000;
     private static final int CHECK_CODE = 3;
@@ -135,6 +144,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private DBHandler dbHandler;
     private Speaker speaker;
     private long mBackPressed;
+    private BroadcastReceiver smsReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,6 +178,11 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             Log.d("INFO","lock not permitted");
             startLockTask();
         }
+        initializeSMSReceiver();
+        registerSMSReceiver();
+        enableCallBroadcastReceiver();
+        enableSMSBroadcastReceiver();
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -200,7 +215,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 downloadTask.execute(url);
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                start_time  = dateFormat.format(new Date());
+                start_time = dateFormat.format(new Date());
             }
         });
 
@@ -390,20 +405,11 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 }
             }
 
-
             if (mNextLatLng != null && mLastLatLng != null && start) {
 
                 if (!near && onroute) {
                     mNextLatLng = findNearestPoint(mNextLatLng, mPathPolygonPoints);
                 }
-
-                CameraPosition cameraPosition = new CameraPosition.Builder().
-                        target(mNextLatLng).
-                        zoom(17).
-                        build();
-//                            bearing((float) bearingBetweenLocations(mLastLatLng, mNextLatLng)).
-
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                 if (mCurrLocationMarker == null) {
                     mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
@@ -412,6 +418,15 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                             .anchor(0.5f, 1f)
                             .icon(getBitmapDescriptor(R.drawable.ic_navigation)));
                 } else {
+
+                    CameraPosition cameraPosition = new CameraPosition.Builder().
+                            target(mNextLatLng).
+                            zoom(17).
+                            bearing((float) bearingBetweenLocations(mLastLatLng, mNextLatLng)).
+                            build();
+
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
                     animateMarker(mLastLatLng, mNextLatLng, false);
 
                     distance = location.distanceTo(mLastLocation);
@@ -481,6 +496,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+
             case PLACE_AUTOCOMPLETE_REQUEST_CODE:
                 switch (resultCode) {
                     case RESULT_OK:
@@ -572,6 +588,20 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     startActivity(install);
                 }
                 break;
+
+            case REQUEST_CODE:
+
+                if (resultCode == RESULT_OK) {
+
+                    ArrayList<String> matches = data.getStringArrayListExtra(
+                            RecognizerIntent.EXTRA_RESULTS);
+
+                    if (matches.get(0).toLowerCase().compareTo("yes") == 0) {
+                        startActivity(new Intent(this, DictateandSend.class).putExtra("number", MyApp.number));
+                    } else {
+
+                    }
+                }
         }
     }
 
@@ -829,7 +859,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                 if (mCurrLocationMarker != null) {
                     mCurrLocationMarker.setPosition(new LatLng(lat, lng));
-                    rotateMarker(mCurrLocationMarker, Float.valueOf(String.valueOf(lat)), Float.valueOf(String.valueOf(lat)));
                 }
 
                 if (t < 1.0) {
@@ -955,6 +984,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     protected void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
+        disableSMSBroadcastReceiver();
+        disableCallBroadcastReceiver();
     }
 
     @Override
@@ -975,7 +1006,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             Toast.makeText(getBaseContext(), "Tap back button in order to exit", Toast.LENGTH_SHORT).show();
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            end_time  = dateFormat.format(new Date());
+            end_time = dateFormat.format(new Date());
 
             DriveModel dm = new DriveModel();
             dm.setDriveType("Navigation Mode");
@@ -986,8 +1017,73 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         }
 
 
-
         mBackPressed = System.currentTimeMillis();
+    }
+
+    /**
+     * Services and Broadcast Receiver
+     */
+
+    private void initializeSMSReceiver() {
+
+        smsReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                String msg_for_me = intent.getStringExtra("sms_event");
+                MyApp.number = intent.getStringExtra("com.training.android.undivided.LivetoText.number");
+                startService(new Intent(Navigation.this, ReadOutAndSignal.class).putExtra("noti", msg_for_me));
+
+                Intent intent2 = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+                intent2.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                intent2.putExtra(RecognizerIntent.EXTRA_PROMPT, "Reply Back?");
+                startActivityForResult(intent2, REQUEST_CODE);
+            }
+        };
+    }
+
+    private void registerSMSReceiver() {
+        IntentFilter intentFilter2 = new IntentFilter("android.intent.action.MAIN2");
+        registerReceiver(smsReceiver, intentFilter2);
+    }
+
+    public void enableCallBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, Call_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    public void enableSMSBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, SMS_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    public void disableCallBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, Call_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
+    }
+
+    public void disableSMSBroadcastReceiver() {
+        ComponentName receiver = new ComponentName(this, SMS_Receiver.class);
+        PackageManager pm = this.getPackageManager();
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
+
     }
 
     /**

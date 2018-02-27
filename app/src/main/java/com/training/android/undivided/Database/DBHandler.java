@@ -22,11 +22,9 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_GROUPNAME = "groupname";
     public static final String COLUMN_GROUPDESC = "groupdesc";
     public static final String COLUMN_GROUPMESSAGE = "groupmessage";
-    public static final String COLUMN_DECLINECALL = "declinecall";
     public static final String COLUMN_AUTOREPLYSMS = "autoreplysms";
     public static final String COLUMN_AUTOREPYCALLS = "autoreplycalls";
-    public static final String COLUMN_REPLYSMS = "replysms";
-    public static final String COLUMN_READSMS = "readsms";
+    public static final String COLUMN_READREPLYSMS = "readsms";
     public static final String COLUMN_NOTIFYIFCALL = "notifyifcallrecieved";
 
     public static final String DRIVE_HISTORY = "drivehistory";
@@ -52,8 +50,7 @@ public class DBHandler extends SQLiteOpenHelper {
             COLUMN_GROUPMESSAGE + " TEXT," +
             COLUMN_AUTOREPLYSMS + " INTEGER," +
             COLUMN_AUTOREPYCALLS + " INTEGER," +
-            COLUMN_REPLYSMS + " INTEGER," +
-            COLUMN_READSMS + " INTEGER," +
+            COLUMN_READREPLYSMS + " INTEGER," +
             COLUMN_NOTIFYIFCALL + " INTEGER)";
 
     String ContactQuery = "CREATE TABLE IF NOT EXISTS " +
@@ -146,9 +143,8 @@ public class DBHandler extends SQLiteOpenHelper {
         contentValues.put(COLUMN_GROUPMESSAGE, groupModel.getGroupMessage());
         contentValues.put(COLUMN_AUTOREPLYSMS, groupModel.getRule1());
         contentValues.put(COLUMN_AUTOREPYCALLS, groupModel.getRule2());
-        contentValues.put(COLUMN_REPLYSMS, groupModel.getRule3());
-        contentValues.put(COLUMN_READSMS, groupModel.getRule4());
-        contentValues.put(COLUMN_NOTIFYIFCALL, groupModel.getRule5());
+        contentValues.put(COLUMN_READREPLYSMS, groupModel.getRule3());
+        contentValues.put(COLUMN_NOTIFYIFCALL, groupModel.getRule4());
 
         db.insert(TABLE_CREATE_GROUP, null, contentValues);
         db.close();
@@ -217,9 +213,8 @@ public class DBHandler extends SQLiteOpenHelper {
         cv.put(COLUMN_GROUPMESSAGE, gm.getGroupMessage());
         cv.put(COLUMN_AUTOREPLYSMS, gm.getRule1());
         cv.put(COLUMN_AUTOREPYCALLS, gm.getRule2());
-        cv.put(COLUMN_REPLYSMS, gm.getRule3());
-        cv.put(COLUMN_READSMS, gm.getRule4());
-        cv.put(COLUMN_NOTIFYIFCALL, gm.getRule5());
+        cv.put(COLUMN_READREPLYSMS, gm.getRule3());
+        cv.put(COLUMN_NOTIFYIFCALL, gm.getRule4());
 
         db.update(TABLE_CREATE_GROUP, cv, COLUMN_GROUPNAME + " = '" + name + "'", null);
 
@@ -253,7 +248,6 @@ public class DBHandler extends SQLiteOpenHelper {
         ArrayList<GroupModel> list = new ArrayList<>();
         GroupModel gm;
 
-
         while (c.moveToNext()) {
             gm = new GroupModel();
             gm.setGroupName(c.getString(1));
@@ -263,8 +257,6 @@ public class DBHandler extends SQLiteOpenHelper {
             gm.setRule2(Integer.parseInt(c.getString(5)));
             gm.setRule3(Integer.parseInt(c.getString(6)));
             gm.setRule4(Integer.parseInt(c.getString(7)));
-            gm.setRule5(Integer.parseInt(c.getString(8)));
-
 
             list.add(gm);
         }
@@ -440,7 +432,6 @@ public class DBHandler extends SQLiteOpenHelper {
                 groupModel.setRule2(Integer.parseInt(c.getString(5)));
                 groupModel.setRule3(Integer.parseInt(c.getString(6)));
                 groupModel.setRule4(Integer.parseInt(c.getString(7)));
-                groupModel.setRule5(Integer.parseInt(c.getString(8)));
 
             }
         } finally {
@@ -472,7 +463,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 groupModel.setRule2(Integer.parseInt(c.getString(5)));
                 groupModel.setRule3(Integer.parseInt(c.getString(6)));
                 groupModel.setRule4(Integer.parseInt(c.getString(7)));
-                groupModel.setRule5(Integer.parseInt(c.getString(8)));
+
 
             }
         } finally {

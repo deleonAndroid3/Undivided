@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -35,6 +36,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.model.LatLng;
 import com.training.android.undivided.MainActivity;
+import com.training.android.undivided.SafeMode.SafeMode;
 import com.training.android.undivided.Settings;
 
 import java.util.concurrent.TimeUnit;
@@ -65,6 +67,7 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
     public static final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     public void onCreate(){
+
     Log.i("EXISTING", "THIS SERVICE HAS STARTED");
         Toast.makeText(this, "Service(Started)", Toast.LENGTH_SHORT).show();
         // to avoid cpu-blocking, handler for running the service
@@ -93,7 +96,7 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
     }
 
     public void launchApp(){
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, SafeMode.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         stopSelf();
@@ -192,18 +195,36 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
             /*
               GET SPEED
               */
-            getSpeed(location);
-
+            if(getSpeed(location)) {
+                stopSelf();
+                SharedPreferences sharedPrefs = getSharedPreferences("com.example.bgService", MODE_PRIVATE);
+                if(sharedPrefs.getBoolean("bgService",true) == true)
+                    stopLocationUpdates();
+//                locationManager.removeUpdates(locListener);
+//                locationManager = null;
+            }
             mLastLatLng = mNextLatLng;
         }
     }
-    public void getSpeed(Location location) {
+    public boolean getSpeed(Location location) {
 
         double currentSpeed = location.getSpeed() * 3.6;
-        if(currentSpeed>0){
+//        if(currentspeed > 10) {
+        // ^ v to check for speed and bugs
+            if(true){
+
+                SharedPreferences sharedPrefs = getSharedPreferences("com.example.bgService", MODE_PRIVATE);
+                if(sharedPrefs.getBoolean("bgService",false) == false) {
+                    launchApp();
+
+                    SharedPreferences.Editor editor = getSharedPreferences("com.example.bgService", MODE_PRIVATE).edit();
+                    editor.putBoolean("bgService", true);
+                    editor.commit();
+                }
             Log.i("LAUNCHED","the app is launched.");
-            launchApp();
+            return true;
         }
+        return false;
     }
 //    private void updateStatus() {
 //        if(Settings.p==0) {

@@ -42,13 +42,13 @@ public class Call_Receiver extends BroadcastReceiver {
         SharedPreferences thresholdPrefs = context.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
         SharedPreferences thresholdCounterPrefs = context.getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE);
 
-        if(!(thresholdPrefs.getString("threshold", String.valueOf(0)).equals(thresholdCounterPrefs.getString("thresholdCounter"
-                , String.valueOf(0))))) {
+        if(!(thresholdPrefs.getInt("threshold", 0) == (thresholdCounterPrefs.getInt("thresholdCounter"
+                , 0)))) {
             SharedPreferences.Editor threshold_editor = context.getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE).edit();
-            threshold_editor.putString("thresholdCounter", String.valueOf(thresholdCounterPrefs.getString("thresholdCounter",
-                    String.valueOf(0)) + 1));
+            threshold_editor.putInt("thresholdCounter", thresholdCounterPrefs.getInt("thresholdCounter",
+                    0 )+ 1);
             threshold_editor.commit();
-            Log.i(logTag, "COUNTING" + thresholdCounterPrefs.getString("thresholdCounter", String.valueOf(0)));
+            Log.i(logTag, "COUNTING" + thresholdCounterPrefs.getInt("thresholdCounter", 0));
         }
         else {
             Log.i(logTag,"MESSAGE ME!");

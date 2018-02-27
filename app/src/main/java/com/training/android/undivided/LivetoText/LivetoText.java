@@ -1,8 +1,6 @@
 package com.training.android.undivided.LivetoText;
 
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Application;
 import android.app.KeyguardManager;
 import android.app.NotificationManager;
 import android.content.ActivityNotFoundException;
@@ -32,23 +30,20 @@ import java.util.ArrayList;
 
 public class LivetoText extends AppCompatActivity {
 
+    private static final int REQUEST_CODE = 1234;
     private static PowerManager.WakeLock fullWakeLock;
     private static PowerManager.WakeLock partialWakeLock;
-    protected void createWakeLocks(){
+    IntentFilter intentFilter = new IntentFilter("android.intent.action.MAIN");
+    IntentFilter intentFilter2 = new IntentFilter("android.intent.action.MAIN2");
+    private BroadcastReceiver smsReceiver;
+    private NotificationReceiver nReceiver;
+    private BroadcastReceiver smsReplier;
+
+    protected void createWakeLocks() {
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         fullWakeLock = powerManager.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "Loneworker - FULL WAKE LOCK");
         partialWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Loneworker - PARTIAL WAKE LOCK");
     }
-
-    private BroadcastReceiver smsReceiver;
-    private NotificationReceiver nReceiver;
-    private BroadcastReceiver smsReplier;
-    private static final int REQUEST_CODE =1234;
-
-
-    IntentFilter intentFilter= new IntentFilter("android.intent.action.MAIN");
-    IntentFilter intentFilter2 = new IntentFilter("android.intent.action.MAIN2");
-
 
     public void wakeDevice() {
         fullWakeLock.acquire();
@@ -71,7 +66,7 @@ public class LivetoText extends AppCompatActivity {
         nReceiver = new NotificationReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.training.android.undivided.LivetoText.newnoti");
-        registerReceiver(nReceiver,filter);
+        registerReceiver(nReceiver, filter);
 
         smsReceiver = new BroadcastReceiver() {
 
@@ -81,7 +76,7 @@ public class LivetoText extends AppCompatActivity {
                 wakeDevice();
                 String msg_for_me = intent.getStringExtra("sms_event");
 
-                MyApp.number=intent.getStringExtra("com.training.android.undivided.LivetoText.number");
+                MyApp.number = intent.getStringExtra("com.training.android.undivided.LivetoText.number");
 
                 VoiceNotiAndSignal(msg_for_me);
             }
@@ -89,55 +84,46 @@ public class LivetoText extends AppCompatActivity {
 
         this.registerReceiver(this.smsReceiver, intentFilter2);
 
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-
-
-
-
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
         PhoneStateListener callStateListener = new PhoneStateListener() {
-            public void onCallStateChanged(int state, String incomingNumber)
-            {
+            public void onCallStateChanged(int state, String incomingNumber) {
 
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-                if(state==TelephonyManager.CALL_STATE_RINGING && prefs.getBoolean("call", true))
-                {		 final String number = incomingNumber;
+                if (state == TelephonyManager.CALL_STATE_RINGING && prefs.getBoolean("call", true)) {
+                    final String number = incomingNumber;
 
 
                     try {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Intent i = new Intent(getApplicationContext(),IncomingCall.class);
+                                Intent i = new Intent(getApplicationContext(), IncomingCall.class);
                                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 i.putExtra("phone", number);
                                 startActivity(i);
                             }
-                        },1000);
-                    }
-                    catch (Exception e) {
+                        }, 1000);
+                    } catch (Exception e) {
 
                     }
                     //StartVoiceMessage(number);
                 }
 
 
-                if(state==TelephonyManager.CALL_STATE_OFFHOOK)
-                {
+                if (state == TelephonyManager.CALL_STATE_OFFHOOK) {
                     //Toast.makeText(getApplicationContext(),"Phone is Currently in A call", Toast.LENGTH_LONG).show();
                 }
 
 
-                if(state==TelephonyManager.CALL_STATE_IDLE)
-                {
+                if (state == TelephonyManager.CALL_STATE_IDLE) {
                     //Toast.makeText(getApplicationContext(),"phone is neither ringing nor in a call", Toast.LENGTH_LONG).show();
                 }
             }
         };
 
 
-
-        telephonyManager.listen(callStateListener,PhoneStateListener.LISTEN_CALL_STATE);
+        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
 
         smsReplier = new BroadcastReceiver() {
@@ -153,18 +139,17 @@ public class LivetoText extends AppCompatActivity {
         };
 
         this.registerReceiver(this.smsReplier, intentFilter);
-        if(MyApp.flag==0){
-            Intent intent=new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
-            try{
+        if (MyApp.flag == 0) {
+            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            try {
                 startActivity(intent);
                 Toast.makeText(getApplicationContext(), "Please tick the above option to use this app", Toast.LENGTH_LONG).show();
-            }
-            catch(ActivityNotFoundException e){
+            } catch (ActivityNotFoundException e) {
                 Toast.makeText(getApplicationContext(),
                         "This application is not supported by your phone",
                         Toast.LENGTH_LONG).show();
             }
-            MyApp.flag=1;
+            MyApp.flag = 1;
         }
     }
 
@@ -173,7 +158,7 @@ public class LivetoText extends AppCompatActivity {
 //
 //	      String phoneNo = txtphoneNo.getText().toString();
 //	      String message = txtMessage.getText().toString();
-        Toast.makeText(getApplicationContext(),"Attempting to send message to: "+ phoneNo + " with details: "+message,
+        Toast.makeText(getApplicationContext(), "Attempting to send message to: " + phoneNo + " with details: " + message,
                 Toast.LENGTH_SHORT).show();
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -188,14 +173,13 @@ public class LivetoText extends AppCompatActivity {
         }
     }
 
-    public void StartVoiceRec(){
+    public void StartVoiceRec() {
         wakeDevice();
         startVoiceRecognitionActivity();
     }
 
 
-    private void startVoiceRecognitionActivity()
-    {
+    private void startVoiceRecognitionActivity() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -205,33 +189,31 @@ public class LivetoText extends AppCompatActivity {
     }
 
 
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         partialWakeLock.acquire();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
 
             ArrayList<String> matches = data.getStringArrayListExtra(
                     RecognizerIntent.EXTRA_RESULTS);
             //Toast.makeText(getApplicationContext(), matches.get(0), Toast.LENGTH_SHORT).show();
-            if(matches.get(0).toLowerCase().compareTo("yes")==0){
+            if (matches.get(0).toLowerCase().compareTo("yes") == 0) {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                 //Toast.makeText(getApplicationContext(),"Sending SMS to "+MyApp.number, Toast.LENGTH_SHORT).show();
                 String userValue = prefs.getString("listPref", "1");
                 //Toast.makeText(getApplicationContext(),userValue, Toast.LENGTH_SHORT).show();
-                if (userValue.equals("1") ){
-                    sendSMSMessage(MyApp.number,prefs.getString("text", "default"));
-                }
-                else if (userValue.equals("2") ){
+                if (userValue.equals("1")) {
+                    sendSMSMessage(MyApp.number, prefs.getString("text", "default"));
+                } else if (userValue.equals("2")) {
 
-                    startActivity(new Intent(this,DictateandSend.class).putExtra("number",MyApp.number));
+                    startActivity(new Intent(this, DictateandSend.class).putExtra("number", MyApp.number));
                 }
-            }else{
+            } else {
 
             }
         }
@@ -239,17 +221,17 @@ public class LivetoText extends AppCompatActivity {
     }
 
 
-    public void LaunchConfigureScreen(View v){
-        startActivity(new Intent(this,ConfigureScreen.class));
+    public void LaunchConfigureScreen(View v) {
+        startActivity(new Intent(this, ConfigureScreen.class));
     }
 
-    public void StartServices(View v){
+    public void StartServices(View v) {
         //Toast.makeText(getApplicationContext(), "Starting Services", Toast.LENGTH_SHORT).show();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         if (prefs.getBoolean("call", true)) {
             // etc
         }
-        if (prefs.getBoolean("sms",true)) {
+        if (prefs.getBoolean("sms", true)) {
             this.startService(new Intent(this, SmsListener.class));
         }
     }
@@ -264,11 +246,11 @@ public class LivetoText extends AppCompatActivity {
         return false;
     }
 
-    public void Exit(View v){
-        if(isMyServiceRunning(NotiListener.class)==true){
+    public void Exit(View v) {
+        if (isMyServiceRunning(NotiListener.class) == true) {
             stopService(new Intent(this, NotiListener.class));
         }
-        if(isMyServiceRunning(SmsListener.class)==true){
+        if (isMyServiceRunning(SmsListener.class) == true) {
             stopService(new Intent(this, SmsListener.class));
         }
 
@@ -280,18 +262,18 @@ public class LivetoText extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-      //  getMenuInflater().inflate(R.menu.hands_free, menu);
+        //  getMenuInflater().inflate(R.menu.hands_free, menu);
         return true;
     }
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         String smspref = prefs.getString("listPref", "1");
-        if(fullWakeLock.isHeld()){
+        if (fullWakeLock.isHeld()) {
             fullWakeLock.release();
         }
-        if(partialWakeLock.isHeld()){
+        if (partialWakeLock.isHeld()) {
             partialWakeLock.release();
         }
         //Toast.makeText(getApplicationContext(),"Call:"+String.valueOf(prefs.getBoolean("call", true))+"SMS:"+String.valueOf(prefs.getBoolean("sms", true))+"NOTI:"+String.valueOf(prefs.getBoolean("noti", true))+"CHECK:"+smspref, Toast.LENGTH_SHORT).show();
@@ -299,10 +281,10 @@ public class LivetoText extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if(isMyServiceRunning(NotiListener.class)==true){
+        if (isMyServiceRunning(NotiListener.class) == true) {
             stopService(new Intent(this, NotiListener.class));
         }
-        if(isMyServiceRunning(SmsListener.class)==true){
+        if (isMyServiceRunning(SmsListener.class) == true) {
             stopService(new Intent(this, SmsListener.class));
         }
 //        unregisterReceiver(smsReceiver);
@@ -310,38 +292,37 @@ public class LivetoText extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public void MockNoti(View v){
+    public void MockNoti(View v) {
         NotificationManager nManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder ncomp = new NotificationCompat.Builder(this);
         ncomp.setContentTitle("My Notification");
         ncomp.setContentText("Notification Listener Service Example");
         ncomp.setTicker("Notification Listener Service Example");
         ncomp.setSmallIcon(R.drawable.undivided_drivemode_logo);
-        nManager.notify((int)System.currentTimeMillis(),ncomp.build());
+        nManager.notify((int) System.currentTimeMillis(), ncomp.build());
     }
 
-    public void VoiceNoti(String value){
+    public void VoiceNoti(String value) {
         //Toast.makeText(getApplicationContext(), "Starting Voice", Toast.LENGTH_SHORT).show();
-        this.startService(new Intent(this,ReadOut.class).putExtra("noti", "You Have a new Notification "+value));
+        this.startService(new Intent(this, ReadOut.class).putExtra("noti", "You Have a new Notification " + value));
     }
 
-    public void VoiceNotiAndSignal(String value){
+    public void VoiceNotiAndSignal(String value) {
         //Toast.makeText(getApplicationContext(), "Starting Voice", Toast.LENGTH_SHORT).show();
-        this.startService(new Intent(this,ReadOutAndSignal.class).putExtra("noti", value));
+        this.startService(new Intent(this, ReadOutAndSignal.class).putExtra("noti", value));
     }
 
-    class NotificationReceiver extends BroadcastReceiver{
+    class NotificationReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String temp = intent.getStringExtra("notification_event");
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-            if(prefs.getBoolean("noti", true)){
+            if (prefs.getBoolean("noti", true)) {
                 //Toast.makeText(getApplicationContext(), temp, Toast.LENGTH_SHORT).show();
-                if(MyApp.smsflag!=0){
-                    MyApp.smsflag=0;
-                }
-                else{
+                if (MyApp.smsflag != 0) {
+                    MyApp.smsflag = 0;
+                } else {
                     VoiceNoti(temp);
                 }
             }
