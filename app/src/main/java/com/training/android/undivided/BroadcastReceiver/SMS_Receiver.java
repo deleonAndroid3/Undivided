@@ -26,12 +26,13 @@ public class SMS_Receiver extends BroadcastReceiver {
     private String phoneNumber;
     private SmsMessage sms;
     private String strMessage = "";
+    private int count = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         dbHandler = new DBHandler(context);
         Bundle bundle = intent.getExtras();
-
+        count = 0;
         try {
 
             Object[] pdusObj = (Object[]) bundle.get("pdus");
@@ -49,22 +50,32 @@ public class SMS_Receiver extends BroadcastReceiver {
 
             if (gmodel.getRule1() == 1) {
                 replySMS(context, phoneNumber);
-                Toast.makeText(context, "Send Reply to " + phoneNumber, Toast.LENGTH_SHORT).show();
             }
 
-            if (gmodel.getRule3() == 1) {
+            if (gmodel.getRule3() == 1 && count == 0) {
+                count = 1;
                 String ew = "";
                 for (int h = 3; h < sms.getOriginatingAddress().length(); h++) {
                     ew = ew + sms.getOriginatingAddress().charAt(h) + " ";
                 }
 
                 String send = getContactName(getApplicationContext(), sms.getOriginatingAddress());
-
-                if (send == null) {
+                String number="09173146873";
+                if (send == null ) {
                     strMessage += "SMS From: " + ew;
-                } else {
+                } else{
                     strMessage += "SMS From: " + send;
                 }
+               if(send==number){
+                   strMessage += "It says";
+                   strMessage += " : ";
+                   strMessage += sms.getMessageBody();
+                   strMessage += "\n";
+                   strMessage += " Do you wish to reply?";
+
+               }
+
+
                 strMessage += "It says";
                 strMessage += " : ";
                 strMessage += sms.getMessageBody();
@@ -76,9 +87,7 @@ public class SMS_Receiver extends BroadcastReceiver {
                 in.putExtra("com.training.android.undivided.LivetoText.number", sms.getOriginatingAddress());
                 context.sendBroadcast(in);
 
-            } else
-                Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show();
-
+            }
 
         } catch (Exception e)
 
@@ -90,7 +99,7 @@ public class SMS_Receiver extends BroadcastReceiver {
 
     private void replySMS(Context context, String num) {
 
-        Toast.makeText(context, gmodel.getGroupMessage(), Toast.LENGTH_SHORT).show();
+
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(num, null, gmodel.getGroupMessage(), null, null);

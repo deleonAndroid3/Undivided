@@ -92,23 +92,30 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         super.onDestroy();
     }
 
-    private void unbindService() {
+    private void bindService() {
         SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
         if(sharedPrefs.getBoolean("status",true) == false)
+            return ;
+
+        Intent i = new Intent(getApplicationContext(),BackgroundService.class);
+        bindService(i,sc,BIND_AUTO_CREATE);
+
+        Log.i("SERVICE BINDER","SERVICE BINDED.");
+    }
+
+    private void unbindService() {
+        SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
+        if(sharedPrefs.getBoolean("status",true) == true)
             return;
-        Intent i = new Intent(getApplicationContext(), LocationServices.class);
-        unbindService(sc);
-        status=false;
+//        Intent i = new Intent(getApplicationContext(), BackgroundService.class);
+//        unbindService(sc);
 
         Log.i("SERVICE BINDER","SERVICE UNBINDED.");
     }
 
     @Override
     public void onBackPressed() {
-        if(status==false)
             super.onBackPressed();
-        else
-            moveTaskToBack(true);
     }
 
     public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -147,14 +154,11 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
-
+//        int val = thresholdPrefs.getInt("threshold", 1);
+//        String valString = val + "";
         spinner.setSelection(adapter.getPosition(thresholdPrefs.getString("threshold", String.valueOf(1))));
-//        //THRESHOLD
-//        mEtThreshold = findViewById(R.id.etThreshold);
-//
-//        mEtThreshold.setText(thresholdPrefs.getString("threshold", String.valueOf(0)));
-//        //
-        mAutoStartSwitch = (Switch) findViewById(R.id.swAutoStart);
+
+        mAutoStartSwitch = findViewById(R.id.swAutoStart);
         //SET STATUS
         SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
         mAutoStartSwitch.setChecked(sharedPrefs.getBoolean("status", false));
@@ -170,14 +174,7 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             }, 1000);
         }
 
-//        /*if (tgpref = true) //if (tgpref) may be enough, not sure
-//        {
-//            mAutoStartSwitch.setChecked(true);
-//        }
-//        else
-//        {
-//            mAutoStartSwitch.setChecked(false);
-//        }*/
+
 
 
         onClickListeners();
@@ -186,6 +183,8 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.threshold", MODE_PRIVATE).edit();
+//                String spinVal = spinner.getSelectedItem().toString();
+//                int intVal = Integer.parseInt(spinVal);
                 editor.putString("threshold", String.valueOf(spinner.getSelectedItem()));
                 editor.commit();
             }
@@ -196,24 +195,6 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             }
         });
 
-//        mEtThreshold.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                SharedPreferences.Editor editor = getSharedPreferences("com.example.threshold", MODE_PRIVATE).edit();
-//                editor.putString("threshold", String.valueOf(mEtThreshold.getText()));
-//                editor.commit();
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
     }
 
     public boolean checkLocationPermission() {
@@ -274,8 +255,6 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
 
 
                         unbindService();
-
-
                     }
 
 
@@ -358,19 +337,6 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             }
         });
     }
-
-    private void bindService() {
-        SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
-        if(sharedPrefs.getBoolean("status",true) == true)
-            return ;
-
-        Intent i = new Intent(getApplicationContext(),BackgroundService.class);
-        bindService(i,sc,BIND_AUTO_CREATE);
-
-
-        Log.i("SERVICE BINDER","SERVICE BINDED.");
-    }
-
 
     @Override
     public void onConnected(Bundle bundle) {

@@ -37,7 +37,7 @@
 
         <item
             android:id="@+id/drawer_drive_history"
-            android:icon="@drawable/call"
+            android:icon="@drawable/ic_history_black_24dp"
             android:title="Drive History"/>
 
     </group>

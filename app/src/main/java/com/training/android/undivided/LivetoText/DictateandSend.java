@@ -31,6 +31,7 @@ public class DictateandSend extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Dialog);
         this.setContentView(R.layout.dictate);
+
         check = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -84,8 +85,7 @@ public class DictateandSend extends Activity {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK)
         {
 
-            ArrayList<String> matches = data.getStringArrayListExtra(
-                    RecognizerIntent.EXTRA_RESULTS);
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
             sendSMSMessage(MyApp.number,matches.get(0).toLowerCase());
 

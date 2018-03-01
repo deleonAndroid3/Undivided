@@ -1,11 +1,13 @@
 package com.training.android.undivided.Group;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.ContactsContract;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -33,6 +35,7 @@ public class GroupContactPicker extends AppCompatActivity {
     private SparseBooleanArray checked;
     private Intent name;
     private DBHandler db;
+    private AlertDialog mAlertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -166,7 +169,7 @@ public class GroupContactPicker extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.contactpicker_action_done:
-                doneSelected();
+                showFinish();
                 return true;
             case android.R.id.home:
                 onBackPressed();
@@ -179,6 +182,28 @@ public class GroupContactPicker extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
+    }
+
+    public void showFinish() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Save Contacts?")
+                .setMessage("Save Contacts to Group")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        doneSelected();
+                    }
+                }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        mAlertDialog = builder.create();
+        mAlertDialog.show();
 
     }
 

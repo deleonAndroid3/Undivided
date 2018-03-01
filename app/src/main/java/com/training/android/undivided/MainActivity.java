@@ -2,9 +2,11 @@ package com.training.android.undivided;
 
 import android.Manifest;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,6 +40,7 @@ import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.ViewGroup;
 import com.training.android.undivided.Models.EmergencyContactsModel;
 import com.training.android.undivided.Models.TowingServicesModel;
+import com.training.android.undivided.SafeMode.HomeKeyLocker;
 import com.training.android.undivided.NavigationMode.Navigation;
 import com.training.android.undivided.SafeMode.SafeMode;
 import com.training.android.undivided.SmsGroup.Activity.SmsGroupActivity;
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<EmergencyContactsModel> emcList;
     private boolean flag = false;
     Runnable run;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -71,6 +75,11 @@ public class MainActivity extends AppCompatActivity {
 
         Stetho.initializeWithDefaults(this);
         initializeBubblesManager();
+
+//        AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+//        if (audiomanage != null) {
+//            audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+//        }
 
         disableCallBroadcastReceiver();
         disableSMSBroadcastReceiver();
@@ -288,7 +297,6 @@ public class MainActivity extends AppCompatActivity {
                         menuItem.setChecked(false);
                         startActivity(new Intent(MainActivity.this, ViewGroup.class));
                         break;
-
                     case R.id.drawer_group_sms:
                         menuItem.setChecked(false);
                         startActivity(new Intent(MainActivity.this, SmsGroupActivity.class));

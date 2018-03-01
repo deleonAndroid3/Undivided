@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -17,9 +18,12 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -29,7 +33,7 @@ import com.training.android.undivided.BroadcastReceiver.Call_Receiver;
 import com.training.android.undivided.BroadcastReceiver.SMS_Receiver;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.DriveHistory.Model.DriveModel;
-import com.training.android.undivided.Emergency;
+import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.LivetoText.DictateandSend;
 import com.training.android.undivided.LivetoText.MyApp;
 import com.training.android.undivided.LivetoText.ReadOutAndSignal;
@@ -49,9 +53,9 @@ public class SafeMode extends AppCompatActivity {
     private final int CHECK_CODE = 0x1;
     private final int LONG_DURATION = 5000;
     private final int SHORT_DURATION = 1200;
-    DBHandler dbHandler;
     DrawerLayout drawerLayout;
     ImageView imgView;
+    ArrayList<ContactsModel> cmodel;
     private TextToSpeech myTTS;
     private Button button;
     private Speaker speaker;
@@ -59,7 +63,9 @@ public class SafeMode extends AppCompatActivity {
     private String end_time = "0";
     private boolean speaker_flag = false;
     private boolean mBool = true;
-
+    private DBHandler dbHandler;
+    private String message;
+    private String msg;
     private BroadcastReceiver smsReceiver;
 
     @Override
@@ -68,65 +74,23 @@ public class SafeMode extends AppCompatActivity {
         setContentView(R.layout.activity_safe_mode);
 
         dbHandler = new DBHandler(this);
+        cmodel = new ArrayList<>();
+
+        message = dbHandler.getMessage("Emergency").getGroupMessage();
+
+        Intent startingIntent = this.getIntent();
+        msg = startingIntent.getStringExtra("MESSAGE");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         start_time = dateFormat.format(new Date());
 
-//        myTTS = new TextToSpeech(this, this);
-//        speaker = new Speaker(this);
-//        button = findViewById(R.id.btnTTS);
-
-//        Intent checkTTSIntent = new Intent();
-//
-//        checkTTSIntent
-//                .setAction(android.speech.tts.TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-//        startActivityForResult(checkTTSIntent, CHECK_CODE);
-//
-//        Thread logoTimer = new Thread() {
-//            public void run() {
-//                try {
-//                    speaker.allow(true);
-//                    speaker.speak("Good Morning!");
-//
-//                }
-//
-//                finally {
-//                    finish();
-//                }
-//            }
-//
-//        };
-//        logoTimer.start();
-
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                speaker.allow(true);
-//                speaker.speak(getString(R.string.start_speaking));
-////                myTTS.speak("Hello, Good Morning!", TextToSpeech.QUEUE_FLUSH, null);
-//                Log.d("SPEAKER SPOKE", "The speaker spoke.");
-//            }
-//        });
-
-//        toggleListener = new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-//                if(isChecked){
-//                    speaker.allow(true);
-//                    speaker.speak(getString(R.string.start_speaking));
-//                    Log.d("SPEAKER SPOKE", "The speaker spoke.");
-//                }else{
-//                    speaker.speak(getString(R.string.stop_speaking));
-//                    speaker.allow(false);
-//                }
-//            }
-//        };
-//        toggle.setOnCheckedChangeListener(toggleListener);
-
-
         SharedPreferences.Editor threshold_editor = getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE).edit();
         threshold_editor.putString("thresholdCounter", String.valueOf(0));
-        threshold_editor.commit();
+        threshold_editor.apply();
+
+        SharedPreferences.Editor threshold_editorMK2 = getSharedPreferences("com.example.selectedMode", MODE_PRIVATE).edit();
+        threshold_editor.putString("selectedMode", "SafeMode");
+        threshold_editor.apply();
 
 
         new Runnable() {
@@ -144,6 +108,11 @@ public class SafeMode extends AppCompatActivity {
         drawerLayout.getBackground().setAlpha(80);
 
         Toast.makeText(SafeMode.this, "Safe Mode Selected", Toast.LENGTH_SHORT).show();
+
+        // OLD DISABLE ATTACHTOWINDOW
+        onAttachedToWindow();
+
+//        Broadcast with smartlock
         ComponentName mDeviceAdmin;
         DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mDeviceAdmin = new ComponentName(SafeMode.this, MainActivity.class);
@@ -175,7 +144,6 @@ public class SafeMode extends AppCompatActivity {
                 disableSMSBroadcastReceiver();
                 disableCallBroadcastReceiver();
 
-//                speakerStop();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 end_time = dateFormat.format(new Date());
 
@@ -186,6 +154,10 @@ public class SafeMode extends AppCompatActivity {
 
                 dbHandler.addDrive(dm);
 
+                SharedPreferences.Editor editor = getSharedPreferences("com.example.bgService", MODE_PRIVATE).edit();
+                editor.putBoolean("bgService", false);
+                editor.commit();
+
                 Intent i = new Intent(SafeMode.this, MainActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
@@ -195,67 +167,64 @@ public class SafeMode extends AppCompatActivity {
         imgView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Intent i = new Intent(SafeMode.this, Emergency.class);
-                startActivity(i);
+
+                cmodel = dbHandler.getEmergencyContacts();
+
+                 int i = 0;
+
+                while (i != cmodel.size()) {
+                    try {
+                        SmsManager smsManager = SmsManager.getDefault();
+                        smsManager.sendTextMessage(cmodel.get(i).getContactNumber(), null, message, null, null);
+
+                        Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "Failed.", Toast.LENGTH_SHORT).show();
+                    }
+                    i++;
+                }
+
+                String phone = "+639234152360";
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                startActivity(intent);
+
+
+//                Intent i = new Intent(SafeMode.this, Emergency.class);
+//                startActivity(i);
                 return false;
             }
         });
 
-//        speakerStart();
-        checkTTS();
         initializeSMSReceiver();
         registerSMSReceiver();
-//        toggle.toggle();
-//        try {
-//            speaker.allow(true);
-//            Log.e("SPEAK ERROR", "Error on speaker.speak");
-//            speaker.speak(getString(R.string.start_speaking));
-//            Log.d("SPEAKER SPOKE", "The speaker spoke.");
-//        }catch (Exception e){
-//            Log.e("SPEAKER ERROR", "Error on starting speaker.");
-//        }
-
-//        new Runnable() {
-//            @Override
-//            public void run() {
-//        try {
-//            speaker.allow(true);
-//            Log.e("SPEAK ERROR", "Error on speaker.speak");
-//            speaker.speak(getString(R.string.start_speaking));
-//            Log.d("SPEAKER SPOKE", "The speaker spoke.");
-//        }catch (Exception e){
-//            Log.e("SPEAKER ERROR", "Error on starting speaker.");
-//        }
-//            }
-//      }.run();
     }
 
-//    private void speakerStart(){
-//        if(speaker_flag == false) {
-//            speaker.allow(true);
-//            speaker.speak(getString(R.string.start_speaking));
-//            speaker_flag = true;
-//        } else {
-//            speakerStop();
-//        }
-//    }
-//
-//    private void speakerStop(){
-//        if(speaker_flag == true) {
-//            speaker.allow(false);
-//        } else {
-//            speakerStart();
-//        }
-//    }
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
 
-    private void checkTTS() {
-        Intent check = new Intent();
-        check.setAction(android.speech.tts.TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(check, CHECK_CODE);
+        if ((event.getKeyCode() == KeyEvent.KEYCODE_HOME)) {
+            Toast.makeText(this, "You pressed home button", Toast.LENGTH_SHORT).show();
+            return true;
+        } else
+            return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_HOME)) {
+            Toast.makeText(this, "You pressed the home button.", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        if ((keyCode == KeyEvent.KEYCODE_MENU)) {
+            Toast.makeText(this, "You pressed the menu button.", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == CHECK_CODE) {
             if (resultCode == android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 speaker = new Speaker(this);
@@ -276,24 +245,27 @@ public class SafeMode extends AppCompatActivity {
                 startActivity(new Intent(this, DictateandSend.class).putExtra("number", MyApp.number));
 
             } else {
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+
+
     }
 
-//    public void addHistory(String start, String end){
-//
-//        DriveModel dm = new DriveModel();
-//        dm.setDriveType("SafeMode");
-//        dm.setStart_time(start);
-//        dm.setEnd_time(end);
-//
-//        dbHandler.addDrive(dm);
-//    }
+    @Override
+    public void onAttachedToWindow() {
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+    }
 
     @Override
     public void onBackPressed() {
-        Log.i("Back Pressed", "Back button is disabled");
+        super.onBackPressed();
     }
 
     private String getContactName(String phone) {
@@ -307,12 +279,15 @@ public class SafeMode extends AppCompatActivity {
         }
     }
 
+    private void speakPullOver() {
+
+    }
+
     @Override
     protected void onDestroy() {
-        speaker.speak(getString(R.string.stop_speaking));
-        speaker.allow(false);
-        unregisterReceiver(smsReceiver);
-        speaker.destroy();
+//        speaker.speak(getString(R.string.stop_speaking));
+//        speaker.allow(false);
+//        speaker.destroy();
         super.onDestroy();
     }
 

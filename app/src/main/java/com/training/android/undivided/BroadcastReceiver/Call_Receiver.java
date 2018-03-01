@@ -3,6 +3,7 @@ package com.training.android.undivided.BroadcastReceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -11,8 +12,11 @@ import android.util.Log;
 import com.android.internal.telephony.ITelephony;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
+import com.training.android.undivided.TTS;
 
 import java.lang.reflect.Method;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -25,11 +29,17 @@ public class Call_Receiver extends BroadcastReceiver {
     private DBHandler dbHandler;
     private GroupModel gmodel;
     private int count = 0;
+    private int count1 = 0;
     private mPhoneStateListener phoneStateListener;
 
-    @Override
+    private String logTag = "Call_Receiver";
 
+    @Override
     public void onReceive(final Context context, final Intent intent) {
+
+        Log.i(logTag, "Received call intent");
+        count = 0;
+        count1 = 0;
 
         try {
             if (phoneStateListener == null) {
@@ -41,6 +51,11 @@ public class Call_Receiver extends BroadcastReceiver {
                 Method m = c.getDeclaredMethod("getITelephony");
                 m.setAccessible(true);
                 telephonyService = (ITelephony) m.invoke(tm);
+
+                //End Call
+                telephonyService.silenceRinger();
+                telephonyService.endCall();
+
                 tm.listen(phoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
             }
         } catch (Exception e) {
@@ -50,8 +65,39 @@ public class Call_Receiver extends BroadcastReceiver {
 
     }
 
-    private void replySMS(String num) {
+    private void Threshold(Context context, String incomingNumber) {
 
+
+        SharedPreferences thresholdPrefs = context.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
+        SharedPreferences thresholdCounterPrefs = context.getSharedPreferences("com.example.thresholdCounter" + incomingNumber, MODE_PRIVATE);
+
+
+        if (!(thresholdPrefs.getString("threshold", String.valueOf(0)).equals(thresholdCounterPrefs.getString("thresholdCounter"
+                + incomingNumber, String.valueOf(0))))) {
+
+            SharedPreferences.Editor threshold_editor = context.getSharedPreferences("com.example.thresholdCounter" + incomingNumber, MODE_PRIVATE).edit();
+            threshold_editor.putString("thresholdCounter" + incomingNumber, String.valueOf(Integer.parseInt(thresholdCounterPrefs.getString("thresholdCounter"
+                    + incomingNumber, String.valueOf(0))) + 1));
+            threshold_editor.commit();
+            Log.i(logTag, "COUNTING" + thresholdCounterPrefs.getString("thresholdCounter" + incomingNumber, String.valueOf(0)));
+        }
+
+        if (thresholdPrefs.getString("threshold", String.valueOf(0)).equals(thresholdCounterPrefs.getString("thresholdCounter"
+                + incomingNumber, String.valueOf(0)))) {
+            Log.i(logTag, "MESSAGE ME!");
+
+            SharedPreferences.Editor threshold_editor = context.getSharedPreferences("com.example.thresholdCounter"
+                    + incomingNumber, MODE_PRIVATE).edit();
+            threshold_editor.putString("thresholdCounter" + incomingNumber, String.valueOf(0));
+            threshold_editor.commit();
+
+            context.startService(new Intent(context, TTS.class));
+        }
+
+        count1 = 1;
+    }
+
+    private void replySMS(String num) {
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -75,22 +121,22 @@ public class Call_Receiver extends BroadcastReceiver {
         public void onCallStateChanged(int state, String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
 
-
             incomingNumber = incomingNumber.replace(" ", "");
             gmodel = dbHandler.getGroup(incomingNumber);
-
+// change here
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING:
-
-                    //End Call
-                    telephonyService.endCall();
-
-                    if (gmodel.getRule2() == 1 && gmodel != null && count == 0)
+                    if (gmodel.getRule2() == 1 && count == 0)
                         replySMS(incomingNumber);
 
+                    if (gmodel.getRule4() == 1 && count1 == 0)
+                        Threshold(mContext, incomingNumber);
                     break;
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+
             }
         }
     }
+
 }
 

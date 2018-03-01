@@ -50,7 +50,6 @@ public class SmsListener extends Service {
 
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(getApplicationContext(), "SmsListnerService", Toast.LENGTH_LONG).show();
 
         dbHandler = new DBHandler(getApplicationContext());
 
