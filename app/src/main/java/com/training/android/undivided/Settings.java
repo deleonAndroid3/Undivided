@@ -155,7 +155,7 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
 
         spinner.setAdapter(adapter);
 
-        spinner.setSelection(adapter.getPosition(thresholdPrefs.getString("threshold", String.valueOf(1))));
+        spinner.setSelection(adapter.getPosition(String.valueOf(thresholdPrefs.getInt("threshold", 1))));
 //        //THRESHOLD
 //        mEtThreshold = findViewById(R.id.etThreshold);
 //

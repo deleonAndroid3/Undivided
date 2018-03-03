@@ -80,7 +80,7 @@ public class SafeMode extends AppCompatActivity {
         start_time = dateFormat.format(new Date());
 
         SharedPreferences.Editor threshold_editor = getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE).edit();
-        threshold_editor.putString("thresholdCounter", String.valueOf(0));
+        threshold_editor.putInt("thresholdCounter", 0);
         threshold_editor.apply();
 
 

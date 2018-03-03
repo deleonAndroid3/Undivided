@@ -374,7 +374,6 @@ public class DBHandler extends SQLiteOpenHelper {
             if (cursor != null)
                 cursor.close();
         }
-
     }
 
     public boolean GroupNameExists(String name) {

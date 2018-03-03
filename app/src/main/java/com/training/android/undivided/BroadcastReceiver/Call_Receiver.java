@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -28,31 +29,22 @@ public class Call_Receiver extends BroadcastReceiver {
     private DBHandler dbHandler;
     private GroupModel gmodel;
     private int count = 0;
+    private int count1 = 0;
     private mPhoneStateListener phoneStateListener;
 
     private String logTag = "Call_Receiver";
+
 
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
         Log.i(logTag, "Received call intent");
 
-        TelephonyManager telephony = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        count = 0;
+        count1 = 0;
 
-        SharedPreferences thresholdPrefs = context.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
-        SharedPreferences thresholdCounterPrefs = context.getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE);
-
-        if(!(thresholdPrefs.getInt("threshold", 0) == (thresholdCounterPrefs.getInt("thresholdCounter"
-                , 0)))) {
-            SharedPreferences.Editor threshold_editor = context.getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE).edit();
-            threshold_editor.putInt("thresholdCounter", thresholdCounterPrefs.getInt("thresholdCounter",
-                    0 )+ 1);
-            threshold_editor.commit();
-            Log.i(logTag, "COUNTING" + thresholdCounterPrefs.getInt("thresholdCounter", 0));
-        }
-        else {
-            Log.i(logTag,"MESSAGE ME!");
-        }
+        AudioManager mode = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
 
         try {
             if (phoneStateListener == null) {
@@ -71,6 +63,8 @@ public class Call_Receiver extends BroadcastReceiver {
         }
 
 
+        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
     }
 
     private void replySMS(String num) {
@@ -86,6 +80,39 @@ public class Call_Receiver extends BroadcastReceiver {
 
     }
 
+    private void Threshold(Context context, String incomingNumber) {
+
+        SharedPreferences thresholdPrefs = context.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
+        SharedPreferences thresholdCounterPrefs = context.getSharedPreferences("com.example.thresholdCounter" + incomingNumber, MODE_PRIVATE);
+
+
+        if (!(thresholdPrefs.getString("threshold", String.valueOf(0)).equals(thresholdCounterPrefs.getString("thresholdCounter"
+                + incomingNumber, String.valueOf(0))))) {
+
+            SharedPreferences.Editor threshold_editor = context.getSharedPreferences("com.example.thresholdCounter" + incomingNumber, MODE_PRIVATE).edit();
+            threshold_editor.putString("thresholdCounter" + incomingNumber, String.valueOf(Integer.parseInt(thresholdCounterPrefs.getString("thresholdCounter"
+                    + incomingNumber, String.valueOf(0))) + 1));
+            threshold_editor.commit();
+            Log.i(logTag, "COUNTING" + thresholdCounterPrefs.getString("thresholdCounter" + incomingNumber, String.valueOf(0)));
+        }
+
+        if (thresholdPrefs.getString("threshold", String.valueOf(0)).equals(thresholdCounterPrefs.getString("thresholdCounter"
+               + incomingNumber, String.valueOf(0)))) {
+            Log.i(logTag, "MESSAGE ME!");
+
+            SharedPreferences.Editor threshold_editor = context.getSharedPreferences("com.example.thresholdCounter"
+                    + incomingNumber, MODE_PRIVATE).edit();
+            threshold_editor.putString("thresholdCounter" + incomingNumber, String.valueOf(0));
+
+            threshold_editor.commit();
+
+//            context.startService(new Intent(context, TTS.class));
+        }
+
+        count1 = 1;
+    }
+
+
     private class mPhoneStateListener extends PhoneStateListener {
 
         private Context mContext;
@@ -98,6 +125,21 @@ public class Call_Receiver extends BroadcastReceiver {
         public void onCallStateChanged(int state, String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
 
+//            SharedPreferences thresholdCounterPrefs = mContext.getSharedPreferences("com.example.thresholdCounter"
+//                    + incomingNumber, MODE_PRIVATE);
+//            SharedPreferences thresholdPrefs = mContext.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
+//
+//            if((Integer.parseInt(thresholdCounterPrefs.getString("com.example.thresholdCounter"
+//                    + incomingNumber, String.valueOf(0)))) >=
+//                    (Integer.parseInt(thresholdPrefs.getString("com.example.threshold",
+//                            String.valueOf(0))))) {
+//                SharedPreferences.Editor threshold_editor = mContext.getSharedPreferences("com.example.thresholdCounter"
+//                        + incomingNumber, MODE_PRIVATE).edit();
+//                threshold_editor.putString("thresholdCounter" + incomingNumber, String.valueOf(0));
+//
+//            threshold_editor.commit();
+//
+//            }
 
             incomingNumber = incomingNumber.replace(" ", "");
             gmodel = dbHandler.getGroup(incomingNumber);
@@ -110,6 +152,9 @@ public class Call_Receiver extends BroadcastReceiver {
 
                     if (gmodel.getRule2() == 1 && gmodel != null && count == 0)
                         replySMS(incomingNumber);
+
+                    if (gmodel.getRule4() == 1 && count1 == 0)
+                        Threshold(mContext , incomingNumber);
 
                     break;
             }

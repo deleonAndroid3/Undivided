@@ -46,7 +46,7 @@ public class SMS_Receiver extends BroadcastReceiver {
                 gmodel = dbHandler.getGroup(phoneNumber);
 
             }
-
+            
             if (gmodel.getRule1() == 1) {
                 replySMS(context, phoneNumber);
                 Toast.makeText(context, "Send Reply to " + phoneNumber, Toast.LENGTH_SHORT).show();
@@ -76,8 +76,7 @@ public class SMS_Receiver extends BroadcastReceiver {
                 in.putExtra("com.training.android.undivided.LivetoText.number", sms.getOriginatingAddress());
                 context.sendBroadcast(in);
 
-            } else
-                Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show();
+            }
 
 
         } catch (Exception e)
