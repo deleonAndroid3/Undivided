@@ -134,7 +134,7 @@ public class SafeMode extends AppCompatActivity {
             startLockTask();
             enableCallBroadcastReceiver();
             enableSMSBroadcastReceiver();
-            this.startService(new Intent(this, SmsListener.class));
+//            this.startService(new Intent(this, SmsListener.class));
         }
 
         imgView.setOnClickListener(new View.OnClickListener() {
@@ -168,6 +168,9 @@ public class SafeMode extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
 
+                disableSMSBroadcastReceiver();
+                disableCallBroadcastReceiver();
+
                 cmodel = dbHandler.getEmergencyContacts();
 
                  int i = 0;
@@ -188,9 +191,6 @@ public class SafeMode extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
                 startActivity(intent);
 
-
-//                Intent i = new Intent(SafeMode.this, Emergency.class);
-//                startActivity(i);
                 return false;
             }
         });

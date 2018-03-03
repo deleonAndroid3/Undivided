@@ -3,6 +3,7 @@ package com.training.android.undivided.BroadcastReceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -33,6 +34,12 @@ public class SMS_Receiver extends BroadcastReceiver {
         dbHandler = new DBHandler(context);
         Bundle bundle = intent.getExtras();
         count = 0;
+
+
+        //TODO: HILLARY REPLY MESSAGE FOR SMS
+        SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
+        String unknown_number_message = replySharedPrefs.getString("replyMessage","I'm currently driving");
+
         try {
 
             Object[] pdusObj = (Object[]) bundle.get("pdus");
@@ -60,21 +67,12 @@ public class SMS_Receiver extends BroadcastReceiver {
                 }
 
                 String send = getContactName(getApplicationContext(), sms.getOriginatingAddress());
-                String number="09173146873";
+
                 if (send == null ) {
                     strMessage += "SMS From: " + ew;
                 } else{
                     strMessage += "SMS From: " + send;
                 }
-               if(send==number){
-                   strMessage += "It says";
-                   strMessage += " : ";
-                   strMessage += sms.getMessageBody();
-                   strMessage += "\n";
-                   strMessage += " Do you wish to reply?";
-
-               }
-
 
                 strMessage += "It says";
                 strMessage += " : ";

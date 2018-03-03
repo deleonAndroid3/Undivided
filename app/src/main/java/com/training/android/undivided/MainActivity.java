@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Stetho.initializeWithDefaults(this);
-        initializeBubblesManager();
+//        initializeBubblesManager();
 
 //        AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 //        if (audiomanage != null) {

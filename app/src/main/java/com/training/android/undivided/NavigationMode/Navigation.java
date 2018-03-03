@@ -269,6 +269,9 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             @Override
             public boolean onLongClick(View view) {
 
+                disableSMSBroadcastReceiver();
+                disableCallBroadcastReceiver();
+
                 cmodel = dbHandler.getEmergencyContacts();
 
                 handler.post(new Runnable() {
@@ -295,10 +298,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 String phone = "+639234152360";
 
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-
-                //here
-                //disableCallBroadcastReceiver();
-                //disableSMSBroadcastReceiver();
                 startActivity(intent);
 
                 return true;
@@ -913,8 +912,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
-
-
+                
                 Address = returnedAddress.getAddressLine(0);
                 PlaceName = returnedAddress.getFeatureName();
 

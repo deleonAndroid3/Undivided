@@ -70,6 +70,7 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
     private GoogleApiClient mGoogleApiClient;
     public static long startTime, endTime;
     public static int p=0;
+    private EditText mEtReplyMessage;
     Spinner spinner;
 
     private ServiceConnection sc = new ServiceConnection() {
@@ -134,6 +135,30 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        mEtReplyMessage = findViewById(R.id.etReplyMessage);
+
+        SharedPreferences replyMessagePrefs = getSharedPreferences("com.example.ReplyMessage", MODE_PRIVATE);
+        mEtReplyMessage.setText(replyMessagePrefs.getString("replyMessage", "I'm currently driving."));
+
+        mEtReplyMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                SharedPreferences.Editor editor = getSharedPreferences("com.example.ReplyMessage", MODE_PRIVATE).edit();
+                editor.putString("replyMessage", mEtReplyMessage.getText().toString());
+                editor.commit();
+            }
+        });
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
