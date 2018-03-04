@@ -20,7 +20,6 @@ import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -47,7 +46,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.ag.floatingactionmenu.OptionsFabLayout;
-import com.github.ppamorim.dragger.DraggerPosition;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -130,10 +128,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     DecimalFormat form = new DecimalFormat("0.00");
     float mindist;
     int c = 0;
-    /**
-     * Services and Broadcast Receiver
-     */
-
 
     private ArrayList<LatLng> mPathPolygonPoints = null;
     private ArrayList<ContactsModel> cmodel;
@@ -262,6 +256,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             public void onClick(View view) {
                 mGoogleApiClient.disconnect();
                 markerAnimator();
+
+
             }
         });
 
@@ -348,10 +344,21 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         Toast.makeText(Navigation.this, "Nearby Towing Services", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.mCall:
-                        Intent intent = new Intent(Navigation.this, EmergencyContactsList.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        intent.putExtra("Drag", DraggerPosition.TOP);
-                        startActivity(intent);
+//                        Intent intent = new Intent(Navigation.this, EmergencyContactsList.class);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                        intent.putExtra("Drag", DraggerPosition.TOP);
+//                        startActivity(intent);
+
+                        stopLockTask();
+
+                        double destinationLatitude = DestLatlng.latitude;
+                        double destinationLongitude = DestLatlng.longitude;
+
+                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + destinationLatitude + "," + destinationLongitude);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                        break;
                 }
             }
         });
@@ -443,9 +450,10 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 if (mCurrLocationMarker == null) {
                     mCurrLocationMarker = mMap.addMarker(new MarkerOptions()
                             .position(mNextLatLng)
-                            .title("Current Location")
                             .anchor(0.5f, 1f)
+                            .title("Current Location")
                             .icon(getBitmapDescriptor(R.drawable.ic_navigation)));
+                    mCurrLocationMarker.showInfoWindow();
                 } else {
 
                     CameraPosition cameraPosition = new CameraPosition.Builder().
@@ -913,7 +921,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
-                
+
                 Address = returnedAddress.getAddressLine(0);
                 PlaceName = returnedAddress.getFeatureName();
 
@@ -1013,17 +1021,29 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                                 * sp.latitude;
                         LatLng newPos = new LatLng(lat1, lng1);
 
-                        mCurrLocationMarker.setPosition(newPos);
-                        mCurrLocationMarker.setAnchor(0.5f, 0.5f);
+                        if (mCurrLocationMarker != null) {
 
-                        mMap.moveCamera(CameraUpdateFactory
-                                .newCameraPosition
-                                        (new CameraPosition.Builder()
-                                                .target(newPos)
-                                                .zoom(15.5f)
-                                                .bearing((float) bearingBetweenLocations(sp, ep))
-                                                .build()));
+                            //TODO: CHANGE CODE Get Current location/Address of user and place it in info window
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getCompleteAddressString(mCurrLocationMarker.getPosition().latitude, mCurrLocationMarker.getPosition().longitude);
+                                    mtvDestination.setText(Address);
+                                    mtvPlace.setText(PlaceName);
+                                }
+                            }, 10000);
 
+                            mCurrLocationMarker.setPosition(newPos);
+                            mCurrLocationMarker.setAnchor(0.5f, 0.5f);
+
+                            mMap.moveCamera(CameraUpdateFactory
+                                    .newCameraPosition
+                                            (new CameraPosition.Builder()
+                                                    .target(newPos)
+                                                    .zoom(15.5f)
+                                                    .bearing((float) bearingBetweenLocations(sp, ep))
+                                                    .build()));
+                        }
                         if (DestLatlng != null && mLastLatLng != null) {
                             if (SphericalUtil.computeDistanceBetween(newPos, DestMarker.getPosition()) < 50) {
                                 if (count == 0) {

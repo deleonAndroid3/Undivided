@@ -170,6 +170,7 @@ public class SafeMode extends AppCompatActivity {
 
                 disableSMSBroadcastReceiver();
                 disableCallBroadcastReceiver();
+                stopLockTask();
 
                 cmodel = dbHandler.getEmergencyContacts();
 
@@ -290,6 +291,7 @@ public class SafeMode extends AppCompatActivity {
 //        speaker.allow(false);
 //        speaker.destroy();
         super.onDestroy();
+
     }
 
     private void initializeSMSReceiver() {
