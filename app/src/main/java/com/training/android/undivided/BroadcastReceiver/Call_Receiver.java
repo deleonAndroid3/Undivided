@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -41,9 +44,7 @@ public class Call_Receiver extends BroadcastReceiver {
         count = 0;
         count1 = 0;
 
-        //TODO: HILLARY REPLY MESSAGE FOR CALL
-        SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
-        String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
+
 
         try {
             if (phoneStateListener == null) {
@@ -67,6 +68,7 @@ public class Call_Receiver extends BroadcastReceiver {
 
 
     }
+
 
     private void Threshold(Context context, String incomingNumber) {
 
@@ -97,6 +99,24 @@ public class Call_Receiver extends BroadcastReceiver {
         }
 
         count1 = 1;
+    }
+
+    public boolean contactExists(Context context, String number) {
+/// number is the phone number
+        Uri lookupUri = Uri.withAppendedPath(
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
+                Uri.encode(number));
+        String[] mPhoneNumberProjection = {ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER, ContactsContract.PhoneLookup.DISPLAY_NAME};
+        Cursor cur = context.getContentResolver().query(lookupUri, mPhoneNumberProjection, null, null, null);
+        try {
+            if (cur.moveToFirst()) {
+                return true;
+            }
+        } finally {
+            if (cur != null)
+                cur.close();
+        }
+        return false;
     }
 
     private void replySMS(String num) {
@@ -132,25 +152,38 @@ public class Call_Receiver extends BroadcastReceiver {
                     telephonyService.endCall();
 
                     SharedPreferences sharedPrefs = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE);
-
                     if (!sharedPrefs.getBoolean("ringing", true)) {
 
-                        //TODO: DIRI IBUTANG ANG IF
+                        if (contactExists(mContext, incomingNumber)) {
+                            if (gmodel.getRule2() == 1 && count == 0)
+                                replySMS(incomingNumber);
 
-                        if (gmodel.getRule2() == 1 && count == 0)
-                            replySMS(incomingNumber);
+                            if (gmodel.getRule4() == 1 && count1 == 0)
+                                Threshold(mContext, incomingNumber);
 
-                        if (gmodel.getRule4() == 1 && count1 == 0)
-                            Threshold(mContext, incomingNumber);
+                        } else {
+
+                            SharedPreferences replySharedPrefs = mContext.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
+                            String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
+                            try {
+                                SmsManager smsManager = SmsManager.getDefault();
+                                smsManager.sendTextMessage(incomingNumber, null, unknown_number_message, null, null);
+
+                            } catch (Exception e) {
+                                Log.e("ERROR", e.getLocalizedMessage());
+                            }
+                        }
 
                         SharedPreferences.Editor editor = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE).edit();
                         editor.putBoolean("ringing", true);
                         editor.commit();
+                        break;
+
                     }
-                    break;
             }
         }
-    }
 
+    }
 }
+
 

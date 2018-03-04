@@ -52,11 +52,12 @@ public class SMS_Receiver extends BroadcastReceiver {
 
             }
 
-            if (gmodel.getRule1() == 1) {
-                replySMS(context, phoneNumber);
-            }
-
             if (contactExists(context, phoneNumber)) {
+
+                if (gmodel.getRule1() == 1) {
+                    replySMS(context, phoneNumber);
+                }
+
                 if (gmodel.getRule3() == 1 && count == 0) {
                     count = 1;
 
@@ -97,8 +98,8 @@ public class SMS_Receiver extends BroadcastReceiver {
 
 
     public boolean contactExists(Context context, String number) {
-/// number is the phone number
-        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI,Uri.encode(number));
+
+        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
         String[] mPhoneNumberProjection = {ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER, ContactsContract.PhoneLookup.DISPLAY_NAME};
 
         Cursor cur = context.getContentResolver().query(lookupUri, mPhoneNumberProjection, null, null, null);
