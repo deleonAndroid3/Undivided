@@ -14,14 +14,24 @@ public class Log {
     Date time;
     String duration;
     String name;
+    int count;
 
-    public Log(String num, String type, String date, Date time, String duration, String name) {
+    public Log(String num, String type, String date, Date time, String duration, String name, int count) {
         this.num = num;
         this.type = type;
         this.date = date;
         this.time = time;
         this.duration = duration;
         this.name = name;
+        this.count = count;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public String getName() {

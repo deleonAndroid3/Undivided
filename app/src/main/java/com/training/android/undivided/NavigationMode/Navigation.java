@@ -1,14 +1,17 @@
 package com.training.android.undivided.NavigationMode;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -17,6 +20,7 @@ import android.graphics.drawable.VectorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -28,6 +32,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.MenuItem;
@@ -68,26 +73,26 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
+import com.google.maps.android.SphericalUtil;
 import com.training.android.undivided.BroadcastReceiver.Call_Receiver;
 import com.training.android.undivided.BroadcastReceiver.SMS_Receiver;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Group.Model.ContactsModel;
-import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.LivetoText.DictateandSend;
 import com.training.android.undivided.LivetoText.MyApp;
 import com.training.android.undivided.LivetoText.ReadOutAndSignal;
+import com.training.android.undivided.MainActivity;
 import com.training.android.undivided.Models.TowingServicesModel;
 import com.training.android.undivided.R;
-import com.training.android.undivided.SafeMode.SafeMode;
 import com.training.android.undivided.Speaker;
 
 import org.json.JSONObject;
@@ -118,33 +123,46 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     private static final int PROXIMITY_RADIUS = 10000;
     private static final int CHECK_CODE = 3;
     private static final int TIME_INTERVAL = 2000; // # milliseconds, desired time passed between two back presses.
-    ArrayList<LatLng> mPathPolygonPoints = null;
-    ArrayList<ContactsModel> cmodel;
+    private static final String TAG = "Tag";
     Polyline polyline;
+    CameraPosition cp;
     Handler handler = new Handler();
     DecimalFormat form = new DecimalFormat("0.00");
     float mindist;
+    int c = 0;
+    /**
+     * Services and Broadcast Receiver
+     */
+
+
+    private ArrayList<LatLng> mPathPolygonPoints = null;
+    private ArrayList<ContactsModel> cmodel;
+    private ArrayList<Marker> mMarkers = new ArrayList<>();
     private String type = "", cLocationMessage = "", PlaceName, Address;
     private boolean start = false, onroute = false, near = false;
-    private String start_time, end_time;
+    private String start_time, end_time, msg = "";
     private double tdistance, dremaining, dtravelled, distance = 0;
     private int routeCounter = -1, pos = 0;
     private GoogleApiClient mGoogleApiClient;
     private LatLng mLastLatLng, mNextLatLng, DestLatlng;
     private Location mLastLocation;
-    private Marker mCurrLocationMarker, DestMarker, SpotsMarker;
     private LocationRequest mLocationRequest;
+    private Marker mCurrLocationMarker, DestMarker, SpotsMarker, nearestMarker;
     private GoogleMap mMap;
     private Button mBtnChangeRoute, mbtnSetMarker;
     private ImageButton mBtnStartDriving;
-    private LinearLayout mSpeedometer;
     private TextView mtvSpeed, mtvTotalDistance, mtvDestination, mtvPlace;
+    private LinearLayout mSpeedometer;
     private OptionsFabLayout famServices;
-    private ArrayList<Marker> mMarkers = new ArrayList<>();
     private DBHandler dbHandler;
     private Speaker speaker;
     private long mBackPressed;
     private BroadcastReceiver smsReceiver;
+    private AlertDialog mAlertDialog;
+    private float v;
+    private double lat1, lng1;
+    private LatLng sp, ep;
+    private int index, next, count = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,11 +171,21 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         dbHandler = new DBHandler(this);
         cmodel = new ArrayList<>();
 
-        final String message = dbHandler.getMessage("Emergency").getGroupMessage();
 
+        SharedPreferences.Editor threshold_editor = getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE).edit();
+        threshold_editor.putString("thresholdCounter", String.valueOf(0));
+        threshold_editor.apply();
+
+        SharedPreferences.Editor threshold_editorMK2 = getSharedPreferences("com.example.selectedMode", MODE_PRIVATE).edit();
+        threshold_editorMK2.putString("selectedMode", "Navigation");
+        threshold_editorMK2.apply();
+
+        final String message = dbHandler.getMessage("Emergency").getGroupMessage();
         setContentView(R.layout.activity_navigation);
-        showSearch();
-        Toast.makeText(this, "Navigation Selected", Toast.LENGTH_SHORT).show();
+
+        Intent startingIntent = this.getIntent();
+        msg = startingIntent.getStringExtra("MESSAGE");
+
         ComponentName mDeviceAdmin;
         DevicePolicyManager myDevicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         mDeviceAdmin = new ComponentName(Navigation.this, MainActivity.class);
@@ -167,7 +195,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             String[] packages = {Navigation.this.getPackageName()};
             myDevicePolicyManager.setLockTaskPackages(mDeviceAdmin, packages);
         } else {
-            Log.d("INFO","IS NOT APP OWNER");
+            Log.d("INFO", "IS NOT APP OWNER");
         }
 
         if (myDevicePolicyManager.isLockTaskPermitted(Navigation.this.getPackageName())) {
@@ -175,7 +203,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             // NOTE: locking device also disables notification
             startLockTask();
         } else {
-            Log.d("INFO","lock not permitted");
+            Log.d("INFO", "lock not permitted");
             startLockTask();
         }
         initializeSMSReceiver();
@@ -229,9 +257,20 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             }
         });
 
+        mSpeedometer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mGoogleApiClient.disconnect();
+                markerAnimator();
+            }
+        });
+
         mSpeedometer.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+
+                disableSMSBroadcastReceiver();
+                disableCallBroadcastReceiver();
 
                 cmodel = dbHandler.getEmergencyContacts();
 
@@ -256,8 +295,9 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     }
                 });
 
+                SharedPreferences emergencyContactPrefs = getSharedPreferences("com.example.emergencyContact", MODE_PRIVATE);
+                String phone = emergencyContactPrefs.getString("emergencyContact", "+639053274403");
 
-                String phone = "+639234152360";
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
                 startActivity(intent);
 
@@ -312,7 +352,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         intent.putExtra("Drag", DraggerPosition.TOP);
                         startActivity(intent);
-
                 }
             }
         });
@@ -322,13 +361,11 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        MapStyleOptions mapStyleOptions = MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style);
         showSearch();
+
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setBuildingsEnabled(true);
-        //        mMap.setMapStyle(mapStyleOptions);
-
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -345,14 +382,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             mMap.setMyLocationEnabled(false);
         }
 
-        mMap.setOnInfoWindowLongClickListener(new GoogleMap.OnInfoWindowLongClickListener() {
-            @Override
-            public void onInfoWindowLongClick(Marker marker) {
-                String url = getDirectionsUrl(mCurrLocationMarker.getPosition(), marker.getPosition());
-                DownloadTask downloadTask = new DownloadTask();
-                downloadTask.execute(url);
-            }
-        });
 
     }
 
@@ -446,19 +475,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             mLastLatLng = mNextLatLng;
             mLastLocation = location;
-
-            if (DestLatlng != null && mLastLatLng != null) {
-                float[] distance = new float[1];
-                Location.distanceBetween(mLastLatLng.latitude, mLastLatLng.longitude, DestLatlng.latitude, DestLatlng.longitude, distance);
-//                if (SphericalUtil.computeDistanceBetween(DestLatlng, mLastLatLng) <= 20)
-                if (distance[0] < 10) {
-
-                    speaker.allow(true);
-                    speaker.speak("You have arrived at your destination");
-                    Toast.makeText(this, "You have arrived at your destination", Toast.LENGTH_SHORT).show();
-                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                }
-            }
         }
     }
 
@@ -502,8 +518,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                     case RESULT_OK:
 
                         if (mLastLocation != null) {
-                            mLastLocation.setLatitude(mLastLocation.getLatitude());
-                            mLastLocation.setLongitude(mLastLocation.getLongitude());
 
                             Place place = PlaceAutocomplete.getPlace(this, data);
                             DestLatlng = place.getLatLng();
@@ -512,6 +526,8 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                             DestMarker = mMap.addMarker(new MarkerOptions()
                                     .position(DestLatlng)
                                     .draggable(true));
+
+                            drawCircle(DestLatlng);
 
                             CameraPosition cameraPosition = new CameraPosition.Builder().
                                     target(DestLatlng).
@@ -593,8 +609,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                 if (resultCode == RESULT_OK) {
 
-                    ArrayList<String> matches = data.getStringArrayListExtra(
-                            RecognizerIntent.EXTRA_RESULTS);
+                    ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
                     if (matches.get(0).toLowerCase().compareTo("yes") == 0) {
                         startActivity(new Intent(this, DictateandSend.class).putExtra("number", MyApp.number));
@@ -659,6 +674,33 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    public void showFinish() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Finish")
+                .setMessage("You have arrived at your destination!!")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        stopLockTask();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        end_time = dateFormat.format(new Date());
+
+                        DriveModel dm = new DriveModel();
+                        dm.setDriveType("Navigation Mode");
+                        dm.setStart_time(start_time);
+                        dm.setEnd_time(end_time);
+
+                        dbHandler.addDrive(dm);
+                        finish();
+                    }
+                });
+
+        mAlertDialog = builder.create();
+        mAlertDialog.show();
+
+    }
+
     public void settingsRequest() {
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
@@ -720,6 +762,23 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     /**
      * Map Navigation
      */
+
+    private void drawCircle(LatLng point) {
+
+        // Instantiating CircleOptions to draw a circle around the marker
+        CircleOptions circleOptions = new CircleOptions();
+
+        // Specifying the center of the circle
+        circleOptions.center(point);
+
+        circleOptions.visible(false);
+
+        // Radius of the circle
+        circleOptions.radius(50);
+
+        // Adding the circle to the GoogleMap
+        mMap.addCircle(circleOptions);
+    }
 
     private void checkTTS() {
         Intent check = new Intent();
@@ -796,53 +855,24 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
     }
 
-    public void rotateMarker(final Marker marker, final float toRotation, final float st) {
-        final Handler handler = new Handler();
-        final long start = SystemClock.uptimeMillis();
-        final float startRotation = st;
-        final long duration = 1555;
-
-        final Interpolator interpolator = new LinearInterpolator();
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                float t = interpolator.getInterpolation((float) elapsed / duration);
-
-                float rot = t * toRotation + (1 - t) * startRotation;
-
-                marker.setRotation(-rot > 180 ? rot / 2 : rot);
-                if (t < 1.0) {
-                    // Post again 16ms later.
-                    handler.postDelayed(this, 16);
-                }
-            }
-        });
-    }
-
-    private float getBearing(LatLng begin, LatLng end) {
-        double lat = Math.abs(begin.latitude - end.latitude);
-        double lng = Math.abs(begin.longitude - end.longitude);
-
-        if (begin.latitude < end.latitude && begin.longitude < end.longitude)
-            return (float) (Math.toDegrees(Math.atan(lng / lat)));
-        else if (begin.latitude >= end.latitude && begin.longitude < end.longitude)
-            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 90);
-        else if (begin.latitude >= end.latitude && begin.longitude >= end.longitude)
-            return (float) (Math.toDegrees(Math.atan(lng / lat)) + 180);
-        else if (begin.latitude < end.latitude && begin.longitude >= end.longitude)
-            return (float) ((90 - Math.toDegrees(Math.atan(lng / lat))) + 270);
-        return -1;
-    }
-
     public void animateMarker(final LatLng startPosition, final LatLng toPosition,
                               final boolean hideMarker) {
 
+        if (DestLatlng != null && mLastLatLng != null) {
+            float[] distance = new float[1];
+            Location.distanceBetween(mLastLatLng.latitude, mLastLatLng.longitude, DestMarker.getPosition().latitude, DestMarker.getPosition().longitude, distance);
+            if (distance[0] < 10) {
 
-        final Handler handler = new Handler();
+                speaker.allow(true);
+                speaker.speak("You have arrived at your destination");
+                showFinish();
+                mGoogleApiClient.disconnect();
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+            }
+        }
+
         final long start = SystemClock.uptimeMillis();
-
         final long duration = 1000;
         final Interpolator interpolator = new LinearInterpolator();
 
@@ -883,8 +913,7 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
-
-
+                
                 Address = returnedAddress.getAddressLine(0);
                 PlaceName = returnedAddress.getFeatureName();
 
@@ -955,6 +984,67 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
         return new LatLng(points.get(pos).latitude, points.get(pos).longitude);
     }
 
+    private void markerAnimator() {
+
+        index = -1;
+        next = 1;
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (index < mPathPolygonPoints.size() - 1) {
+                    index++;
+                    next = index + 1;
+                }
+                if (index < mPathPolygonPoints.size() - 1) {
+                    sp = mPathPolygonPoints.get(index);
+                    ep = mPathPolygonPoints.get(next);
+                }
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, 1);
+                valueAnimator.setDuration(3000);
+                valueAnimator.setInterpolator(new LinearInterpolator());
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                        v = valueAnimator.getAnimatedFraction();
+                        lng1 = v * ep.longitude + (1 - v)
+                                * sp.longitude;
+                        lat1 = v * ep.latitude + (1 - v)
+                                * sp.latitude;
+                        LatLng newPos = new LatLng(lat1, lng1);
+
+                        mCurrLocationMarker.setPosition(newPos);
+                        mCurrLocationMarker.setAnchor(0.5f, 0.5f);
+
+                        mMap.moveCamera(CameraUpdateFactory
+                                .newCameraPosition
+                                        (new CameraPosition.Builder()
+                                                .target(newPos)
+                                                .zoom(15.5f)
+                                                .bearing((float) bearingBetweenLocations(sp, ep))
+                                                .build()));
+
+                        if (DestLatlng != null && mLastLatLng != null) {
+                            if (SphericalUtil.computeDistanceBetween(newPos, DestMarker.getPosition()) < 50) {
+                                if (count == 0) {
+                                    ++count;
+                                    speaker.allow(true);
+                                    speaker.speak("You have arrived at your destination");
+                                    showFinish();
+                                    mGoogleApiClient.disconnect();
+                                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                                }
+                            }
+                        }
+                    }
+                });
+                valueAnimator.start();
+                handler.postDelayed(this, 2500);
+            }
+        }, 2500);
+
+    }
+
     /**
      * Activity Lifecycle
      */
@@ -998,31 +1088,16 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
     public void onBackPressed() {
 
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
-            stopLockTask();
-            super.onBackPressed();
 
+            super.onBackPressed();
             return;
         } else {
             Toast.makeText(getBaseContext(), "Tap back button in order to exit", Toast.LENGTH_SHORT).show();
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            end_time = dateFormat.format(new Date());
-
-            DriveModel dm = new DriveModel();
-            dm.setDriveType("Navigation Mode");
-            dm.setStart_time(start_time);
-            dm.setEnd_time(end_time);
-
-            dbHandler.addDrive(dm);
         }
 
 
         mBackPressed = System.currentTimeMillis();
     }
-
-    /**
-     * Services and Broadcast Receiver
-     */
 
     private void initializeSMSReceiver() {
 
@@ -1039,8 +1114,10 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                         RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
                 intent2.putExtra(RecognizerIntent.EXTRA_PROMPT, "Reply Back?");
                 startActivityForResult(intent2, REQUEST_CODE);
+
             }
         };
+
     }
 
     private void registerSMSReceiver() {
@@ -1338,24 +1415,43 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
             nearbyPlacesList = dataParser.parse(result);
             ShowNearbyPlaces(nearbyPlacesList);
             Log.d("GooglePlacesReadTask", "onPostExecute Exit");
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    buildGoogleApiClient();
+                    polyline.remove();
+
+                    String url = getDirectionsUrl(mCurrLocationMarker.getPosition(), nearestMarker.getPosition());
+                    DownloadTask downloadTask = new DownloadTask();
+                    downloadTask.execute(url);
+                    polyline.setColor(Color.RED);
+
+                    mtvDestination.setText(nearestMarker.getSnippet());
+                    mtvPlace.setText(nearestMarker.getTitle());
+                }
+            }, 3000);
         }
 
         private void ShowNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
-            for (int i = 0; i < nearbyPlacesList.size(); i++) {
+            int i;
+            String vicinity = "";
+            String placeName = "";
+            for (i = 0; i < nearbyPlacesList.size(); i++) {
                 Log.d("onPostExecute", "Entered into showing locations");
 
                 HashMap<String, String> googlePlace = nearbyPlacesList.get(i);
                 double lat = Double.parseDouble(googlePlace.get("lat"));
                 double lng = Double.parseDouble(googlePlace.get("lng"));
-                String placeName = googlePlace.get("place_name");
-                String vicinity = googlePlace.get("vicinity");
+
+                placeName = googlePlace.get("place_name");
+                vicinity = googlePlace.get("vicinity");
                 LatLng latLng = new LatLng(lat, lng);
 
                 SpotsMarker = mMap.addMarker(new MarkerOptions()
                         .position(latLng)
                         .title(placeName)
                         .snippet(vicinity));
-
 
                 switch (type) {
                     case "hospital":
@@ -1385,13 +1481,23 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                 }
             }
 
-            if (mCurrLocationMarker != null) {
-                LatlngBounds(mCurrLocationMarker.getPosition(), mMarkers.get(pos).getPosition());
-            } else
-                LatlngBounds(mLastLatLng, mMarkers.get(pos).getPosition());
-
+            mGoogleApiClient.disconnect();
             mMarkers.get(pos).showInfoWindow();
 
+            if (mCurrLocationMarker != null) {
+                cp = new CameraPosition.Builder().
+                        target(mCurrLocationMarker.getPosition()).
+                        zoom(13).
+                        build();
+            } else {
+                cp = new CameraPosition.Builder().
+                        target(mLastLatLng).
+                        zoom(13).
+                        build();
+            }
+
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cp));
+            nearestMarker = mMarkers.get(pos);
         }
     }
 }

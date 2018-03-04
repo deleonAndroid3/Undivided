@@ -9,10 +9,12 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
+import com.training.android.undivided.TTS;
 
 import java.lang.reflect.Method;
 
@@ -39,18 +41,23 @@ public class Call_Receiver extends BroadcastReceiver {
     public void onReceive(final Context context, final Intent intent) {
 
         Log.i(logTag, "Received call intent");
-
         count = 0;
         count1 = 0;
 
         AudioManager mode = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
-
+        //TODO: HILLARY REPLY MESSAGE FOR CALL
+        SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
+        String unknown_number_message = replySharedPrefs.getString("replyMessage","I'm currently driving");
         try {
             if (phoneStateListener == null) {
                 TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
                 dbHandler = new DBHandler(context);
                 phoneStateListener = new mPhoneStateListener(context);
+
+                SharedPreferences.Editor editor = context.getSharedPreferences("com.example.ringing", MODE_PRIVATE).edit();
+                editor.putBoolean("ringing", false);
+                editor.commit();
 
                 Class c = Class.forName(tm.getClass().getName());
                 Method m = c.getDeclaredMethod("getITelephony");
@@ -68,7 +75,6 @@ public class Call_Receiver extends BroadcastReceiver {
     }
 
     private void replySMS(String num) {
-
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -141,24 +147,40 @@ public class Call_Receiver extends BroadcastReceiver {
 //
 //            }
 
+
             incomingNumber = incomingNumber.replace(" ", "");
             gmodel = dbHandler.getGroup(incomingNumber);
-
             switch (state) {
                 case TelephonyManager.CALL_STATE_RINGING:
-
                     //End Call
+                    telephonyService.silenceRinger();
                     telephonyService.endCall();
 
-                    if (gmodel.getRule2() == 1 && gmodel != null && count == 0)
+                    SharedPreferences sharedPrefs = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE);
+
+                    if(sharedPrefs.getBoolean("ringing", true) == false){
+                    if (gmodel.getRule2() == 1 && count == 0)
                         replySMS(incomingNumber);
 
                     if (gmodel.getRule4() == 1 && count1 == 0)
                         Threshold(mContext , incomingNumber);
+                        Threshold(mContext, incomingNumber);
+
+                        SharedPreferences.Editor editor = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE).edit();
+                        editor.putBoolean("ringing", true);
+                        editor.commit();
+                }
+                    Toast.makeText(mContext, "Gwapo ko", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case TelephonyManager.CALL_STATE_OFFHOOK:
+                    Toast.makeText(mContext, "so much", Toast.LENGTH_SHORT).show();
 
                     break;
+
             }
         }
     }
+
 }
 

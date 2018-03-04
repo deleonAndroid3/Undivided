@@ -3,6 +3,7 @@ package com.training.android.undivided.BroadcastReceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
@@ -26,11 +27,18 @@ public class SMS_Receiver extends BroadcastReceiver {
     private String phoneNumber;
     private SmsMessage sms;
     private String strMessage = "";
+    private int count = 0;
 
     @Override
     public void onReceive(Context context, Intent intent) {
         dbHandler = new DBHandler(context);
         Bundle bundle = intent.getExtras();
+        count = 0;
+
+
+        //TODO: HILLARY REPLY MESSAGE FOR SMS
+        SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
+        String unknown_number_message = replySharedPrefs.getString("replyMessage","I'm currently driving");
 
         try {
 
@@ -49,10 +57,10 @@ public class SMS_Receiver extends BroadcastReceiver {
             
             if (gmodel.getRule1() == 1) {
                 replySMS(context, phoneNumber);
-                Toast.makeText(context, "Send Reply to " + phoneNumber, Toast.LENGTH_SHORT).show();
             }
 
-            if (gmodel.getRule3() == 1) {
+            if (gmodel.getRule3() == 1 && count == 0) {
+                count = 1;
                 String ew = "";
                 for (int h = 3; h < sms.getOriginatingAddress().length(); h++) {
                     ew = ew + sms.getOriginatingAddress().charAt(h) + " ";
@@ -60,11 +68,12 @@ public class SMS_Receiver extends BroadcastReceiver {
 
                 String send = getContactName(getApplicationContext(), sms.getOriginatingAddress());
 
-                if (send == null) {
+                if (send == null ) {
                     strMessage += "SMS From: " + ew;
-                } else {
+                } else{
                     strMessage += "SMS From: " + send;
                 }
+
                 strMessage += "It says";
                 strMessage += " : ";
                 strMessage += sms.getMessageBody();
@@ -78,7 +87,6 @@ public class SMS_Receiver extends BroadcastReceiver {
 
             }
 
-
         } catch (Exception e)
 
         {
@@ -89,7 +97,7 @@ public class SMS_Receiver extends BroadcastReceiver {
 
     private void replySMS(Context context, String num) {
 
-        Toast.makeText(context, gmodel.getGroupMessage(), Toast.LENGTH_SHORT).show();
+
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(num, null, gmodel.getGroupMessage(), null, null);

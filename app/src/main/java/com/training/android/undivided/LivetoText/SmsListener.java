@@ -50,7 +50,6 @@ public class SmsListener extends Service {
 
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(getApplicationContext(), "SmsListnerService", Toast.LENGTH_LONG).show();
 
         dbHandler = new DBHandler(getApplicationContext());
 
@@ -95,8 +94,7 @@ public class SmsListener extends Service {
                         in.putExtra("sms_event", strMessage);
                         in.putExtra("com.training.android.undivided.LivetoText.number", messages.getOriginatingAddress());
                         sendBroadcast(in);
-                    } else
-                        Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         };

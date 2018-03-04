@@ -7,11 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.training.android.undivided.DriveHistory.Model.DriveModel;
 import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.Group.Model.GroupModel;
 import com.training.android.undivided.Models.TowingServicesModel;
-import com.training.android.undivided.Models.TowingServicesModel;
-import com.training.android.undivided.DriveHistory.Model.DriveModel;
 
 import java.util.ArrayList;
 
@@ -75,11 +74,11 @@ public class DBHandler extends SQLiteOpenHelper {
             "emer_contact TEXT," +
             "emer_type TEXT)";
 
-    String DriveQuery = "CREATE TABLE IF NOT EXISTS "+ DRIVE_HISTORY +
-            " (" + DRIVE_ID +" INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            DRIVE_TYPE +" TEXT, " +
-             DRIVE_START +" TEXT, " +
-            DRIVE_END +" TEXT)";
+    String DriveQuery = "CREATE TABLE IF NOT EXISTS " + DRIVE_HISTORY +
+            " (" + DRIVE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            DRIVE_TYPE + " TEXT, " +
+            DRIVE_START + " TEXT, " +
+            DRIVE_END + " TEXT)";
 
     SQLiteDatabase db;
 
@@ -119,16 +118,16 @@ public class DBHandler extends SQLiteOpenHelper {
 
     public void addDrive(DriveModel driveModel) {
 
-        if(!db.isOpen())
+        if (!db.isOpen())
             db = getWritableDatabase();
 
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(DRIVE_TYPE, driveModel.getDriveType());
-            contentValues.put(DRIVE_START, driveModel.getStart_time());
-            contentValues.put(DRIVE_END, driveModel.getEnd_time());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DRIVE_TYPE, driveModel.getDriveType());
+        contentValues.put(DRIVE_START, driveModel.getStart_time());
+        contentValues.put(DRIVE_END, driveModel.getEnd_time());
 
-            db.insert(DRIVE_HISTORY, null, contentValues);
-            db.close();
+        db.insert(DRIVE_HISTORY, null, contentValues);
+        db.close();
 
     }
 
@@ -137,8 +136,8 @@ public class DBHandler extends SQLiteOpenHelper {
         if (!db.isOpen())
             db = getWritableDatabase();
 
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_GROUPNAME, groupModel.getGroupName());
+        ContentValues contentValues = new ContentValues(); //store data
+        contentValues.put(COLUMN_GROUPNAME, groupModel.getGroupName()); //put column value
         contentValues.put(COLUMN_GROUPDESC, groupModel.getGroupDesc());
         contentValues.put(COLUMN_GROUPMESSAGE, groupModel.getGroupMessage());
         contentValues.put(COLUMN_AUTOREPLYSMS, groupModel.getRule1());
@@ -163,7 +162,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
-    public void AddTowingServices(TowingServicesModel tsm){
+    public void AddTowingServices(TowingServicesModel tsm) {
 
         if (!db.isOpen())
             db = getWritableDatabase();
@@ -186,7 +185,7 @@ public class DBHandler extends SQLiteOpenHelper {
         dbd.close();
     }
 
-    public void DeleteContacts(String  num) {
+    public void DeleteContacts(String num) {
         if (!db.isOpen())
             db = getWritableDatabase();
 
@@ -314,12 +313,12 @@ public class DBHandler extends SQLiteOpenHelper {
         return cm;
     }
 
-    public ArrayList<TowingServicesModel> getServices(){
+    public ArrayList<TowingServicesModel> getServices() {
 
         if (!db.isOpen())
             db = getReadableDatabase();
 
-        String query = "SELECT * FROM towing" ;
+        String query = "SELECT * FROM towing";
         Cursor c = db.rawQuery(query, null);
 
         ArrayList<TowingServicesModel> tsmList = new ArrayList<>();
@@ -366,7 +365,7 @@ public class DBHandler extends SQLiteOpenHelper {
         Cursor cursor = null;
 
         try {
-            String sql = "SELECT contactid FROM " + TABLE_CONTACTS + " WHERE contactnum = '" + Phonenum + "' AND "+ FK_COLUMN_GROUPID + " != 1 ";
+            String sql = "SELECT contactid FROM " + TABLE_CONTACTS + " WHERE contactnum = '" + Phonenum + "' AND " + FK_COLUMN_GROUPID + " != 1 ";
             cursor = db.rawQuery(sql, null);
 
             return (cursor.getCount() > 0);
@@ -395,7 +394,7 @@ public class DBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public boolean checkTowingifEmpty(){
+    public boolean checkTowingifEmpty() {
         if (!db.isOpen())
             db = getReadableDatabase();
 
@@ -448,7 +447,7 @@ public class DBHandler extends SQLiteOpenHelper {
             db = getReadableDatabase();
 
         String query = "SELECT * FROM " + TABLE_CREATE_GROUP + " WHERE " + COLUMN_GROUPID + " = (SELECT "
-                + FK_COLUMN_GROUPID + " FROM "+ TABLE_CONTACTS +" WHERE " + COLUMN_CONTACTNUM + " = '" + contactnum +"' AND " + FK_COLUMN_GROUPID + " != '1') ";
+                + FK_COLUMN_GROUPID + " FROM " + TABLE_CONTACTS + " WHERE " + COLUMN_CONTACTNUM + " = '" + contactnum + "' AND " + FK_COLUMN_GROUPID + " != '1') ";
 
         Cursor c = db.rawQuery(query, null);
         GroupModel groupModel = new GroupModel();
@@ -472,6 +471,5 @@ public class DBHandler extends SQLiteOpenHelper {
 
         return groupModel;
     }
-
 
 }

@@ -69,7 +69,7 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
     public void onCreate(){
 
     Log.i("EXISTING", "THIS SERVICE HAS STARTED");
-        Toast.makeText(this, "Service(Started)", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Auto start Activated", Toast.LENGTH_SHORT).show();
         // to avoid cpu-blocking, handler for running the service
         HandlerThread thread = new HandlerThread("TestService", Process.THREAD_PRIORITY_BACKGROUND);
 
@@ -92,7 +92,7 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
 
     public void onDestroy(){
         super.onDestroy();
-        Toast.makeText(this, "Destroyed Service", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Destroyed Service", Toast.LENGTH_SHORT).show();
     }
 
     public void launchApp(){
@@ -104,7 +104,7 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "Starting Service(onStartCommand)", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Starting Service(onStartCommand)", Toast.LENGTH_SHORT).show();
         // call a new service handler. The service ID can be used to identify the service
         Message message = mServiceHandler.obtainMessage();
         message.arg1 = startId;
@@ -214,7 +214,8 @@ public class BackgroundService extends Service implements LocationSource.OnLocat
             if(true){
 
                 SharedPreferences sharedPrefs = getSharedPreferences("com.example.bgService", MODE_PRIVATE);
-                if(sharedPrefs.getBoolean("bgService",false) == false) {
+                SharedPreferences sharedPrefs2 = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
+                if((sharedPrefs.getBoolean("bgService",false) == false) && (sharedPrefs2.getBoolean("status", false) == true)) {
                     launchApp();
 
                     SharedPreferences.Editor editor = getSharedPreferences("com.example.bgService", MODE_PRIVATE).edit();

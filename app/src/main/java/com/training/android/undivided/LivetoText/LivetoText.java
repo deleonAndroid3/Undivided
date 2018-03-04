@@ -40,6 +40,7 @@ public class LivetoText extends AppCompatActivity {
     private BroadcastReceiver smsReplier;
 
     protected void createWakeLocks() {
+        //keeps cpu on since function is a service magupdate siya pirmi kung naay mga bag ong update na receive ang app
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         fullWakeLock = powerManager.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), "Loneworker - FULL WAKE LOCK");
         partialWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Loneworker - PARTIAL WAKE LOCK");
@@ -92,7 +93,6 @@ public class LivetoText extends AppCompatActivity {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
                 if (state == TelephonyManager.CALL_STATE_RINGING && prefs.getBoolean("call", true)) {
                     final String number = incomingNumber;
-
 
                     try {
                         new Handler().postDelayed(new Runnable() {
@@ -178,7 +178,6 @@ public class LivetoText extends AppCompatActivity {
         startVoiceRecognitionActivity();
     }
 
-
     private void startVoiceRecognitionActivity() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
@@ -187,7 +186,6 @@ public class LivetoText extends AppCompatActivity {
         //Toast.makeText(getApplicationContext(), "You are supposed to talk now", Toast.LENGTH_SHORT).show();
         startActivityForResult(intent, REQUEST_CODE);
     }
-
 
     protected void onPause() {
         super.onPause();
@@ -219,7 +217,6 @@ public class LivetoText extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     public void LaunchConfigureScreen(View v) {
         startActivity(new Intent(this, ConfigureScreen.class));

@@ -1,7 +1,5 @@
 package com.training.android.undivided.SafeMode;
 
-import android.Manifest;
-import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -12,16 +10,15 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
-import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -36,7 +33,7 @@ import com.training.android.undivided.BroadcastReceiver.Call_Receiver;
 import com.training.android.undivided.BroadcastReceiver.SMS_Receiver;
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.DriveHistory.Model.DriveModel;
-import com.training.android.undivided.Emergency;
+import com.training.android.undivided.Group.Model.ContactsModel;
 import com.training.android.undivided.LivetoText.DictateandSend;
 import com.training.android.undivided.LivetoText.MyApp;
 import com.training.android.undivided.LivetoText.ReadOutAndSignal;
@@ -56,9 +53,9 @@ public class SafeMode extends AppCompatActivity {
     private final int CHECK_CODE = 0x1;
     private final int LONG_DURATION = 5000;
     private final int SHORT_DURATION = 1200;
-    DBHandler dbHandler;
     DrawerLayout drawerLayout;
     ImageView imgView;
+    ArrayList<ContactsModel> cmodel;
     private TextToSpeech myTTS;
     private Button button;
     private Speaker speaker;
@@ -66,7 +63,9 @@ public class SafeMode extends AppCompatActivity {
     private String end_time = "0";
     private boolean speaker_flag = false;
     private boolean mBool = true;
-
+    private DBHandler dbHandler;
+    private String message;
+    private String msg;
     private BroadcastReceiver smsReceiver;
 
     @Override
@@ -75,12 +74,22 @@ public class SafeMode extends AppCompatActivity {
         setContentView(R.layout.activity_safe_mode);
 
         dbHandler = new DBHandler(this);
+        cmodel = new ArrayList<>();
+
+        message = dbHandler.getMessage("Emergency").getGroupMessage();
+
+        Intent startingIntent = this.getIntent();
+        msg = startingIntent.getStringExtra("MESSAGE");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         start_time = dateFormat.format(new Date());
 
         SharedPreferences.Editor threshold_editor = getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE).edit();
         threshold_editor.putInt("thresholdCounter", 0);
+        threshold_editor.apply();
+
+        SharedPreferences.Editor threshold_editorMK2 = getSharedPreferences("com.example.selectedMode", MODE_PRIVATE).edit();
+        threshold_editor.putString("selectedMode", "SafeMode");
         threshold_editor.apply();
 
 
@@ -125,7 +134,7 @@ public class SafeMode extends AppCompatActivity {
             startLockTask();
             enableCallBroadcastReceiver();
             enableSMSBroadcastReceiver();
-            this.startService(new Intent(this, SmsListener.class));
+//            this.startService(new Intent(this, SmsListener.class));
         }
 
         imgView.setOnClickListener(new View.OnClickListener() {
@@ -158,8 +167,31 @@ public class SafeMode extends AppCompatActivity {
         imgView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Intent i = new Intent(SafeMode.this, Emergency.class);
-                startActivity(i);
+
+                disableSMSBroadcastReceiver();
+                disableCallBroadcastReceiver();
+
+                cmodel = dbHandler.getEmergencyContacts();
+
+                 int i = 0;
+
+                while (i != cmodel.size()) {
+                    try {
+                        SmsManager smsManager = SmsManager.getDefault();
+                        smsManager.sendTextMessage(cmodel.get(i).getContactNumber(), null, message, null, null);
+
+                        Toast.makeText(getApplicationContext(), "Sent!", Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), "Failed.", Toast.LENGTH_SHORT).show();
+                    }
+                    i++;
+                }
+                SharedPreferences emergencyContactPrefs = getSharedPreferences("com.example.emergencyContact", MODE_PRIVATE);
+                String phone = emergencyContactPrefs.getString("emergencyContact", "+639053274403");
+
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                startActivity(intent);
+
                 return false;
             }
         });
@@ -180,11 +212,6 @@ public class SafeMode extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            Toast.makeText(this, "You pressed the back button!", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
         if ((keyCode == KeyEvent.KEYCODE_HOME)) {
             Toast.makeText(this, "You pressed the home button.", Toast.LENGTH_SHORT).show();
             return true;
@@ -198,6 +225,7 @@ public class SafeMode extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
         if (requestCode == CHECK_CODE) {
             if (resultCode == android.speech.tts.TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
                 speaker = new Speaker(this);
@@ -206,10 +234,22 @@ public class SafeMode extends AppCompatActivity {
                 install.setAction(android.speech.tts.TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
                 startActivity(install);
             }
-            startActivity(new Intent(this, DictateandSend.class).putExtra("number", MyApp.number));
-
-        } else {
         }
+
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+
+            ArrayList<String> matches = data.getStringArrayListExtra(
+                    RecognizerIntent.EXTRA_RESULTS);
+            //Toast.makeText(getApplicationContext(), matches.get(0), Toast.LENGTH_SHORT).show();
+            if (matches.get(0).toLowerCase().compareTo("yes") == 0) {
+
+                startActivity(new Intent(this, DictateandSend.class).putExtra("number", MyApp.number));
+
+            } else {
+
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
 
@@ -224,57 +264,9 @@ public class SafeMode extends AppCompatActivity {
 
     }
 
-
-    public void onReceive(Intent intent) {
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            Object[] pdus = (Object[]) bundle.get("pdus");
-            for (int i = 0; i < pdus.length; i++) {
-                byte[] pdu = (byte[]) pdus[i];
-                SmsMessage message = SmsMessage.createFromPdu(pdu);
-                String text = message.getDisplayMessageBody();
-                String sender = getContactName(message.getOriginatingAddress());
-
-                speaker.pause(LONG_DURATION);
-                speaker.speak("You have a new message from" + sender + "!");
-                speaker.pause(LONG_DURATION);
-                speaker.speak(text);
-                speaker.speak("Do you want to reply to?" + sender + "!");
-
-
-                //Intent replyIntent = new Intent(TextToSpeech.this, SpeechToText.class);
-//                        startActivity(replyIntent);
-
-//                // Intent reIntent = getIntent();
-//                if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
-//
-//                    ArrayList<String> matches = data.getStringArrayListExtra(
-//                            RecognizerIntent.EXTRA_RESULTS);
-//                    //Toast.makeText(getApplicationContext(), matches.get(0), Toast.LENGTH_SHORT).show();
-//                    if (matches.get(0).toLowerCase().compareTo("yes") == 0) {
-//
-//                        checkSMSPermission();
-//                        if (ContextCompat.checkSelfPermission(TextToSpeech.this, Manifest.permission.SEND_SMS)
-//                                == PackageManager.PERMISSION_GRANTED) {
-//                            SmsManager smsManager = SmsManager.getDefault();
-//                            smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
-//                        }
-//                    } else {
-//                        SmsManager smsManager = SmsManager.getDefault();
-//                        smsManager.sendTextMessage("09568635884", null, "Gwapa", null, null);
-//                    }
-                }
-            }
-
-        }
-
-
-
-
-
     @Override
     public void onBackPressed() {
-        Log.i("Back Pressed", "Back button is disabled");
+        super.onBackPressed();
     }
 
     private String getContactName(String phone) {
@@ -288,12 +280,15 @@ public class SafeMode extends AppCompatActivity {
         }
     }
 
+    private void speakPullOver() {
+
+    }
+
     @Override
     protected void onDestroy() {
-        speaker.speak(getString(R.string.stop_speaking));
-        speaker.allow(false);
-//        unregisterReceiver(smsReceiver);
-        speaker.destroy();
+//        speaker.speak(getString(R.string.stop_speaking));
+//        speaker.allow(false);
+//        speaker.destroy();
         super.onDestroy();
     }
 
@@ -302,6 +297,7 @@ public class SafeMode extends AppCompatActivity {
         smsReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+
                 String msg_for_me = intent.getStringExtra("sms_event");
                 MyApp.number = intent.getStringExtra("com.training.android.undivided.LivetoText.number");
                 context.startService(new Intent(SafeMode.this, ReadOutAndSignal.class).putExtra("noti", msg_for_me));

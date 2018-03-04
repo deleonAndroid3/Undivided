@@ -61,6 +61,7 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
 
     private DBHandler dbHandler;
     private EditText mEtThreshold;
+    private EditText mEtEmergencyContact;
     private Switch mAutoStartSwitch;
     private Switch mAutoDeclineCalls;
     BackgroundService myService;
@@ -70,6 +71,7 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
     private GoogleApiClient mGoogleApiClient;
     public static long startTime, endTime;
     public static int p=0;
+    private EditText mEtReplyMessage;
     Spinner spinner;
 
     private ServiceConnection sc = new ServiceConnection() {
@@ -135,6 +137,53 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        mEtReplyMessage = findViewById(R.id.etReplyMessage);
+        mEtEmergencyContact = findViewById(R.id.etEmergencyContact);
+
+        SharedPreferences replyMessagePrefs = getSharedPreferences("com.example.ReplyMessage", MODE_PRIVATE);
+        mEtReplyMessage.setText(replyMessagePrefs.getString("replyMessage", "I'm currently driving."));
+
+        SharedPreferences emergencyContactPrefs = getSharedPreferences("com.example.emergencyContact", MODE_PRIVATE);
+        mEtEmergencyContact.setText(emergencyContactPrefs.getString("emergencyContact", "+639053274403"));
+
+        mEtReplyMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                SharedPreferences.Editor editor = getSharedPreferences("com.example.ReplyMessage", MODE_PRIVATE).edit();
+                editor.putString("replyMessage", mEtReplyMessage.getText().toString());
+                editor.commit();
+            }
+        });
+
+        mEtEmergencyContact.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                SharedPreferences.Editor editor = getSharedPreferences("com.example.emergencyContact", MODE_PRIVATE).edit();
+                editor.putString("emergencyContact", mEtEmergencyContact.getText().toString());
+                editor.commit();
+            }
+        });
+
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             checkLocationPermission();
@@ -156,12 +205,12 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         spinner.setAdapter(adapter);
 
         spinner.setSelection(adapter.getPosition(String.valueOf(thresholdPrefs.getInt("threshold", 1))));
-//        //THRESHOLD
-//        mEtThreshold = findViewById(R.id.etThreshold);
-//
-//        mEtThreshold.setText(thresholdPrefs.getString("threshold", String.valueOf(0)));
-//        //
+
         mAutoStartSwitch = (Switch) findViewById(R.id.swAutoStart);
+
+        spinner.setSelection(adapter.getPosition(thresholdPrefs.getString("threshold", String.valueOf(1))));
+
+        mAutoStartSwitch = findViewById(R.id.swAutoStart);
         //SET STATUS
         SharedPreferences sharedPrefs = getSharedPreferences("com.example.xyz", MODE_PRIVATE);
         mAutoStartSwitch.setChecked(sharedPrefs.getBoolean("status", false));
@@ -177,14 +226,7 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             }, 1000);
         }
 
-//        /*if (tgpref = true) //if (tgpref) may be enough, not sure
-//        {
-//            mAutoStartSwitch.setChecked(true);
-//        }
-//        else
-//        {
-//            mAutoStartSwitch.setChecked(false);
-//        }*/
+
 
 
         onClickListeners();
@@ -193,6 +235,8 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.threshold", MODE_PRIVATE).edit();
+//                String spinVal = spinner.getSelectedItem().toString();
+//                int intVal = Integer.parseInt(spinVal);
                 editor.putString("threshold", String.valueOf(spinner.getSelectedItem()));
                 editor.commit();
             }
@@ -203,24 +247,6 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             }
         });
 
-//        mEtThreshold.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//                SharedPreferences.Editor editor = getSharedPreferences("com.example.threshold", MODE_PRIVATE).edit();
-//                editor.putString("threshold", String.valueOf(mEtThreshold.getText()));
-//                editor.commit();
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//
-//            }
-//        });
     }
 
     public boolean checkLocationPermission() {

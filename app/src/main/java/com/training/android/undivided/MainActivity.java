@@ -2,10 +2,12 @@ package com.training.android.undivided;
 
 import android.Manifest;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,31 +56,18 @@ public class MainActivity extends AppCompatActivity {
     AlertDialog ModeDialog, mAlertDialog;
     ArrayList<ContactsModel> cmodel;
     String message = "";
+    Handler handler = new Handler();
     private ImageView mIvStart;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private BubblesManager bubblesManager;
     private BubbleLayout bubbleView;
     private DBHandler dbHandler;
-
     private ArrayList<TowingServicesModel> tsmList = null;
     private ArrayList<EmergencyContactsModel> emcList;
     private boolean flag = false;
+    Runnable run;
 
-//    /*@Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        switch(requestCode)
-//        {
-//            case 1000:
-//            {
-//                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-//                    Toast.makeText(this, "Granted", Toast.LENGTH_SHORT).show();
-//                else
-//                    Toast.makeText(this, "Denied", Toast.LENGTH_SHORT).show();
-//            }
-//            return;
-//        }
-//    }*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -90,11 +80,11 @@ public class MainActivity extends AppCompatActivity {
         Stetho.initializeWithDefaults(this);
 //        initializeBubblesManager();
 
-        disableCallBroadcastReceiver();
-        disableSMSBroadcastReceiver();
+//        AudioManager audiomanage = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+//        if (audiomanage != null) {
+//            audiomanage.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+//        }
 
-//        disableCallBroadcastReceiver();
-//        disableSMSBroadcastReceiver();
         disableCallBroadcastReceiver();
         disableSMSBroadcastReceiver();
 
@@ -140,6 +130,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        run = new Runnable() {
+            @Override
+            public void run() {
+                if (mAlertDialog == null)
+                    showAlertSOS();
+            }
+        };
 
         AddTowing();
     }
@@ -398,6 +397,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // do nothing
+                        mAlertDialog = null;
                     }
                 });
 
@@ -443,6 +443,19 @@ public class MainActivity extends AppCompatActivity {
         emcList = new ArrayList<>();
 
         emcList.add(new EmergencyContactsModel("", "", "", ""));
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int keycode = event.getKeyCode();
+
+        switch (keycode) {
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                handler.postDelayed(run, 3000);
+
+            default:
+                return super.dispatchKeyEvent(event);
+        }
     }
 
     public void disableCallBroadcastReceiver() {

@@ -96,17 +96,25 @@ public class LogAdapter extends ArrayAdapter<Log> implements View.OnClickListene
         else if(type.equals("MISSED")){
             viewHolder.ivCallDisp.setImageResource(R.drawable.ic_phone_missed_black_24dp);
         }
+
+        if(dataModel.getCount()>1)
+            viewHolder.txtNum.setText(dataModel.getNum() + "(" + dataModel.getCount() + ")");
+        else
         viewHolder.txtNum.setText(dataModel.getNum());
+
         viewHolder.txtNum.setTextColor(R.color.bb_darkBackgroundColor);
+
         viewHolder.txtType.setText(dataModel.getType());
         viewHolder.txtType.setTextColor(R.color.bb_darkBackgroundColor);
 //        viewHolder.txtDate.setText(dataModel.getDate());
+
         viewHolder.txtTime.setText(dataModel.getTime().toString());
         viewHolder.txtTime.setTextColor(R.color.bb_darkBackgroundColor);
+
         viewHolder.txtDuration.setText(dataModel.getDuration());
         viewHolder.txtDuration.setTextColor(R.color.bb_darkBackgroundColor);
-        viewHolder.txtName.setText(dataModel != null ? dataModel.getName() : "Unknown Number");
 
+        viewHolder.txtName.setText(dataModel != null ? dataModel.getName() : "Unknown Number");
         viewHolder.txtName.setTextColor(R.color.bb_darkBackgroundColor);
         // Return the completed view to render on screen
         return convertView;
