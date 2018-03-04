@@ -70,7 +70,6 @@ public class Call_Receiver extends BroadcastReceiver {
 
     private void Threshold(Context context, String incomingNumber) {
 
-
         SharedPreferences thresholdPrefs = context.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
         SharedPreferences thresholdCounterPrefs = context.getSharedPreferences("com.example.thresholdCounter" + incomingNumber, MODE_PRIVATE);
 
@@ -135,6 +134,9 @@ public class Call_Receiver extends BroadcastReceiver {
                     SharedPreferences sharedPrefs = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE);
 
                     if (!sharedPrefs.getBoolean("ringing", true)) {
+
+                        //TODO: DIRI IBUTANG ANG IF
+
                         if (gmodel.getRule2() == 1 && count == 0)
                             replySMS(incomingNumber);
 
@@ -146,8 +148,6 @@ public class Call_Receiver extends BroadcastReceiver {
                         editor.commit();
                     }
                     break;
-
-
             }
         }
     }

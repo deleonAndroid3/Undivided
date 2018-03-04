@@ -289,6 +289,7 @@ public class SafeMode extends AppCompatActivity {
 //        speaker.allow(false);
 //        speaker.destroy();
         super.onDestroy();
+
     }
 
     private void initializeSMSReceiver() {
