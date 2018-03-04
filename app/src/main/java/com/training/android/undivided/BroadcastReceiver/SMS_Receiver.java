@@ -81,7 +81,7 @@ public class SMS_Receiver extends BroadcastReceiver {
 
                     strMessage += "It says";
                     strMessage += " : ";
-                    strMessage += sms[i].getMessageBody();
+                    strMessage += sms.getMessageBody();
                     strMessage += "\n";
                     strMessage += " Do you wish to reply?";
 
