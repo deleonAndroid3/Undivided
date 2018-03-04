@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Undivided.iml" filepath="$PROJECT_DIR$/Undivided.iml" />
-      <module fileurl="file://C:\Users\Hillary Briones\Pictures\Undivided\Undivided.iml" filepath="C:\Users\Hillary Briones\Pictures\Undivided\Undivided.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://C:\Users\Hillary Briones\Pictures\Undivided\app\app.iml" filepath="C:\Users\Hillary Briones\Pictures\Undivided\app\app.iml" />
     </modules>
   </component>
 </project>

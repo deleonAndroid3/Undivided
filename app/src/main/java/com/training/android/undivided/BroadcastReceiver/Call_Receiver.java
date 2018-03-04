@@ -8,7 +8,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
 import com.training.android.undivided.Database.DBHandler;
@@ -44,7 +43,7 @@ public class Call_Receiver extends BroadcastReceiver {
 
         //TODO: HILLARY REPLY MESSAGE FOR CALL
         SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
-        String unknown_number_message = replySharedPrefs.getString("replyMessage","I'm currently driving");
+        String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
 
         try {
             if (phoneStateListener == null) {
@@ -135,17 +134,17 @@ public class Call_Receiver extends BroadcastReceiver {
 
                     SharedPreferences sharedPrefs = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE);
 
-                    if(sharedPrefs.getBoolean("ringing", true) == false){
-                    if (gmodel.getRule2() == 1 && count == 0)
-                        replySMS(incomingNumber);
+                    if (!sharedPrefs.getBoolean("ringing", true)) {
+                        if (gmodel.getRule2() == 1 && count == 0)
+                            replySMS(incomingNumber);
 
-                    if (gmodel.getRule4() == 1 && count1 == 0)
-                        Threshold(mContext, incomingNumber);
+                        if (gmodel.getRule4() == 1 && count1 == 0)
+                            Threshold(mContext, incomingNumber);
 
                         SharedPreferences.Editor editor = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE).edit();
                         editor.putBoolean("ringing", true);
                         editor.commit();
-                }
+                    }
                     break;
 
 

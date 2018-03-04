@@ -896,9 +896,6 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
 
                 if (mCurrLocationMarker != null) {
                     mCurrLocationMarker.setPosition(new LatLng(lat, lng));
-                    //TODO: CHANGE CODE Get Current location/Address of user and place it in info window
-                    getCompleteAddressString(mCurrLocationMarker.getPosition().latitude, mCurrLocationMarker.getPosition().longitude);
-                    mCurrLocationMarker.setTitle(Address);
                 }
 
                 if (t < 1.0) {
@@ -1023,17 +1020,29 @@ public class Navigation extends FragmentActivity implements OnMapReadyCallback,
                                 * sp.latitude;
                         LatLng newPos = new LatLng(lat1, lng1);
 
-                        mCurrLocationMarker.setPosition(newPos);
-                        mCurrLocationMarker.setAnchor(0.5f, 0.5f);
+                        if (mCurrLocationMarker != null) {
 
-                        mMap.moveCamera(CameraUpdateFactory
-                                .newCameraPosition
-                                        (new CameraPosition.Builder()
-                                                .target(newPos)
-                                                .zoom(15.5f)
-                                                .bearing((float) bearingBetweenLocations(sp, ep))
-                                                .build()));
+                            //TODO: CHANGE CODE Get Current location/Address of user and place it in info window
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getCompleteAddressString(mCurrLocationMarker.getPosition().latitude, mCurrLocationMarker.getPosition().longitude);
+                                    mtvDestination.setText(Address);
+                                    mtvPlace.setText(PlaceName);
+                                }
+                            }, 10000);
 
+                            mCurrLocationMarker.setPosition(newPos);
+                            mCurrLocationMarker.setAnchor(0.5f, 0.5f);
+
+                            mMap.moveCamera(CameraUpdateFactory
+                                    .newCameraPosition
+                                            (new CameraPosition.Builder()
+                                                    .target(newPos)
+                                                    .zoom(15.5f)
+                                                    .bearing((float) bearingBetweenLocations(sp, ep))
+                                                    .build()));
+                        }
                         if (DestLatlng != null && mLastLatLng != null) {
                             if (SphericalUtil.computeDistanceBetween(newPos, DestMarker.getPosition()) < 50) {
                                 if (count == 0) {
