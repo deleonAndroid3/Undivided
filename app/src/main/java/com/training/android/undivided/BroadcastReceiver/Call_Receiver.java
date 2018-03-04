@@ -146,13 +146,8 @@ public class Call_Receiver extends BroadcastReceiver {
                         editor.putBoolean("ringing", true);
                         editor.commit();
                 }
-                    Toast.makeText(mContext, "Gwapo ko", Toast.LENGTH_SHORT).show();
                     break;
 
-                case TelephonyManager.CALL_STATE_OFFHOOK:
-                    Toast.makeText(mContext, "so much", Toast.LENGTH_SHORT).show();
-
-                    break;
 
             }
         }
