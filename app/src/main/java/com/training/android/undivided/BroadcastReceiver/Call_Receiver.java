@@ -103,7 +103,8 @@ public class Call_Receiver extends BroadcastReceiver {
     }
 
     public boolean contactExists(Context context, String number) {
-/// number is the phone number
+        //gets the list of contacts
+        //after it will check if the number received exist in the list of contacts
         Uri lookupUri = Uri.withAppendedPath(
                 ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
                 Uri.encode(number));
@@ -155,7 +156,7 @@ public class Call_Receiver extends BroadcastReceiver {
                     SharedPreferences sharedPrefs = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE);
 
                     if (sharedPrefs.getBoolean("ringing", true) == false) {
-
+                            //==1 checks if the rule is checcked and count== so that dili mobalik ug receive and broadcast receiver para kausa ra sha send sa reply
                         if (contactExists(mContext, incomingNumber)) {
                             if (gmodel.getRule2() == 1 && count == 0)
 
@@ -169,6 +170,8 @@ public class Call_Receiver extends BroadcastReceiver {
                             editor.commit();
                         }
                         else{
+                            //getSharedPreferences() app wide preferences file identified by the name passed to it as the first argument
+                            //SharePreference an interface for accessing and modifying  preference data returned
                             SharedPreferences replySharedPrefs = mContext.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
                             String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
                             try {

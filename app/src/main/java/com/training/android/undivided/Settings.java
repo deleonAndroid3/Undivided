@@ -144,16 +144,19 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         mEtReplyMessage.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                // to notify that within charSequence , the i1 characters beginning at i are about to replace by new text with length i2
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+                //to notify that within charSequence that within i2 characters beginning at i have just been replaced old text that had length i2
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+                // to notify that somewhere within editable the text has been changed
+                //modification to the preference goes here where user can change the set default value
+                //  SharedPreferences.Editor to ensure the preference values remain consistent state and control when they are committed to storage
                 SharedPreferences.Editor editor = getSharedPreferences("com.example.ReplyMessage", MODE_PRIVATE).edit();
                 editor.putString("replyMessage", mEtReplyMessage.getText().toString());
                 editor.commit();

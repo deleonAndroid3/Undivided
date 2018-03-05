@@ -39,9 +39,7 @@ public class SMS_Receiver extends BroadcastReceiver {
         count = 0;
 
 
-        //TODO: HILLARY REPLY MESSAGE FOR SMS
-//        SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
-//        String unknown_number_message = replySharedPrefs.getString("replyMessage","I'm currently driving");
+
 
         try {
 
@@ -94,6 +92,8 @@ public class SMS_Receiver extends BroadcastReceiver {
 
 
             }else{
+                //getSharedPreferences() app wide preferences file identified by the name passed to it as the first argument
+                //SharePreference an interface for accessing and modifying  preference data returned
                 SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
                 String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
                 try {
@@ -114,10 +114,12 @@ public class SMS_Receiver extends BroadcastReceiver {
 
 
     public boolean contactExists(Context context, String number) {
-/// number is the phone number
+        //gets the list of contacts
+        //after it will check if the number received exist in the list of contacts
         Uri lookupUri = Uri.withAppendedPath(
-                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,
-                Uri.encode(number));
+                ContactsContract.PhoneLookup.CONTENT_FILTER_URI,   //append the number we want to look up and query to perform lookup
+                Uri.encode(number)); //A table that represents the result of looking up a phone number, for example for caller ID.
+         // To perform a lookup you must append the number you want to find to CONTENT_FILTER_URI.
         String[] mPhoneNumberProjection = { ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER, ContactsContract.PhoneLookup.DISPLAY_NAME };
         Cursor cur = context.getContentResolver().query(lookupUri,mPhoneNumberProjection, null, null, null);
         try {
