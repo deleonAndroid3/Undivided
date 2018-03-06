@@ -61,6 +61,7 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
 
     private DBHandler dbHandler;
     private EditText mEtThreshold;
+    private EditText mEtEmergencyContact;
     private Switch mAutoStartSwitch;
     private Switch mAutoDeclineCalls;
     BackgroundService myService;
@@ -137,9 +138,13 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         setContentView(R.layout.activity_settings);
 
         mEtReplyMessage = findViewById(R.id.etReplyMessage);
-
+        mEtEmergencyContact = findViewById(R.id.etEmergencyContact);
+      //MODE_PRIVATE (The default mode, where the created file can only be accessed by the calling application (or all applications sharing the same user ID).
         SharedPreferences replyMessagePrefs = getSharedPreferences("com.example.ReplyMessage", MODE_PRIVATE);
         mEtReplyMessage.setText(replyMessagePrefs.getString("replyMessage", "I'm currently driving."));
+
+        SharedPreferences emergencyContactPrefs = getSharedPreferences("com.example.emergencyContact", MODE_PRIVATE);
+        mEtEmergencyContact.setText(emergencyContactPrefs.getString("emergencyContact", "+639053274403"));
 
         mEtReplyMessage.addTextChangedListener(new TextWatcher() {
             @Override
@@ -163,6 +168,25 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
             }
         });
 
+        mEtEmergencyContact.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                SharedPreferences.Editor editor = getSharedPreferences("com.example.emergencyContact", MODE_PRIVATE).edit();
+                editor.putString("emergencyContact", mEtEmergencyContact.getText().toString());
+                editor.commit();
+            }
+        });
+
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
             checkLocationPermission();
@@ -182,9 +206,12 @@ public class Settings extends AppCompatActivity implements GoogleApiClient.Conne
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spinner.setAdapter(adapter);
-//        int val = thresholdPrefs.getInt("threshold", 1);
-//        String valString = val + "";
+
         spinner.setSelection(adapter.getPosition(thresholdPrefs.getString("threshold", String.valueOf(1))));
+
+        mAutoStartSwitch = (Switch) findViewById(R.id.swAutoStart);
+
+
 
         mAutoStartSwitch = findViewById(R.id.swAutoStart);
         //SET STATUS

@@ -85,7 +85,7 @@ public class SafeMode extends AppCompatActivity {
         start_time = dateFormat.format(new Date());
 
         SharedPreferences.Editor threshold_editor = getSharedPreferences("com.example.thresholdCounter", MODE_PRIVATE).edit();
-        threshold_editor.putString("thresholdCounter", String.valueOf(0));
+        threshold_editor.putInt("thresholdCounter", 0);
         threshold_editor.apply();
 
         SharedPreferences.Editor threshold_editorMK2 = getSharedPreferences("com.example.selectedMode", MODE_PRIVATE).edit();
@@ -170,6 +170,7 @@ public class SafeMode extends AppCompatActivity {
 
                 disableSMSBroadcastReceiver();
                 disableCallBroadcastReceiver();
+                stopLockTask();
 
                 cmodel = dbHandler.getEmergencyContacts();
 
@@ -186,8 +187,9 @@ public class SafeMode extends AppCompatActivity {
                     }
                     i++;
                 }
+                SharedPreferences emergencyContactPrefs = getSharedPreferences("com.example.emergencyContact", MODE_PRIVATE);
+                String phone = emergencyContactPrefs.getString("emergencyContact", "+639053274403");
 
-                String phone = "+639234152360";
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
                 startActivity(intent);
 

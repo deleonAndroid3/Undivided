@@ -34,6 +34,8 @@ public class CallLogActivity extends AppCompatActivity {
     private void getCallDetails() {
 
         dataModels= new ArrayList<>();
+        Log prevLog = null, currLog;
+
 
         StringBuffer sb = new StringBuffer();
         Cursor managedCursor = managedQuery(CallLog.Calls.CONTENT_URI, null,
@@ -82,9 +84,18 @@ public class CallLogActivity extends AppCompatActivity {
 //
 //                }   else {
 
-                    dataModels.add(new Log(managedCursor.getString(number), dir,
+                    currLog = new Log(managedCursor.getString(number), dir,
                             managedCursor.getString(date), new Date(Long.valueOf(managedCursor.getString(date))),
-                            managedCursor.getString(duration), managedCursor.getString(name)));
+                            managedCursor.getString(duration), managedCursor.getString(name), 1);
+
+
+                    if ((prevLog != null)&& (prevLog.getNum().equals(currLog.getNum())) && (prevLog.getType().equals("MISSED")) && (currLog.getType().equals("MISSED")))
+                        prevLog.setCount(prevLog.getCount() + 1);
+
+                    else
+                    dataModels.add(0, currLog);
+
+                    prevLog = currLog;
 //                }
             }
         }

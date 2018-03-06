@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
@@ -11,7 +12,6 @@ import android.telephony.PhoneStateListener;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.internal.telephony.ITelephony;
 import com.training.android.undivided.Database.DBHandler;
@@ -38,12 +38,19 @@ public class Call_Receiver extends BroadcastReceiver {
 
     private String logTag = "Call_Receiver";
 
+
     @Override
     public void onReceive(final Context context, final Intent intent) {
 
         Log.i(logTag, "Received call intent");
         count = 0;
         count1 = 0;
+
+        AudioManager mode = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+        mode.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+        //TODO: HILLARY REPLY MESSAGE FOR CALL
+        SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
+        String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
 
 
         try {
@@ -67,11 +74,11 @@ public class Call_Receiver extends BroadcastReceiver {
         }
 
 
+        mode.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+
     }
 
-
     private void Threshold(Context context, String incomingNumber) {
-
 
         SharedPreferences thresholdPrefs = context.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
         SharedPreferences thresholdCounterPrefs = context.getSharedPreferences("com.example.thresholdCounter" + incomingNumber, MODE_PRIVATE);
@@ -94,9 +101,10 @@ public class Call_Receiver extends BroadcastReceiver {
             SharedPreferences.Editor threshold_editor = context.getSharedPreferences("com.example.thresholdCounter"
                     + incomingNumber, MODE_PRIVATE).edit();
             threshold_editor.putString("thresholdCounter" + incomingNumber, String.valueOf(0));
+
             threshold_editor.commit();
 
-            context.startService(new Intent(context, TTS.class));
+//            context.startService(new Intent(context, TTS.class));
         }
 
         count1 = 1;
@@ -145,6 +153,23 @@ public class Call_Receiver extends BroadcastReceiver {
         public void onCallStateChanged(int state, String incomingNumber) {
             super.onCallStateChanged(state, incomingNumber);
 
+//            SharedPreferences thresholdCounterPrefs = mContext.getSharedPreferences("com.example.thresholdCounter"
+//                    + incomingNumber, MODE_PRIVATE);
+//            SharedPreferences thresholdPrefs = mContext.getSharedPreferences("com.example.threshold", MODE_PRIVATE);
+//
+//            if((Integer.parseInt(thresholdCounterPrefs.getString("com.example.thresholdCounter"
+//                    + incomingNumber, String.valueOf(0)))) >=
+//                    (Integer.parseInt(thresholdPrefs.getString("com.example.threshold",
+//                            String.valueOf(0))))) {
+//                SharedPreferences.Editor threshold_editor = mContext.getSharedPreferences("com.example.thresholdCounter"
+//                        + incomingNumber, MODE_PRIVATE).edit();
+//                threshold_editor.putString("thresholdCounter" + incomingNumber, String.valueOf(0));
+//
+//            threshold_editor.commit();
+//
+//            }
+
+
             incomingNumber = incomingNumber.replace(" ", "");
             gmodel = dbHandler.getGroup(incomingNumber);
             switch (state) {
@@ -155,42 +180,53 @@ public class Call_Receiver extends BroadcastReceiver {
 
                     SharedPreferences sharedPrefs = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE);
 
+
                     if (sharedPrefs.getBoolean("ringing", true) == false) {
-                            //==1 checks if the rule is checcked and count== so that dili mobalik ug receive and broadcast receiver para kausa ra sha send sa reply
-                        if (contactExists(mContext, incomingNumber)) {
-                            if (gmodel.getRule2() == 1 && count == 0)
+                        //==1 checks if the rule is checcked and count== so that dili mobalik ug receive and broadcast receiver para kausa ra sha send sa reply
 
-                                replySMS(incomingNumber);
+                        if (!sharedPrefs.getBoolean("ringing", true)) {
 
-                            if (gmodel.getRule4() == 1 && count1 == 0)
+
+                            if (contactExists(mContext, incomingNumber)) {
+                                if (gmodel.getRule2() == 1 && count == 0)
+                                    replySMS(incomingNumber);
+
+                                if (gmodel.getRule4() == 1 && count1 == 0)
+                                    Threshold(mContext, incomingNumber);
                                 Threshold(mContext, incomingNumber);
+                                if (gmodel.getRule4() == 1 && count1 == 0)
+                                    Threshold(mContext, incomingNumber);
+
+
+                                SharedPreferences.Editor editor = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE).edit();
+                                editor.putBoolean("ringing", true);
+                                editor.commit();
+                            } else {
+                                //getSharedPreferences() app wide preferences file identified by the name passed to it as the first argument
+                                //SharePreference an interface for accessing and modifying  preference data returned
+
+
+                                SharedPreferences replySharedPrefs = mContext.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
+                                String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
+                                try {
+                                    SmsManager smsManager = SmsManager.getDefault();
+                                    smsManager.sendTextMessage(incomingNumber, null, unknown_number_message, null, null);
+
+                                } catch (Exception e) {
+                                    Log.e("ERROR", e.getLocalizedMessage());
+                                }
+                            }
 
                             SharedPreferences.Editor editor = mContext.getSharedPreferences("com.example.ringing", MODE_PRIVATE).edit();
                             editor.putBoolean("ringing", true);
                             editor.commit();
+                            break;
+
                         }
-                        else{
-                            //getSharedPreferences() app wide preferences file identified by the name passed to it as the first argument
-                            //SharePreference an interface for accessing and modifying  preference data returned
-                            SharedPreferences replySharedPrefs = mContext.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
-                            String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
-                            try {
-                                SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(incomingNumber, null, unknown_number_message, null, null);
-
-                            } catch (Exception e) {
-                                Log.e("ERROR", e.getLocalizedMessage());
-                            }
-                        }
-                        break;
-
-
                     }
-
-
             }
-        }
 
+        }
     }
 }
 

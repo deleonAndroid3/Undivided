@@ -11,7 +11,6 @@ import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.training.android.undivided.Database.DBHandler;
 import com.training.android.undivided.Group.Model.GroupModel;
@@ -40,7 +39,6 @@ public class SMS_Receiver extends BroadcastReceiver {
 
 
 
-
         try {
 
             Object[] pdusObj = (Object[]) bundle.get("pdus");
@@ -59,24 +57,19 @@ public class SMS_Receiver extends BroadcastReceiver {
             if (gmodel.getRule1() == 1) {
                 replySMS(context, phoneNumber);
             }
-            if (contactExists(context,phoneNumber)) {
+
+            if (contactExists(context, phoneNumber)) {
+
+                if (gmodel.getRule1() == 1) {
+                    replySMS(context, phoneNumber);
+                }
+
                 if (gmodel.getRule3() == 1 && count == 0) {
                     count = 1;
-//                    String ew = "";
-//                for (int h = 3; h < sms.getOriginatingAddress().length(); h++) {
-//                    ew = ew + sms.getOriginatingAddress().charAt(h) + " ";
-//                }
 
                     String send = getContactName(getApplicationContext(), sms.getOriginatingAddress());
 
-                    if (send == null) {
-                        // strMessage += "SMS From: " + ew
-
-
-                    } else {
-                        strMessage += "SMS From: " + send;
-                    }
-
+                    strMessage += "SMS From: " + send;
                     strMessage += "It says";
                     strMessage += " : ";
                     strMessage += sms.getMessageBody();
@@ -91,9 +84,14 @@ public class SMS_Receiver extends BroadcastReceiver {
                 }
 
 
+
             }else{
                 //getSharedPreferences() app wide preferences file identified by the name passed to it as the first argument
                 //SharePreference an interface for accessing and modifying  preference data returned
+
+
+
+
                 SharedPreferences replySharedPrefs = context.getSharedPreferences("com.example.ReplyMessage", Context.MODE_PRIVATE);
                 String unknown_number_message = replySharedPrefs.getString("replyMessage", "I'm currently driving");
                 try {
@@ -105,15 +103,14 @@ public class SMS_Receiver extends BroadcastReceiver {
                 }
             }
 
-        }catch(Exception e)
-
-            {
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
 
 
     public boolean contactExists(Context context, String number) {
+
         //gets the list of contacts
         //after it will check if the number received exist in the list of contacts
         Uri lookupUri = Uri.withAppendedPath(
@@ -122,6 +119,9 @@ public class SMS_Receiver extends BroadcastReceiver {
          // To perform a lookup you must append the number you want to find to CONTENT_FILTER_URI.
         String[] mPhoneNumberProjection = { ContactsContract.PhoneLookup._ID, ContactsContract.PhoneLookup.NUMBER, ContactsContract.PhoneLookup.DISPLAY_NAME };
         Cursor cur = context.getContentResolver().query(lookupUri,mPhoneNumberProjection, null, null, null);
+
+
+
         try {
             if (cur.moveToFirst()) {
                 return true;
@@ -134,7 +134,6 @@ public class SMS_Receiver extends BroadcastReceiver {
     }
 
     private void replySMS(Context context, String num) {
-
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
